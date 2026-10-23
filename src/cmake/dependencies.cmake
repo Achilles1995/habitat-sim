@@ -101,6 +101,11 @@ if(BUILD_ASSIMP_SUPPORT AND NOT USE_SYSTEM_ASSIMP)
     foreach(_assimp_target assimp zlibstatic)
       if(TARGET ${_assimp_target})
         target_compile_options(${_assimp_target} PRIVATE /Z7)
+        # Compiler launchers like sccache still see Assimp's /Zi and /Fd and
+        # expect a .pdb that /Z7 no longer produces, so compile these directly
+        set_target_properties(
+          ${_assimp_target} PROPERTIES C_COMPILER_LAUNCHER "" CXX_COMPILER_LAUNCHER ""
+        )
       endif()
     endforeach()
   endif()
