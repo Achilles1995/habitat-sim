@@ -3,6 +3,7 @@
 // LICENSE file in the root directory of this source tree.
 
 #include "Simulator.h"
+#include "esp/io/Io.h"
 
 #include <memory>
 #include <string>
@@ -99,7 +100,12 @@ void Simulator::close(const bool destroy) {
   requiresTextures_ = Cr::Containers::NullOpt;
 }
 
-void Simulator::reconfigure(const SimulatorConfiguration& cfg) {
+void Simulator::reconfigure(const SimulatorConfiguration& cfgIn) {
+  // Normalize path separators (Windows) so relative asset paths resolve
+  SimulatorConfiguration cfg = cfgIn;
+  cfg.activeSceneName = io::normalizePathSeparators(cfg.activeSceneName);
+  cfg.sceneDatasetConfigFile =
+      io::normalizePathSeparators(cfg.sceneDatasetConfigFile);
 // Fail early if physics is enabled in config but no bullet support is
 // installed.
 #ifndef ESP_BUILD_WITH_BULLET

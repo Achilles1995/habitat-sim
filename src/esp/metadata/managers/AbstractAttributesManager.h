@@ -439,9 +439,10 @@ AbstractAttributesManager<T, Access>::loadAllFileBasedTemplates(
 template <class T, ManagedObjectAccess Access>
 std::vector<int>
 AbstractAttributesManager<T, Access>::loadAllTemplatesFromPathAndExt(
-    const std::string& path,
+    const std::string& pathIn,
     const std::string& extType,
     bool saveAsDefaults) {
+  const std::string path = io::normalizePathSeparators(pathIn);
   namespace Dir = Cr::Utility::Path;
   std::vector<std::string> paths;
   std::vector<int> templateIndices;

@@ -14,6 +14,7 @@
 
 #include "AbstractFileBasedManagedObject.h"
 #include "ManagedContainer.h"
+#include "esp/io/Io.h"
 #include "esp/io/Json.h"
 
 #include <Corrade/Containers/StringStl.h>
@@ -66,8 +67,9 @@ class ManagedFileBasedContainer : public ManagedContainer<T, Access> {
    * true.
    * @return a reference to the desired managed object, or nullptr if fails.
    */
-  ManagedFileIOPtr createObjectFromJSONFile(const std::string& filename,
+  ManagedFileIOPtr createObjectFromJSONFile(const std::string& filenameIn,
                                             bool registerObject = true) {
+    const std::string filename = io::normalizePathSeparators(filenameIn);
     std::unique_ptr<io::JsonDocument> docConfig{};
     bool success = this->verifyLoadDocument(filename, docConfig);
     if (!success) {
@@ -506,7 +508,7 @@ class ManagedFileBasedContainer : public ManagedContainer<T, Access> {
    */
   void setFileDirectoryFromHandle(ManagedFileIOPtr object) {
     std::string handleName = object->getHandle();
-    auto loc = handleName.find_last_of('/');
+    auto loc = handleName.find_last_of("/\\");
     if (loc != std::string::npos) {
       object->setFileDirectory(handleName.substr(0, loc + 1));
     }
@@ -521,7 +523,7 @@ class ManagedFileBasedContainer : public ManagedContainer<T, Access> {
    */
   void setFileDirectoryFromFilePath(ManagedFileIOPtr object) {
     std::string fileName = object->getActualFilename();
-    auto loc = fileName.find_last_of('/');
+    auto loc = fileName.find_last_of("/\\");
     if (loc != std::string::npos) {
       object->setFileDirectory(fileName.substr(0, loc + 1));
     }

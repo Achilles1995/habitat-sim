@@ -3,6 +3,7 @@
 // LICENSE file in the root directory of this source tree.
 
 #include "MetadataMediator.h"
+#include "esp/io/Io.h"
 
 namespace esp {
 namespace metadata {
@@ -52,6 +53,10 @@ void MetadataMediator::buildAttributesManagers() {
 bool MetadataMediator::setSimulatorConfiguration(
     const sim::SimulatorConfiguration& cfg) {
   simConfig_ = cfg;
+  simConfig_.activeSceneName =
+      io::normalizePathSeparators(simConfig_.activeSceneName);
+  simConfig_.sceneDatasetConfigFile =
+      io::normalizePathSeparators(simConfig_.sceneDatasetConfigFile);
 
   // set current active dataset name - if unchanged, does nothing
   ESP_CHECK(setActiveSceneDatasetName(simConfig_.sceneDatasetConfigFile),
@@ -300,7 +305,9 @@ bool MetadataMediator::setCurrDefaultPbrAttributesHandle(
 }  // MetadataMediator::setCurrDefaultPbrAttributesHandle
 
 bool MetadataMediator::setActiveSceneDatasetName(
-    const std::string& sceneDatasetName) {
+    const std::string& sceneDatasetNameIn) {
+  const std::string sceneDatasetName =
+      io::normalizePathSeparators(sceneDatasetNameIn);
   // first check if dataset exists/is loaded, if so then set as default
   if (sceneDatasetExists(sceneDatasetName)) {
     if (activeSceneDataset_ != sceneDatasetName) {

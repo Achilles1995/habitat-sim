@@ -828,7 +828,7 @@ bool Parser::parseInertia(Inertia& inertia, const XMLElement* config) {
 
 bool Parser::validateMeshFile(std::string& meshFilename) {
   std::string urdfDirectory =
-      sourceFilePath_.substr(0, sourceFilePath_.find_last_of('/'));
+      sourceFilePath_.substr(0, sourceFilePath_.find_last_of("/\\"));
 
   std::string meshFilePath =
       Corrade::Utility::Path::join(urdfDirectory, meshFilename);

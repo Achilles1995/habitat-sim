@@ -49,6 +49,24 @@ std::string getPathRelativeToAbsPath(const std::string& toRelPath,
  */
 std::vector<std::string> globDirs(const std::string& pattern);
 
+/**
+ * @brief Convert native path separators to forward slashes.
+ *
+ * Habitat (and Corrade's path utilities) use '/' as the separator everywhere.
+ * On Windows, paths coming from the user or the OS may contain '\\', which
+ * would break directory splitting and relative-path resolution. Windows APIs
+ * accept '/' as well, so normalizing is always safe there. No-op elsewhere.
+ */
+inline std::string normalizePathSeparators(std::string path) {
+#ifdef _WIN32
+  for (char& c : path) {
+    if (c == '\\')
+      c = '/';
+  }
+#endif
+  return path;
+}
+
 }  // namespace io
 }  // namespace esp
 
