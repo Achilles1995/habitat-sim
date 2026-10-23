@@ -86,10 +86,12 @@ if(BUILD_ASSIMP_SUPPORT AND NOT USE_SYSTEM_ASSIMP)
   # - deprecated declarations (-Wdeprecated-declarations)
   # - array bounds false positives on .back() calls (-Warray-bounds)
   set(_PREV_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-  set(
-    CMAKE_CXX_FLAGS
-    "${CMAKE_CXX_FLAGS} -Wno-class-memaccess -Wno-deprecated-declarations -Wno-array-bounds"
-  )
+  if(NOT MSVC)
+    set(
+      CMAKE_CXX_FLAGS
+      "${CMAKE_CXX_FLAGS} -Wno-class-memaccess -Wno-deprecated-declarations -Wno-array-bounds"
+    )
+  endif()
   add_subdirectory("${DEPS_DIR}/assimp")
   set(CMAKE_CXX_FLAGS ${_PREV_CMAKE_CXX_FLAGS})
 endif()
@@ -380,3 +382,7 @@ add_library(
   ${DEPS_DIR}/atomic_wait/atomic_wait.cpp
 )
 target_include_directories(atomic_wait PUBLIC ${DEPS_DIR}/atomic_wait)
+if(WIN32)
+  # WaitOnAddress / WakeByAddress* live in Synchronization.lib
+  target_link_libraries(atomic_wait PUBLIC Synchronization)
+endif()

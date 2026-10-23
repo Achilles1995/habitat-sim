@@ -31,6 +31,14 @@ endif()
 
 if(MSVC)
   add_definitions(/DNOMINMAX)
+  # Keep <windows.h> from dragging in macros that clash with our code
+  # (near/far, interface, ERROR, ...), and expose M_PI & friends from <cmath>
+  add_definitions(/DWIN32_LEAN_AND_MEAN /D_USE_MATH_DEFINES)
+  # Target Windows 10+ so WaitOnAddress (atomic_wait) is available
+  add_definitions(/D_WIN32_WINNT=0x0A00)
+  # Large translation units (pybind11 bindings, Bullet) exceed the default
+  # section limit; UTF-8 source handling; conformant __cplusplus macro
+  add_compile_options(/bigobj /utf-8 /Zc:__cplusplus)
 endif()
 
 find_program(CCACHE_FOUND ccache)
@@ -216,6 +224,7 @@ if(BUILD_PYTHON_BINDINGS)
     FILES_MATCHING
     PATTERN "*.py"
     PATTERN "*.so"
+    PATTERN "*.pyd"
     PATTERN "__pycache__" EXCLUDE
     PATTERN "CMakeFiles" EXCLUDE
     PATTERN "test" EXCLUDE
@@ -228,6 +237,7 @@ if(BUILD_PYTHON_BINDINGS)
     FILES_MATCHING
     PATTERN "*.py"
     PATTERN "*.so"
+    PATTERN "*.pyd"
     PATTERN "__pycache__" EXCLUDE
     PATTERN "CMakeFiles" EXCLUDE
     PATTERN "test" EXCLUDE

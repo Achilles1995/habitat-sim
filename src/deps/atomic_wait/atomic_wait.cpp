@@ -27,8 +27,10 @@ THE SOFTWARE.
 // 256 since we are using the last 8
 // bits of the atomic to determine which lock is
 // being waited on in the table
+#ifdef __TABLE
 contended_t contention[256];
 
 contended_t* __contention(volatile void const* p) {
   return contention + ((uintptr_t)p & 255);
 }
+#endif
