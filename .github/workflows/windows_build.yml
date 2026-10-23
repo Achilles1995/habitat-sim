@@ -31,6 +31,7 @@ jobs:
       HABITAT_BUILD_GUI_VIEWERS: "OFF"
       HABITAT_WITH_BULLET: "ON"
       HABITAT_WITH_AUDIO: "OFF"
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Enable long paths for git
         run: git config --system core.longpaths true
@@ -67,33 +68,10 @@ jobs:
         if: always()
         run: sccache --show-stats
 
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build-log.txt
-
       - name: Publish build log to ci-logs-build branch
         if: always()
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -x
-          out="$RUNNER_TEMP/publish"
-          rm -rf "$out" && mkdir -p "$out"
-          if [ -f build-log.txt ]; then
-            grep -nE "error|FAILED|CMake Error|fatal" build-log.txt | grep -viE "warning|-Werror|error_code|errors\.h|_error\.|Error\.cpp|Error\.h|/WX" | head -400 > "$out/errors.txt" || true
-            tail -n 3000 build-log.txt > "$out/tail.txt"
-            gzip -c build-log.txt > "$out/build-log.txt.gz"
-          fi
-          cd "$out"
-          echo "run $GITHUB_RUN_ID sha $GITHUB_SHA" > RUN.txt
-          git init -q && git checkout -q -b tmp
-          git config user.name "ci" && git config user.email "ci@users.noreply.github.com"
-          git add -A && git commit -qm "build logs for run $GITHUB_RUN_ID ($GITHUB_SHA)"
-          git push -f -q "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" tmp:ci-logs-build
+        run: bash tools/windows/publish_ci_logs.sh ci-logs-build build-log.txt
 
       - name: Upload wheel
         uses: actions/upload-artifact@v4
@@ -101,6 +79,7 @@ jobs:
           name: habitat-sim-windows-wheel
           path: dist/*.whl
 
+  # Smoke test + Habitat 3.0 humanoid, with Mesa software OpenGL (no GPU)
   test_wheel:
     needs: build_wheel
     runs-on: windows-2022
@@ -140,43 +119,104 @@ jobs:
           7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
           $pydir = Split-Path (python -c "import sys; print(sys.executable)")
           Copy-Item mesa/x/x64/*.dll $pydir -Force
-          Get-ChildItem $pydir -Filter *.dll | Select-Object Name
 
-      - name: Download Habitat test scenes
+      - name: Download test scenes and humanoids
         continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
-          python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes --data-path data/ --no-replace 2>&1 | tee -a smoke-log.txt
-          ls -la data/scene_datasets/habitat-test-scenes 2>&1 | tee -a smoke-log.txt
+          python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes habitat_humanoids --data-path data/ --no-replace 2>&1 | tee -a smoke-log.txt
+          ls -la data/scene_datasets/habitat-test-scenes data/humanoids/humanoid_data 2>&1 | tee -a smoke-log.txt
 
-      - name: Offscreen rendering smoke test (WGL)
+      - name: Smoke test (render, physics, datasets)
+        id: smoke
+        continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
           python tools/windows/smoke_test.py --out smoke 2>&1 | tee -a smoke-log.txt
 
-      - name: Upload smoke test images
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: smoke-test-output
-          path: smoke
+      - name: Habitat 3.0 humanoid test
+        id: humanoid
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python tools/windows/humanoid_test.py --out humanoid 2>&1 | tee humanoid-log.txt
 
-      - name: Publish smoke test output to ci-logs-test branch
+      - name: Publish outputs to ci-logs-test branch
         if: always()
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
+        run: bash tools/windows/publish_ci_logs.sh ci-logs-test smoke smoke-log.txt humanoid humanoid-log.txt
+
+      - name: Fail if a test failed
+        if: steps.smoke.outcome != 'success' || steps.humanoid.outcome != 'success'
+        run: exit 1
+
+  # Upstream pytest suite on Windows
+  pytest:
+    needs: build_wheel
+    runs-on: windows-2022
+    timeout-minutes: 120
+    env:
+      PYTHONUTF8: "1"
+      GALLIUM_DRIVER: llvmpipe
+      GH_TOKEN: ${{ github.token }}
+      GIT_CLONE_PROTECTION_ACTIVE: "false"
+    steps:
+      - name: Enable long paths for git
+        run: git config --system core.longpaths true
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: habitat-sim-windows-wheel
+          path: dist
+
+      - name: Install wheel and test deps
+        shell: pwsh
         run: |
-          set -x
-          out="$RUNNER_TEMP/publish"
-          rm -rf "$out" && mkdir -p "$out"
-          cp -r smoke "$out/" 2>/dev/null || true
-          cp smoke-log.txt "$out/" 2>/dev/null || true
-          cd "$out"
-          echo "run $GITHUB_RUN_ID sha $GITHUB_SHA" > RUN.txt
-          git init -q && git checkout -q -b tmp
-          git config user.name "ci" && git config user.email "ci@users.noreply.github.com"
-          git add -A && git commit -qm "test logs for run $GITHUB_RUN_ID ($GITHUB_SHA)"
-          git push -f -q "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" tmp:ci-logs-test
+          python -m pip install -U pip
+          python -m pip install (Get-ChildItem dist/*.whl).FullName pytest pytest-xdist pytest-timeout pytest-benchmark hypothesis
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install Mesa software OpenGL (runners have no GPU)
+        shell: pwsh
+        run: |
+          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
+          $pydir = Split-Path (python -c "import sys; print(sys.executable)")
+          Copy-Item mesa/x/x64/*.dll $pydir -Force
+
+      - name: Download test data
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          git lfs install
+          python -m habitat_sim.utils.datasets_download --uids ci_test_assets ycb rearrange_dataset_v2 --replace --data-path data/ --no-prune 2>&1 | tail -200 | tee pytest-data-log.txt
+
+      - name: Run pytest
+        id: pytest
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          # run against the installed wheel, not the source tree
+          mv src_python src_python_ignored
+          python -m pytest tests -n 4 --timeout 900 -p no:cacheprovider -rfEs \
+            --junitxml=pytest-results.xml 2>&1 | tee pytest-log.txt
+
+      - name: Publish outputs to ci-logs-pytest branch
+        if: always()
+        shell: bash
+        run: bash tools/windows/publish_ci_logs.sh ci-logs-pytest pytest-log.txt pytest-results.xml pytest-data-log.txt
+
+      - name: Fail if pytest failed
+        if: steps.pytest.outcome != 'success'
+        run: exit 1
