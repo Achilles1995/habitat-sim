@@ -94,6 +94,16 @@ if(BUILD_ASSIMP_SUPPORT AND NOT USE_SYSTEM_ASSIMP)
   endif()
   add_subdirectory("${DEPS_DIR}/assimp")
   set(CMAKE_CXX_FLAGS ${_PREV_CMAKE_CXX_FLAGS})
+  if(MSVC)
+    # Assimp hardcodes /Zi (one shared .pdb per target), which breaks parallel
+    # and cached (sccache) builds. /Z7 overrides it and embeds the debug info
+    # in each object file instead.
+    foreach(_assimp_target assimp zlibstatic)
+      if(TARGET ${_assimp_target})
+        target_compile_options(${_assimp_target} PRIVATE /Z7)
+      endif()
+    endforeach()
+  endif()
 endif()
 
 # audio
