@@ -1588,7 +1588,7 @@ T PathFinder::Impl::tryStep(const T& start, const T& end, bool allowSliding) {
     return start;
   }
 
-  if (not islandSystem_->hasConnection(startRef, endRef)) {
+  if (!islandSystem_->hasConnection(startRef, endRef)) {
     return start;
   }
 

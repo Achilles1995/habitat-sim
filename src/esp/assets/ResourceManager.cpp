@@ -3014,7 +3014,7 @@ void ResourceManager::addObjectToDrawables(
     DrawableGroup* drawables,
     std::vector<scene::SceneNode*>& visNodeCache,
     const std::string& lightSetupKey) {
-  if (parent != nullptr and drawables != nullptr) {
+  if (parent != nullptr && drawables != nullptr) {
     //! Add mesh to rendering stack
 
     const std::string& renderObjectName =
