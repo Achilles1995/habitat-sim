@@ -142,6 +142,14 @@ jobs:
           Copy-Item mesa/x/x64/*.dll $pydir -Force
           Get-ChildItem $pydir -Filter *.dll | Select-Object Name
 
+      - name: Download Habitat test scenes
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes --data-path data/ --no-replace 2>&1 | tee -a smoke-log.txt
+          ls -la data/scene_datasets/habitat-test-scenes 2>&1 | tee -a smoke-log.txt
+
       - name: Offscreen rendering smoke test (WGL)
         shell: bash
         run: |

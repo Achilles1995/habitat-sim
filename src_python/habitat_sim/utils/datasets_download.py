@@ -23,6 +23,49 @@ from typing import Any, Dict, List, Optional
 from git import Repo
 
 data_sources: Dict[str, Dict[str, Any]] = {}
+
+
+def _is_link(path) -> bool:
+    """True for symlinks, and on Windows also for directory junctions."""
+    if os.path.islink(path):
+        return True
+    if sys.platform == "win32":
+        try:
+            import stat
+
+            attrs = os.lstat(path).st_file_attributes  # type: ignore[attr-defined]
+            return bool(attrs & stat.FILE_ATTRIBUTE_REPARSE_POINT)
+        except (OSError, AttributeError):
+            return False
+    return False
+
+
+def _make_link(src, dst, target_is_directory: bool = False) -> None:
+    """Create a symlink. On Windows, creating symlinks needs admin rights or
+    Developer Mode, so fall back to a directory junction (directories) or a
+    copy (files) when that's not available."""
+    try:
+        os.symlink(src, dst, target_is_directory=target_is_directory)
+        return
+    except OSError:
+        if sys.platform != "win32":
+            raise
+    src_abs = os.path.abspath(os.path.join(os.path.dirname(str(dst)), str(src)))
+    if target_is_directory or os.path.isdir(src_abs):
+        import _winapi  # type: ignore[import]
+
+        _winapi.CreateJunction(src_abs, os.path.abspath(str(dst)))
+    else:
+        shutil.copy2(src_abs, dst)
+
+
+def _remove_link(path) -> None:
+    """Remove a symlink, junction, or (copied) file at path."""
+    try:
+        os.unlink(path)
+    except (IsADirectoryError, PermissionError):
+        # directory junctions/symlinks on Windows are removed with rmdir
+        os.rmdir(path)
 data_groups: Dict[str, List[str]] = {}
 
 
@@ -33,7 +76,7 @@ def hm3d_train_configs_post(extract_dir: str) -> List[str]:
     assert os.path.exists(all_scene_dataset_cfg)
 
     link_name = os.path.join(extract_dir, "..", "hm3d_basis.scene_dataset_config.json")
-    os.symlink(all_scene_dataset_cfg, link_name)
+    _make_link(all_scene_dataset_cfg, link_name)
 
     return [link_name]
 
@@ -547,7 +590,7 @@ def clean_data(uid, data_path):
     link_path = os.path.join(data_path, data_sources[uid]["link"])
     is_repo = data_sources[uid]["source"].endswith(".git")
     version_dir = get_version_dir(uid, data_path, is_repo)
-    if not os.path.exists(version_dir) and not os.path.islink(link_path):
+    if not os.path.exists(version_dir) and not _is_link(link_path):
         print(f"Found nothing to clean for datasource ({uid}).")
         return
     downloaded_file_list = get_downloaded_file_list(uid, data_path)
@@ -558,8 +601,8 @@ def clean_data(uid, data_path):
         try:
             if os.path.exists(version_dir):
                 shutil.rmtree(version_dir)
-            if os.path.islink(link_path):
-                os.unlink(link_path)
+            if _is_link(link_path):
+                _remove_link(link_path)
         except OSError:
             print("Removal error:")
             traceback.print_exc(file=sys.stdout)
@@ -573,8 +616,8 @@ def clean_data(uid, data_path):
                 os.rmdir(package_file)
             elif not os.path.isdir(package_file) and os.path.exists(package_file):
                 os.remove(package_file)
-            elif os.path.islink(package_file):
-                os.unlink(package_file)
+            elif _is_link(package_file):
+                _remove_link(package_file)
 
         os.remove(downloaded_file_list)
 
@@ -582,7 +625,7 @@ def clean_data(uid, data_path):
             os.rmdir(version_dir)
 
         if not os.path.exists(version_dir):
-            os.unlink(link_path)
+            _remove_link(link_path)
 
         meta_dir = os.path.dirname(downloaded_file_list)
         if os.path.exists(meta_dir) and len(os.listdir(meta_dir)) == 0:
@@ -776,10 +819,10 @@ def download_and_place(
             print("=======================================================")
 
             if link_path.exists():
-                os.unlink(link_path)
+                _remove_link(link_path)
             elif not link_path.parent.exists():
                 link_path.parent.mkdir(parents=True, exist_ok=True)
-            os.symlink(src=version_dir, dst=link_path, target_is_directory=True)
+            _make_link(version_dir, link_path, target_is_directory=True)
             assert link_path.exists(), "Failed, no symlink generated."
 
             return
@@ -811,10 +854,10 @@ def download_and_place(
 
     # create a symlink to the new versioned data
     if link_path.exists():
-        os.unlink(link_path)
+        _remove_link(link_path)
     elif not link_path.parent.exists():
         link_path.parent.mkdir(parents=True, exist_ok=True)
-    os.symlink(src=version_dir, dst=link_path, target_is_directory=True)
+    _make_link(version_dir, link_path, target_is_directory=True)
 
     assert link_path.exists(), "Unpacking failed, no symlink generated."
 

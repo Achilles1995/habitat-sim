@@ -30,6 +30,9 @@ REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 DATASET_DIR = os.path.join(REPO, "data", "test_assets", "dataset_tests", "dataset_0")
 DATASET_CFG = os.path.join(DATASET_DIR, "test_dataset_0.scene_dataset_config.json")
 STAGE_GLB = os.path.join(DATASET_DIR, "stages", "dataset_test_stage.glb")
+# Real indoor scene with a navmesh, if downloaded via
+#   python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes --data-path data/
+VAN_GOGH = os.path.join(REPO, "data", "scene_datasets", "habitat-test-scenes", "van-gogh-room.glb")
 
 RESULTS = []
 
@@ -78,15 +81,25 @@ def make_sim(scene_id, dataset_cfg=None, res=256):
     return habitat_sim.Simulator(habitat_sim.Configuration(backend, [agent_cfg]))
 
 
-def place_agent_facing_scene(sim):
-    """Back the camera off from the scene's bounding box so it's in view."""
-    bb = sim.get_active_scene_graph().get_root_node().cumulative_bb
-    center = np.array(bb.center())
-    size = float(max(np.array(bb.size()).max(), 1.0))
+def place_agent(sim):
+    """Stand the agent on the navmesh if there is one, else back off from the
+    scene's bounding box so it's in view."""
     state = habitat_sim.AgentState()
-    state.position = center + np.array([0.0, 0.0, 1.5 * size], dtype=np.float32)
+    if sim.pathfinder.is_loaded:
+        sim.pathfinder.seed(1)
+        state.position = sim.pathfinder.get_random_navigable_point()
+        state.position[1] += 1.5  # eye height
+        where = "navmesh"
+    else:
+        root = sim.get_active_scene_graph().get_root_node()
+        root.compute_cumulative_bb()
+        bb = root.cumulative_bb
+        center = np.array(bb.center())
+        size = float(max(np.array(bb.size()).max(), 1.0))
+        state.position = center + np.array([0.0, 0.0, 1.5 * size], dtype=np.float32)
+        where = "bbox"
     sim.get_agent(0).set_state(state)
-    return center, size
+    return where
 
 
 @check("import and build info")
@@ -110,37 +123,32 @@ def test_dataset():
 
 
 @check("offscreen render RGB/depth/semantic")
-def test_render(out_dir):
-    with make_sim(STAGE_GLB) as sim:
-        place_agent_facing_scene(sim)
+def test_render(out_dir, scene):
+    from PIL import Image
+
+    with make_sim(scene) as sim:
+        where = place_agent(sim)
         obs = sim.get_sensor_observations()
         rgb, depth, sem = obs["color"], obs["depth"], obs["semantic"]
-        assert rgb.shape[:2] == (256, 256), rgb.shape
-        nonblank = float((rgb[..., :3].max(axis=-1) > 0).mean())
         finite = depth[np.isfinite(depth)]
-        assert nonblank > 0.01, f"RGB looks empty ({nonblank:.1%} non-black pixels)"
-        assert finite.size and finite.max() > 0, "depth is empty"
+        dmax = float(finite.max()) if finite.size else 0.0
 
-        from PIL import Image
-
+        # Save before asserting so failures can be inspected
         os.makedirs(out_dir, exist_ok=True)
         Image.fromarray(rgb[..., :3]).save(os.path.join(out_dir, "rgb.png"))
-        d = depth / max(float(finite.max()), 1e-6)
+        d = depth / max(dmax, 1e-6)
         Image.fromarray((np.clip(d, 0, 1) * 255).astype(np.uint8)).save(
             os.path.join(out_dir, "depth.png")
         )
         Image.fromarray((sem % 256).astype(np.uint8)).save(
             os.path.join(out_dir, "semantic.png")
         )
-        renderer = "unknown"
-        try:
-            import magnum.gl as mgl
 
-            ctx = mgl.Context.current
-            renderer = f"{ctx.renderer_string} | {ctx.version_string}"
-        except Exception:  # noqa: BLE001
-            pass
-        return f"{nonblank:.0%} non-black pixels, depth max {finite.max():.2f}; GL: {renderer}"
+        assert rgb.shape[:2] == (256, 256), rgb.shape
+        nonblank = float((rgb[..., :3].max(axis=-1) > 0).mean())
+        assert nonblank > 0.01, f"RGB looks empty ({nonblank:.1%} non-black pixels, agent via {where})"
+        assert dmax > 0, "depth is empty"
+        return f"{os.path.basename(scene)}: {nonblank:.0%} non-black pixels, depth max {dmax:.2f} m (agent via {where})"
 
 
 @check("bullet physics: falling cube")
@@ -160,28 +168,31 @@ def test_physics():
 
 
 @check("render throughput")
-def test_fps():
-    with make_sim(STAGE_GLB, res=640) as sim:
-        place_agent_facing_scene(sim)
+def test_fps(scene):
+    with make_sim(scene, res=640) as sim:
+        place_agent(sim)
         sim.get_sensor_observations()
         n = 100
         t0 = time.time()
         for _ in range(n):
             sim.get_sensor_observations()
         fps = n / (time.time() - t0)
-        return f"{fps:.1f} FPS at 640x640 (RGB+depth+semantic)"
+        return f"{fps:.1f} FPS at 640x640 (RGB+depth+semantic) in {os.path.basename(scene)}"
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="smoke")
+    ap.add_argument("--scene", default=None, help="scene for render/FPS tests")
     args = ap.parse_args()
+    scene = args.scene or (VAN_GOGH if os.path.exists(VAN_GOGH) else STAGE_GLB)
+    print(f"Render scene: {scene}")
 
     test_import()
     test_dataset()
-    test_render(args.out)
+    test_render(args.out, scene)
     test_physics()
-    test_fps()
+    test_fps(scene)
 
     os.makedirs(args.out, exist_ok=True)
     with open(os.path.join(args.out, "report.txt"), "w") as f:
