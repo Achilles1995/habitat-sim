@@ -18,6 +18,9 @@ jobs:
     timeout-minutes: 360
     env:
       PYTHONUTF8: "1"
+      # CMake 4 rejects bundled sub-projects (e.g. OpenEXR's zlib) that still
+      # declare cmake_minimum_required < 3.5; let them configure anyway.
+      CMAKE_POLICY_VERSION_MINIMUM: "3.5"
       SCCACHE_GHA_ENABLED: "true"
       # Short build dir to stay clear of the 260-char MAX_PATH limit
       SKBUILD_BUILD_DIR: C:/hb
