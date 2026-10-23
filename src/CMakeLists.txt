@@ -39,6 +39,9 @@ if(MSVC)
   # Large translation units (pybind11 bindings, Bullet) exceed the default
   # section limit; UTF-8 source handling; conformant __cplusplus macro
   add_compile_options(/bigobj /utf-8 /Zc:__cplusplus)
+  # Some deps (Assimp) force /Zi with one shared .pdb per target; /FS lets
+  # parallel cl.exe processes write it safely
+  add_compile_options(/FS)
 endif()
 
 find_program(CCACHE_FOUND ccache)
