@@ -59,7 +59,8 @@ jobs:
         run: |
           python -m pip wheel . -w dist --no-deps -v `
             --config-settings=cmake.build-type=Release `
-            --config-settings=build-dir=C:/hb 2>&1 | Tee-Object -FilePath build-log.txt
+            --config-settings=build-dir=C:/hb `
+            --config-settings=build.tool-args=-k0 2>&1 | Tee-Object -FilePath build-log.txt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Show sccache stats
