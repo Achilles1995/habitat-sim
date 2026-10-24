@@ -132,6 +132,20 @@ index ae87aa1..a9dc2e4 100644
      # Add the stop signal as a task.
      tasks.append(stop)
  
+diff --git a/habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml b/habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml
+index d8d7553..293e38b 100644
+--- a/habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml
++++ b/habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml
+@@ -6,6 +6,9 @@ defaults:
+   - /habitat/simulator/sensor_setups@habitat.simulator.agents.main_agent: depth_head_agent
+   - /habitat/dataset/rearrangement: replica_cad
+   - /habitat/task/measurements:
++    # dependencies of move_objects_reward (missing upstream)
++    - object_to_goal_distance
++    - end_effector_to_object_distance
+     - pddl_success
+     - num_steps
+     - composite_stage_goals
 diff --git a/habitat-lab/habitat/core/vector_env.py b/habitat-lab/habitat/core/vector_env.py
 index 4651314..ceaa76f 100644
 --- a/habitat-lab/habitat/core/vector_env.py
