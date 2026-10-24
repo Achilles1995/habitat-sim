@@ -1,0 +1,4 @@
+habitat-sim Windows wheel
+branch: windows-port
+commit: 217fefdd25d83331b24b2bb12bb44066b92ebacb
+run: https://github.com/Achilles1995/habitat-sim/actions/runs/40089107990

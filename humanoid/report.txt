@@ -1,0 +1,1 @@
+PASS  avatar=female_0 links=-1 joint_dofs=216 load=0.16s | pixels changed by humanoid: 2.7%, semantic mask: 3.1%, pixels changed by posing: 0.8% | 39.0 FPS at 512px

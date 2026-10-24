@@ -1,0 +1,6 @@
+GPU (nvidia-smi): nvidia-smi not found
+Smoke test: PASS
+Humanoid test: PASS
+OpenGL renderer: Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+Habitat 3.0 episode: PASS
+Habitat 3.0 benchmark: Ran 1 trial(s) with average FPS of 28.10355682489562 from [28.10355682489562].
