@@ -1,0 +1,169 @@
+diff --git a/habitat-baselines/habitat_baselines/rl/ddppo/ddp_utils.py b/habitat-baselines/habitat_baselines/rl/ddppo/ddp_utils.py
+index bf79845..eb898c9 100644
+--- a/habitat-baselines/habitat_baselines/rl/ddppo/ddp_utils.py
++++ b/habitat-baselines/habitat_baselines/rl/ddppo/ddp_utils.py
+@@ -171,12 +171,14 @@ def add_signal_handlers() -> None:
+     # forcing the job to exit without cleaning up can be bad.
+     # scancel --signal SIGUSR2 <job_id> will set no such timer and will give
+     # the job ample time to cleanup and exit.
+-    signal.signal(signal.SIGUSR2, _clean_exit_handler)
++    if hasattr(signal, "SIGUSR2"):  # not available on Windows
++        signal.signal(signal.SIGUSR2, _clean_exit_handler)
+ 
+     # SLURM always sends SIGTERM so we can use this to save and exit
+     signal.signal(signal.SIGTERM, _clean_exit_and_save_handler)
+ 
+-    signal.signal(signal.SIGUSR1, _requeue_handler)
++    if hasattr(signal, "SIGUSR1"):  # not available on Windows
++        signal.signal(signal.SIGUSR1, _requeue_handler)
+ 
+ 
+ @rank0_only
+diff --git a/habitat-baselines/habitat_baselines/rl/ver/ver_trainer.py b/habitat-baselines/habitat_baselines/rl/ver/ver_trainer.py
+index c3d8c0c..2741562 100644
+--- a/habitat-baselines/habitat_baselines/rl/ver/ver_trainer.py
++++ b/habitat-baselines/habitat_baselines/rl/ver/ver_trainer.py
+@@ -7,6 +7,7 @@
+ import copy
+ import os
+ import random
++import sys
+ import time
+ from typing import List
+ 
+@@ -102,7 +103,9 @@ class VERTrainer(PPOTrainer):
+         np.random.seed(self.config.habitat.seed)
+         torch.manual_seed(self.config.habitat.seed)
+ 
+-        self.mp_ctx = torch.multiprocessing.get_context("forkserver")
++        self.mp_ctx = torch.multiprocessing.get_context(
++            "spawn" if sys.platform == "win32" else "forkserver"
++        )
+         self.queues = WorkerQueues(
+             self.config.habitat_baselines.num_environments
+         )
+diff --git a/habitat-baselines/habitat_baselines/rl/ver/worker_common.py b/habitat-baselines/habitat_baselines/rl/ver/worker_common.py
+index 6774555..641b8cb 100644
+--- a/habitat-baselines/habitat_baselines/rl/ver/worker_common.py
++++ b/habitat-baselines/habitat_baselines/rl/ver/worker_common.py
+@@ -182,8 +182,10 @@ class WorkerBase:
+         #  signal.signal(signal.SIGINT, signal.SIG_IGN)
+         signal.signal(signal.SIGTERM, signal.SIG_IGN)
+ 
+-        signal.signal(signal.SIGUSR1, signal.SIG_IGN)
+-        signal.signal(signal.SIGUSR2, signal.SIG_IGN)
++        # SIGUSR1/2 don't exist on Windows
++        for sig_name in ("SIGUSR1", "SIGUSR2"):
++            if hasattr(signal, sig_name):
++                signal.signal(getattr(signal, sig_name), signal.SIG_IGN)
+ 
+         torch.set_num_threads(1)
+         threadpoolctl.threadpool_limits(limits=1)
+diff --git a/habitat-hitl/habitat_hitl/_internal/networking/networking_process.py b/habitat-hitl/habitat_hitl/_internal/networking/networking_process.py
+index ae87aa1..a9dc2e4 100644
+--- a/habitat-hitl/habitat_hitl/_internal/networking/networking_process.py
++++ b/habitat-hitl/habitat_hitl/_internal/networking/networking_process.py
+@@ -625,14 +625,18 @@ async def networking_main_async(
+     # We should get SIGTERM when we do networking_process.terminate(). See terminate_networking_process.
+     stop: asyncio.Future = asyncio.Future()
+     loop = asyncio.get_event_loop()
++    # SIGQUIT/SIGHUP don't exist on Windows, and asyncio's add_signal_handler
++    # isn't implemented there at all.
+     stop_signals = [
+-        signal.SIGTERM,
+-        signal.SIGQUIT,
+-        signal.SIGINT,
+-        signal.SIGHUP,
++        getattr(signal, name)
++        for name in ("SIGTERM", "SIGQUIT", "SIGINT", "SIGHUP")
++        if hasattr(signal, name)
+     ]
+     for stop_signal in stop_signals:
+-        loop.add_signal_handler(stop_signal, stop.set_result, None)
++        try:
++            loop.add_signal_handler(stop_signal, stop.set_result, None)
++        except NotImplementedError:
++            pass
+     # Add the stop signal as a task.
+     tasks.append(stop)
+ 
+diff --git a/habitat-lab/habitat/core/vector_env.py b/habitat-lab/habitat/core/vector_env.py
+index 4651314..ceaa76f 100644
+--- a/habitat-lab/habitat/core/vector_env.py
++++ b/habitat-lab/habitat/core/vector_env.py
+@@ -5,6 +5,7 @@
+ # LICENSE file in the root directory of this source tree.
+ 
+ import signal
++import sys
+ import warnings
+ from multiprocessing.connection import Connection
+ from multiprocessing.context import BaseContext
+@@ -157,7 +158,7 @@ class VectorEnv:
+         make_env_fn: Callable[..., gym.Env],
+         env_fn_args: Sequence[Tuple],
+         auto_reset_done: bool = True,
+-        multiprocessing_start_method: str = "forkserver",
++        multiprocessing_start_method: Optional[str] = None,
+         workers_ignore_signals: bool = False,
+     ) -> None:
+         """..
+@@ -185,6 +186,12 @@ class VectorEnv:
+ 
+         self._num_envs = len(env_fn_args)
+ 
++        if multiprocessing_start_method is None:
++            # 'forkserver' works well with CUDA but only exists on POSIX;
++            # Windows only supports 'spawn'.
++            multiprocessing_start_method = (
++                "spawn" if sys.platform == "win32" else "forkserver"
++            )
+         assert multiprocessing_start_method in self._valid_start_methods, (
+             "multiprocessing_start_method must be one of {}. Got '{}'"
+         ).format(self._valid_start_methods, multiprocessing_start_method)
+@@ -247,8 +254,10 @@ class VectorEnv:
+             signal.signal(signal.SIGINT, signal.SIG_IGN)
+             signal.signal(signal.SIGTERM, signal.SIG_IGN)
+ 
+-            signal.signal(signal.SIGUSR1, signal.SIG_IGN)
+-            signal.signal(signal.SIGUSR2, signal.SIG_IGN)
++            # SIGUSR1/2 don't exist on Windows
++            for sig_name in ("SIGUSR1", "SIGUSR2"):
++                if hasattr(signal, sig_name):
++                    signal.signal(getattr(signal, sig_name), signal.SIG_IGN)
+ 
+         env = EnvCountEpisodeWrapper(EnvObsDictWrapper(env_fn(*env_fn_args)))
+         if parent_pipe is not None:
+@@ -589,7 +598,7 @@ class VectorEnv:
+ 
+     @property
+     def _valid_start_methods(self) -> Set[str]:
+-        return {"forkserver", "spawn", "fork"}
++        return set(mp.get_all_start_methods())
+ 
+     def _warn_cuda_tensors(
+         self,
+diff --git a/scripts/hab3_bench/hab3_benchmark.py b/scripts/hab3_bench/hab3_benchmark.py
+index f99d81f..182e1d9 100644
+--- a/scripts/hab3_bench/hab3_benchmark.py
++++ b/scripts/hab3_bench/hab3_benchmark.py
+@@ -134,7 +134,9 @@ class HabDemoRunner:
+             # cpu_affinity only supported on linux/windows
+             import psutil
+ 
+-            procs_per_gpu = args.n_procs // args.n_gpus
++            # use self.args: the module-level `args` doesn't exist in worker
++            # processes started with 'spawn' (Windows, macOS)
++            procs_per_gpu = self.args.n_procs // self.args.n_gpus
+             gpu_idx = proc_idx // procs_per_gpu
+             current_process = psutil.Process()
+             orig_cpus = current_process.cpu_affinity()
+@@ -196,7 +198,7 @@ class HabDemoRunner:
+             for p in perfs:
+                 for k, v in p.items():
+                     # Since we were running all the processes concurrently.
+-                    res[k] += v / args.n_procs
++                    res[k] += v / self.args.n_procs
+             return res
+ 
+ 

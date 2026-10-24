@@ -220,3 +220,96 @@ jobs:
       - name: Fail if pytest failed
         if: steps.pytest.outcome != 'success'
         run: exit 1
+
+  # Habitat-Lab (patched for Windows) running the Habitat 3.0 humanoid task
+  habitat_lab:
+    needs: build_wheel
+    runs-on: windows-2022
+    timeout-minutes: 90
+    env:
+      PYTHONUTF8: "1"
+      GALLIUM_DRIVER: llvmpipe
+      GH_TOKEN: ${{ github.token }}
+      GIT_CLONE_PROTECTION_ACTIVE: "false"
+      HABITAT_LAB_SHA: 0fb6f43ffe806a8088a171b036336c093bcf604e
+      MAGNUM_LOG: quiet
+      HABITAT_SIM_LOG: quiet
+    steps:
+      - name: Enable long paths for git
+        run: git config --system core.longpaths true
+
+      - uses: actions/checkout@v4
+        with:
+          path: habitat-sim
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: habitat-sim-windows-wheel
+          path: dist
+
+      - name: Install Mesa software OpenGL (runners have no GPU)
+        shell: pwsh
+        run: |
+          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
+          $pydir = Split-Path (python -c "import sys; print(sys.executable)")
+          Copy-Item mesa/x/x64/*.dll $pydir -Force
+
+      - name: Install habitat-sim wheel and patched habitat-lab
+        shell: bash
+        run: |
+          set -ex
+          python -m pip install -U pip
+          # habitat-lab pins numpy 1.26.4; install habitat-sim's deps against it
+          echo "numpy==1.26.4" > constraints.txt
+          python -m pip install -c constraints.txt numpy attrs gitpython imageio imageio-ffmpeg matplotlib numba numpy-quaternion "pillow==10.4.0" scipy tqdm psutil
+          python -m pip install --no-deps dist/*.whl
+          git clone -q https://github.com/facebookresearch/habitat-lab.git habitat-lab
+          cd habitat-lab
+          git checkout -q "$HABITAT_LAB_SHA"
+          git apply --verbose ../habitat-sim/tools/windows/habitat-lab-windows.patch
+          python -m pip install -c ../constraints.txt -e habitat-lab -e habitat-baselines
+          python -c "import habitat, habitat_baselines, habitat_sim, numpy; print('habitat-lab OK', habitat.__version__, 'numpy', numpy.__version__)"
+
+      - name: Download Habitat 3.0 benchmark assets
+        continue-on-error: true
+        shell: bash
+        working-directory: habitat-lab
+        run: |
+          set -o pipefail
+          git lfs install
+          python -m habitat_sim.utils.datasets_download --uids hab3_bench_assets ycb --data-path data/ --no-replace 2>&1 | tail -40 | tee ../hab3-data-log.txt
+
+      - name: Habitat 3.0 humanoid episode + VectorEnv
+        id: hab3
+        continue-on-error: true
+        shell: bash
+        working-directory: habitat-lab
+        run: |
+          set -o pipefail
+          python ../habitat-sim/tools/windows/hab3_humanoid_episode.py --out ../hab3 2>&1 | tee ../hab3-log.txt
+
+      - name: Habitat 3.0 benchmark (humanoid oracle, 1 process)
+        id: bench
+        continue-on-error: true
+        shell: bash
+        working-directory: habitat-lab
+        run: |
+          set -o pipefail
+          python scripts/hab3_bench/hab3_benchmark.py --cfg benchmark/rearrange/hab3_bench/humanoid_oracle.yaml \
+            --n-steps 300 --n-procs 1 --out-name human_oracle_win \
+            habitat.task.task_spec=tidy_house_2obj habitat.task.pddl_domain_def=fp \
+            habitat.dataset.data_path=data/hab3_bench_assets/episode_datasets/small_small.json.gz 2>&1 | tail -40 | tee ../hab3-bench-log.txt
+
+      - name: Publish outputs to ci-logs-lab branch
+        if: always()
+        shell: bash
+        run: bash habitat-sim/tools/windows/publish_ci_logs.sh ci-logs-lab hab3 hab3-log.txt hab3-bench-log.txt hab3-data-log.txt
+
+      - name: Fail if a step failed
+        if: steps.hab3.outcome != 'success' || steps.bench.outcome != 'success'
+        run: exit 1
