@@ -17,7 +17,9 @@ def save_csv_report(file_name: str, report_string: str):
 
     report_list = report_string.splitlines()
 
-    with open(file_name, "w") as f:
+    # newline="" as required by the csv module; otherwise Windows writes
+    # "\r\r\n" line endings, which read back as extra blank rows
+    with open(file_name, "w", newline="") as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         for x in report_list:
             writer.writerow(x.split(","))

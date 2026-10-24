@@ -17,6 +17,16 @@
 #include <unordered_map>
 
 #include "esp/core/managedContainers/AbstractManagedObject.h"
+#include "esp/io/Io.h"
+
+// Managed object handles are frequently file paths. On Windows, normalize
+// '\' to '/' when using them as library keys so lookups work regardless of
+// which separator the caller used. No-op (and no copy) elsewhere.
+#ifdef _WIN32
+#define ESP_NORMALIZE_HANDLE(h) ::esp::io::normalizePathSeparators(h)
+#else
+#define ESP_NORMALIZE_HANDLE(h) (h)
+#endif
 
 namespace Cr = Corrade;
 
@@ -223,7 +233,7 @@ class ManagedContainerBase {
    * @param handle the key to look for
    */
   bool getObjectLibHasHandle(const std::string& handle) const {
-    return objectLibrary_.count(handle) > 0;
+    return objectLibrary_.count(ESP_NORMALIZE_HANDLE(handle)) > 0;
   }  // ManagedContainerBase::getObjectLibHasHandle
 
   /**
@@ -290,7 +300,8 @@ class ManagedContainerBase {
    */
   template <class U>
   auto getObjectInternal(const std::string& handle) const {
-    return std::static_pointer_cast<U>(objectLibrary_.at(handle));
+    return std::static_pointer_cast<U>(
+        objectLibrary_.at(ESP_NORMALIZE_HANDLE(handle)));
   }
 
   /**
@@ -302,8 +313,8 @@ class ManagedContainerBase {
   void setObjectInternal(const std::shared_ptr<void>& ptr,
                          int objId,
                          const std::string& handle) {
-    objectLibrary_[handle] = ptr;
-    objectLibKeyByID_.emplace(objId, handle);
+    objectLibrary_[ESP_NORMALIZE_HANDLE(handle)] = ptr;
+    objectLibKeyByID_.emplace(objId, ESP_NORMALIZE_HANDLE(handle));
   }
 
   /**
@@ -449,7 +460,7 @@ class ManagedContainerBase {
    */
   void deleteObjectInternal(int objectID, const std::string& objectHandle) {
     objectLibKeyByID_.erase(objectID);
-    objectLibrary_.erase(objectHandle);
+    objectLibrary_.erase(ESP_NORMALIZE_HANDLE(objectHandle));
     availableObjectIDs_.emplace_front(objectID);
     // call instance-specific delete code to remove managed object handle from
     // any local lists and perform any other manager-specific delete functions.

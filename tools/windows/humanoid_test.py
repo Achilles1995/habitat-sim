@@ -116,8 +116,10 @@ def main():
         assert humanoid is not None, f"failed to load {urdf}"
         load_s = time.time() - t0
         humanoid.motion_type = habitat_sim.physics.MotionType.KINEMATIC
-        humanoid.semantic_id = HUMANOID_SEMANTIC_ID
-        for node in humanoid.visual_scene_nodes:
+        nodes = list(humanoid.visual_scene_nodes)
+        for link_id in [-1] + list(humanoid.get_link_ids()):
+            nodes += list(humanoid.get_link_visual_nodes(link_id))
+        for node in nodes:
             node.semantic_id = HUMANOID_SEMANTIC_ID
 
         # Stand it ~2 m in front of the camera, facing the camera

@@ -175,6 +175,10 @@ if(BUILD_WITH_BULLET AND NOT USE_SYSTEM_BULLET)
   set(BUILD_CLSOCKET OFF CACHE BOOL "" FORCE)
   set(BUILD_EXTRAS OFF CACHE BOOL "" FORCE)
   set(BUILD_BULLET3 OFF CACHE BOOL "" FORCE)
+  # Bullet disables RTTI (/GR-) on MSVC by default, but Habitat uses
+  # dynamic_cast on Bullet objects (e.g. btMultiBodyLinkCollider), which then
+  # fails with "Access violation - no RTTI data!"
+  set(USE_MSVC_DISABLE_RTTI OFF CACHE BOOL "" FORCE)
   # This is needed in case BUILD_EXTRAS is enabled, as you'd get a CMake syntax
   # error otherwise
   set(PKGCONFIG_INSTALL_PREFIX "lib${LIB_SUFFIX}/pkgconfig/")

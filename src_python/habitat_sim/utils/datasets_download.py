@@ -684,6 +684,58 @@ def checkout_repo_tag(repo: Repo, version_dir: str, tag: str):
         subprocess.check_call(shlex.split("git lfs pull"), cwd=version_dir)
 
 
+def _download_file(
+    url: str,
+    dest: str,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+    verify_ssl: bool = True,
+) -> None:
+    """Download url to dest with resume support, using only the standard
+    library. Used where wget/curl aren't available (e.g. Windows)."""
+    import base64
+    import ssl
+    import urllib.error
+    import urllib.request
+
+    from tqdm import tqdm
+
+    os.makedirs(os.path.dirname(os.path.abspath(dest)), exist_ok=True)
+    have = os.path.getsize(dest) if os.path.exists(dest) else 0
+    req = urllib.request.Request(url, headers={"User-Agent": "habitat-sim"})
+    if username is not None:
+        token = base64.b64encode(f"{username}:{password}".encode()).decode()
+        req.add_header("Authorization", f"Basic {token}")
+    if have:
+        req.add_header("Range", f"bytes={have}-")
+    ctx = None if verify_ssl else ssl._create_unverified_context()
+    print(f"Downloading {url} -> {dest}")
+    try:
+        resp = urllib.request.urlopen(req, context=ctx)
+    except urllib.error.HTTPError as e:
+        if e.code == 416 and have:  # already fully downloaded
+            return
+        raise
+    with resp:
+        resumed = have and resp.status == 206
+        total = resp.length
+        if total is not None and resumed:
+            total += have
+        with open(dest, "ab" if resumed else "wb") as f, tqdm(
+            total=total,
+            initial=have if resumed else 0,
+            unit="B",
+            unit_scale=True,
+            unit_divisor=1024,
+        ) as bar:
+            while True:
+                chunk = resp.read(1 << 20)
+                if not chunk:
+                    break
+                f.write(chunk)
+                bar.update(len(chunk))
+
+
 def get_and_place_compressed_package(
     uid: str,
     data_path: str,
@@ -728,7 +780,19 @@ def get_and_place_compressed_package(
             + download_post_args
         )
     #  print(download_command)
-    subprocess.check_call(shlex.split(download_command))
+    tool = "curl" if use_curl else "wget"
+    if sys.platform == "win32" or which(tool) is None:
+        # wget isn't available on Windows, and shlex mangles Windows paths, so
+        # download in-process instead.
+        _download_file(
+            data_sources[uid]["source"],
+            os.path.join(data_path, data_sources[uid]["package_name"]),
+            username if requires_auth else None,
+            password if requires_auth else None,
+            verify_ssl="--no-check-certificate" not in download_pre_args,
+        )
+    else:
+        subprocess.check_call(shlex.split(download_command))
     assert os.path.exists(
         os.path.join(data_path, data_sources[uid]["package_name"])
     ), "Download failed, no package found."

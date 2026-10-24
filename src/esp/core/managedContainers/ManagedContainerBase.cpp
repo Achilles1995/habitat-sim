@@ -89,8 +89,9 @@ std::vector<std::string> getHandlesBySubStringPerTypeInternal(
     }
   } else {
     // build search criteria for reverse map
+    const std::string normSubStr = ESP_NORMALIZE_HANDLE(subStr);
     std::string strToLookFor =
-        Cr::Utility::String::lowercase(Cr::Containers::StringView{subStr});
+        Cr::Utility::String::lowercase(Cr::Containers::StringView{normSubStr});
     std::size_t strSize = strToLookFor.length();
     for (typename std::unordered_map<T, U>::const_iterator iter =
              mapOfHandles.begin();
