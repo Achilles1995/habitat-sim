@@ -294,6 +294,8 @@ jobs:
         id: hab3
         continue-on-error: true
         shell: bash
+        env:
+          PYTHONFAULTHANDLER: "1"
         working-directory: habitat-lab
         run: |
           set -o pipefail

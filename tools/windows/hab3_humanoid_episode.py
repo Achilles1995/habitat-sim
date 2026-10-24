@@ -43,15 +43,16 @@ def make_env(overrides=()):
     return habitat.Env(config=config)
 
 
-def sample_action(env, num_targets):
-    """Same sampling as scripts/hab3_bench/hab3_benchmark.py: pick a random
-    target entity for the oracle navigation action."""
+def nav_action(env, target):
+    """Oracle navigation toward one target entity (kept fixed so the
+    humanoid actually walks there instead of turning toward a new random
+    target every step)."""
     names, args = [], {}
     for action_name, action_args in env.action_space.spaces.items():
         names.append(action_name)
         for arg_name, space in action_args.items():
             if "oracle_nav" in arg_name:
-                args[arg_name] = np.array([random.randint(0, num_targets)]) + 1
+                args[arg_name] = np.array([target])
             else:
                 args[arg_name] = space.sample()
     return {"action": tuple(names), "action_args": args}
@@ -71,14 +72,23 @@ def run_single(out_dir, steps):
     humanoid = env.sim.agents_mgr[0].articulated_agent
     start_pos = np.array(humanoid.base_pos)
     frames = [obs[rgb_key][..., :3]]
+    target = 1
+    moved = 0.0
+    prev = start_pos
     t0 = time.time()
     for _ in range(steps):
         if env.episode_over:
             obs = env.reset()
-        obs = env.step(sample_action(env, num_targets))
+            prev = np.array(humanoid.base_pos)
+        if obs.get("has_finished_oracle_nav", [0])[0] > 0.5:
+            # reached this target: walk to the next entity
+            target = target % num_targets + 1
+        obs = env.step(nav_action(env, target))
+        pos = np.array(humanoid.base_pos)
+        moved += float(np.linalg.norm(pos - prev))
+        prev = pos
         frames.append(obs[rgb_key][..., :3])
     sps = steps / (time.time() - t0)
-    moved = float(np.linalg.norm(np.array(humanoid.base_pos) - start_pos))
     env.close()
 
     os.makedirs(out_dir, exist_ok=True)
@@ -95,7 +105,7 @@ def run_single(out_dir, steps):
 
     nonblank = float((frames[-1].max(axis=-1) > 0).mean())
     return (
-        f"type={type(humanoid).__name__} moved {moved:.2f} m over {steps} steps, "
+        f"type={type(humanoid).__name__} walked {moved:.2f} m over {steps} steps, "
         f"{sps:.1f} steps/s single process, last frame {nonblank:.0%} non-black"
     ), moved > 0.1 and nonblank > 0.05
 
@@ -104,12 +114,56 @@ def _vec_make_env(overrides):
     return make_env(overrides)
 
 
+def _spawn_probe(conn, overrides):
+    """Runs in a 'spawn'ed child: build the env, step it, report back."""
+    try:
+        import faulthandler
+
+        faulthandler.enable()
+        env = make_env(overrides)
+        env.reset()
+        for _ in range(5):
+            env.step(nav_action(env, 1))
+        env.close()
+        conn.send(("ok", None))
+    except BaseException:  # noqa: BLE001
+        import traceback
+
+        conn.send(("error", traceback.format_exc()))
+    finally:
+        conn.close()
+
+
+def run_spawn_probe():
+    """One child process via multiprocessing 'spawn', with its traceback (or
+    exit code, for a native crash) reported to the parent."""
+    import multiprocessing as mp
+
+    ctx = mp.get_context("spawn")
+    parent, child = ctx.Pipe()
+    p = ctx.Process(target=_spawn_probe, args=(child, ("habitat.seed=101",)))
+    p.start()
+    child.close()
+    msg = None
+    try:
+        if parent.poll(600):
+            msg = parent.recv()
+    except EOFError:
+        pass
+    p.join(60)
+    if msg is None:
+        return f"child died without reporting, exitcode={p.exitcode}", False
+    if msg[0] != "ok":
+        print(msg[1])
+        return "child raised: " + msg[1].strip().splitlines()[-1], False
+    return f"spawned child built and stepped the env (exitcode={p.exitcode})", True
+
+
 def run_vector(n_procs, steps):
     env_args = [((f"habitat.seed={100 + i}",),) for i in range(n_procs)]
     envs = habitat.VectorEnv(make_env_fn=_vec_make_env, env_fn_args=env_args)
     try:
         envs.reset()
-        num_targets = 2
         spaces = envs.action_spaces[0].spaces
         t0 = time.time()
         for _ in range(steps):
@@ -120,7 +174,7 @@ def run_vector(n_procs, steps):
                     names.append(action_name)
                     for arg_name, space in action_args.items():
                         if "oracle_nav" in arg_name:
-                            args[arg_name] = np.array([random.randint(0, num_targets)]) + 1
+                            args[arg_name] = np.array([1])
                         else:
                             args[arg_name] = space.sample()
                 actions.append({"action": tuple(names), "action_args": args})
@@ -143,6 +197,7 @@ def main():
     results = []
     for name, fn in (
         ("Habitat 3.0 humanoid episode", lambda: run_single(args.out, args.steps)),
+        ("spawned worker process", run_spawn_probe),
         ("VectorEnv multiprocessing", lambda: run_vector(args.vec_procs, 40)),
     ):
         try:
