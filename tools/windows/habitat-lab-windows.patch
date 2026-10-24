@@ -19,6 +19,43 @@ index bf79845..eb898c9 100644
  
  
  @rank0_only
+diff --git a/habitat-baselines/habitat_baselines/rl/ver/queue.py b/habitat-baselines/habitat_baselines/rl/ver/queue.py
+index 5db5aab..723d0bc 100644
+--- a/habitat-baselines/habitat_baselines/rl/ver/queue.py
++++ b/habitat-baselines/habitat_baselines/rl/ver/queue.py
+@@ -22,6 +22,7 @@ if not TYPE_CHECKING and use_faster_fifo:
+ 
+     BatchedQueue = faster_fifo.Queue
+ else:
++    import multiprocessing.queues
+     import queue
+     import time
+     import warnings
+@@ -33,7 +34,13 @@ else:
+         " Using the fallback. This may reduce performance."
+     )
+ 
+-    class BatchedQueue(torch.multiprocessing.Queue):
++    class BatchedQueue(multiprocessing.queues.Queue):
++        # torch.multiprocessing.Queue is a factory method of the default
++        # context, not a class, so it can't be subclassed. Subclass the
++        # underlying queue type and bind it to torch's multiprocessing context.
++        def __init__(self, maxsize=0):
++            super().__init__(maxsize, ctx=torch.multiprocessing.get_context())
++
+         def get_many(
+             self,
+             block=True,
+@@ -53,7 +60,8 @@ else:
+             t_start = time.perf_counter()
+             n_put = 0
+             for x in xs:
+-                self.put(x, block, timeout - (t_start - time.perf_counter()))
++                remaining = timeout - (time.perf_counter() - t_start)
++                self.put(x, block, max(remaining, 0.0))
+                 n_put += 1
+ 
+             if n_put != len(xs):
 diff --git a/habitat-baselines/habitat_baselines/rl/ver/requirements.txt b/habitat-baselines/habitat_baselines/rl/ver/requirements.txt
 index 4851b8e..53f7af4 100644
 --- a/habitat-baselines/habitat_baselines/rl/ver/requirements.txt
