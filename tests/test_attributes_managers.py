@@ -35,7 +35,9 @@ def perform_general_tests(attr_mgr, search_string):
     template_handle = template_handles[0]
     # get id from handle
     template_id = attr_mgr.get_template_id_by_handle(template_handle)
-    assert search_string in template_handle
+    # handles use '/' separators on every platform (Windows paths are
+    # normalized), so compare separator-independently
+    assert search_string.replace("\\", "/") in template_handle
 
     # verify both handle and id exist in the manager
     assert attr_mgr.get_library_has_handle(template_handle)
