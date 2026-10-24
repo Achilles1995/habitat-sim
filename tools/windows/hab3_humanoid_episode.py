@@ -111,7 +111,14 @@ def run_single(out_dir, steps):
 
 
 def _vec_make_env(overrides):
-    return make_env(overrides)
+    # VectorEnv workers expect gym-wrapped envs (as habitat-baselines builds)
+    from habitat.gym import make_gym_from_config
+
+    # the bench config lists 'head_depth' in gym.obs_keys, but the humanoid
+    # variant replaces that sensor with a third-person RGB camera
+    gym_keys = ["habitat.gym.obs_keys=[third_rgb,joint,localization_sensor]"]
+    config = habitat.get_config(CFG, OVERRIDES + gym_keys + list(overrides))
+    return make_gym_from_config(config)
 
 
 def _spawn_probe(conn, overrides):
@@ -164,21 +171,9 @@ def run_vector(n_procs, steps):
     envs = habitat.VectorEnv(make_env_fn=_vec_make_env, env_fn_args=env_args)
     try:
         envs.reset()
-        spaces = envs.action_spaces[0].spaces
         t0 = time.time()
         for _ in range(steps):
-            actions = []
-            for _ in range(n_procs):
-                names, args = [], {}
-                for action_name, action_args in spaces.items():
-                    names.append(action_name)
-                    for arg_name, space in action_args.items():
-                        if "oracle_nav" in arg_name:
-                            args[arg_name] = np.array([1])
-                        else:
-                            args[arg_name] = space.sample()
-                actions.append({"action": tuple(names), "action_args": args})
-            envs.step(actions)
+            envs.step([envs.action_spaces[i].sample() for i in range(n_procs)])
         sps = n_procs * steps / (time.time() - t0)
         method = envs._mp_ctx.get_start_method()
     finally:
