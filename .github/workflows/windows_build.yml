@@ -336,3 +336,49 @@ jobs:
       - name: Fail if a step failed
         if: steps.hab3.outcome != 'success' || steps.bench.outcome != 'success'
         run: exit 1
+
+  # Run the exact script users run on their own PC (tools/windows/gpu_test.ps1),
+  # in Windows PowerShell 5.1, with Mesa standing in for an NVIDIA GPU.
+  gpu_script:
+    needs: build_wheel
+    runs-on: windows-2022
+    timeout-minutes: 90
+    env:
+      GALLIUM_DRIVER: llvmpipe
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Mesa software OpenGL next to python.exe
+        shell: pwsh
+        run: |
+          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
+          $pydir = Split-Path (py -3.10 -c "import sys; print(sys.executable)")
+          Copy-Item mesa/x/x64/*.dll $pydir -Force
+
+      - name: Run gpu_test.ps1 (as a user would)
+        id: script
+        continue-on-error: true
+        shell: powershell
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File tools\windows\gpu_test.ps1 -Dir C:\ht -Branch $env:GITHUB_REF_NAME -WithHabitatLab
+          if (-not (Test-Path C:\ht\habitat_gpu_test_results.zip)) { exit 1 }
+          Get-Content C:\ht\results\summary.txt
+          if (Select-String -Path C:\ht\results\summary.txt -Pattern "FAIL") { exit 1 }
+
+      - name: Publish outputs to ci-logs-script branch
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p script-out
+          cp -r /c/ht/results/* script-out/ 2>/dev/null || true
+          bash tools/windows/publish_ci_logs.sh ci-logs-script script-out/*
+
+      - name: Fail if the script failed
+        if: steps.script.outcome != 'success'
+        run: exit 1
