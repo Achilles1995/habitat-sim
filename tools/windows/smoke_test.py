@@ -37,6 +37,10 @@ VAN_GOGH = os.path.join(REPO, "data", "scene_datasets", "habitat-test-scenes", "
 RESULTS = []
 
 
+class Skip(Exception):
+    """Raised by a check whose inputs aren't available here."""
+
+
 def check(name):
     def deco(fn):
         def run(*a, **kw):
@@ -45,6 +49,9 @@ def check(name):
                 info = fn(*a, **kw)
                 RESULTS.append((name, True, info or ""))
                 print(f"[PASS] {name} ({time.time() - t0:.1f}s) {info or ''}")
+            except Skip as e:
+                RESULTS.append((name, None, str(e)))
+                print(f"[SKIP] {name}: {e}")
             except Exception as e:  # noqa: BLE001
                 RESULTS.append((name, False, repr(e)))
                 print(f"[FAIL] {name}: {e!r}")
@@ -112,6 +119,8 @@ def test_import():
 
 @check("dataset config + glob patterns")
 def test_dataset():
+    if not os.path.exists(DATASET_CFG):
+        raise Skip("repo test assets not present (only in a habitat-sim checkout)")
     cfg = habitat_sim.SimulatorConfiguration()
     cfg.scene_dataset_config_file = DATASET_CFG
     mm = habitat_sim.metadata.MetadataMediator(cfg)
@@ -152,8 +161,8 @@ def test_render(out_dir, scene):
 
 
 @check("bullet physics: falling cube")
-def test_physics():
-    with make_sim(STAGE_GLB) as sim:
+def test_physics(scene):
+    with make_sim(scene) as sim:
         otm = sim.get_object_template_manager()
         rom = sim.get_rigid_object_manager()
         handles = otm.get_template_handles("cubeSolid")
@@ -186,20 +195,25 @@ def main():
     ap.add_argument("--scene", default=None, help="scene for render/FPS tests")
     args = ap.parse_args()
     scene = args.scene or (VAN_GOGH if os.path.exists(VAN_GOGH) else STAGE_GLB)
+    if not os.path.exists(scene):
+        print(f"No scene found ({scene}); download habitat_test_scenes first.")
+        sys.exit(1)
     print(f"Render scene: {scene}")
 
     test_import()
     test_dataset()
     test_render(args.out, scene)
-    test_physics()
+    test_physics(scene)
     test_fps(scene)
 
     os.makedirs(args.out, exist_ok=True)
     with open(os.path.join(args.out, "report.txt"), "w") as f:
         for name, ok, info in RESULTS:
-            f.write(f"{'PASS' if ok else 'FAIL'}  {name}  {info}\n")
-    failed = [n for n, ok, _ in RESULTS if not ok]
-    print(f"\n{len(RESULTS) - len(failed)}/{len(RESULTS)} checks passed")
+            status = "SKIP" if ok is None else ("PASS" if ok else "FAIL")
+            f.write(f"{status}  {name}  {info}\n")
+    failed = [n for n, ok, _ in RESULTS if ok is False]
+    ran = [n for n, ok, _ in RESULTS if ok is not None]
+    print(f"\n{len(ran) - len(failed)}/{len(ran)} checks passed")
     sys.exit(1 if failed else 0)
 
 
