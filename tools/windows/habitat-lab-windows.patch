@@ -133,16 +133,23 @@ index ae87aa1..a9dc2e4 100644
      tasks.append(stop)
  
 diff --git a/habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml b/habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml
-index d8d7553..293e38b 100644
+index d8d7553..143870b 100644
 --- a/habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml
 +++ b/habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml
-@@ -6,6 +6,9 @@ defaults:
+@@ -6,6 +6,16 @@ defaults:
    - /habitat/simulator/sensor_setups@habitat.simulator.agents.main_agent: depth_head_agent
    - /habitat/dataset/rearrangement: replica_cad
    - /habitat/task/measurements:
-+    # dependencies of move_objects_reward (missing upstream)
++    # dependencies of move_objects_reward (missing upstream; same set as
++    # benchmark/rearrange/multi_task/pddl_geo_base_task.yaml)
++    - articulated_agent_force
++    - force_terminate
++    - articulated_agent_colls
 +    - object_to_goal_distance
 +    - end_effector_to_object_distance
++    - does_want_terminate
++    - bad_called_terminate
++    - did_violate_hold_constraint
      - pddl_success
      - num_steps
      - composite_stage_goals
