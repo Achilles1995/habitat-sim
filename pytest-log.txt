@@ -1,0 +1,73 @@
+============================= test session starts =============================
+platform win32 -- Python 3.10.11, pytest-9.1.1, pluggy-1.7.0
+benchmark: 5.3.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+C++ Build Info:
+--audio_enabled: False
+--built_with_bullet: True
+--cuda_enabled: False
+rootdir: D:\a\habitat-sim\habitat-sim
+configfile: pyproject.toml (WARNING: ignoring pytest config in setup.cfg!)
+plugins: hypothesis-6.168.5, benchmark-5.3.0, timeout-2.4.0, xdist-3.8.0
+timeout: 900.0s
+timeout method: thread
+timeout func_only: False
+created: 4/4 workers
+4 workers [780 items]
+
+..............s...s...s.............................................s... [  9%]
+...............................................................ss....... [ 18%]
+........................................................................ [ 27%]
+........sssssssssssssssssss.ssssssssssssssssssssssssss.................. [ 36%]
+.sss....ssssss............sss......sssssssssssssssssssssssssssssss...... [ 46%]
+.......ssssssssssssss..................sssssss..ssssssssssssssssssssssss [ 55%]
+sssss....ssssssssssssss..........ssssss............sssssssssssssssssssss [ 64%]
+ssssssssssssss...........ssssss.....sssssssssss......sss......s......... [ 73%]
+s........sssss...s..ss.....s.s......s................................... [ 83%]
+........................................................................ [ 92%]
+........ssssssssssssssssssssssssssssssss....................             [100%]C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\logger.py:44: PytestBenchmarkWarning: Benchmarks are automatically disabled because xdist plugin is active. Benchmarks cannot be performed reliably in a parallelized environment.
+  warner(PytestBenchmarkWarning(text))
+
+============================== warnings summary ===============================
+tests\test_physics_benchmarking.py:18
+tests\test_physics_benchmarking.py:18
+tests\test_physics_benchmarking.py:18
+tests\test_physics_benchmarking.py:18
+  D:\a\habitat-sim\habitat-sim\tests\test_physics_benchmarking.py:18: PytestUnknownMarkWarning: Unknown pytest.mark.sim_benchmarks - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.sim_benchmarks
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:404
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:404
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:404
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:404
+  C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:404: PytestCollectionWarning: cannot collect 'test_requires_torch_cuda' because it is not a function.
+    def __call__(self, *args: object, **kwargs: object):
+
+tests/test_greedy_follower.py: 11892 warnings
+tests/test_pyrobot_noisy_controls.py: 14400 warnings
+  C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\habitat_sim\agent\controls\pyrobot_noisy_controls.py:249: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+    scene_node.rotate_y_local(mn.Deg(rotate_amount) + mn.Rad(float(rot_noise)))
+
+tests/test_snap_point.py::test_data_func
+  C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\python.py:171: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_snap_point.py::test_data_func returned <class 'tuple'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+----- generated xml file: D:\a\habitat-sim\habitat-sim\pytest-results.xml -----
+=========================== short test summary info ===========================
+SKIPPED [4] tests\test_greedy_follower.py:75: D:\a\habitat-sim\habitat-sim\data/scene_datasets/mp3d/17DRP5sb8fy/17DRP5sb8fy.navmesh not found
+SKIPPED [2] tests\test_noise_models.py:24: Test requires cuda
+SKIPPED [2] tests\test_semantic_scene.py:152: Disabled
+SKIPPED [96] tests\test_sensors.py:184: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [112] tests\test_sensors.py:186: Skipping GPU->GPU test
+SKIPPED [1] tests\test_profiling_utils.py:35: Torch not installed with CUDA support so skipping test
+SKIPPED [1] tests\test_profiling_utils.py:65: Torch not installed with CUDA support so skipping test
+SKIPPED [1] tests\test_profiling_utils.py:82: Torch not installed with CUDA support so skipping test
+SKIPPED [2] tests\test_sensors.py:243: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [2] tests\test_sensors.py:298: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [3] tests\test_sensors.py:300: Skipping GPU->GPU test
+SKIPPED [2] tests\test_sensors.py:328: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [4] tests\test_sensors.py:350: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [32] tests\test_examples.py:148: Skipped
+======== 516 passed, 264 skipped, 26301 warnings in 7689.48s (2:08:09) ========
