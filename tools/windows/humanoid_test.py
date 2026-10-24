@@ -72,6 +72,29 @@ def best_viewpoint(sim, eye=1.3, tries=24):
     return best
 
 
+def add_humanoid_with_semantic_id(sim, urdf, semantic_id):
+    """Add an SMPL-X humanoid so that it shows up in the semantic sensor.
+
+    The skinned mesh of an articulated object takes its semantic id from the
+    object's template when it is created, so set it on the template first.
+    """
+    aom = sim.get_articulated_object_manager()
+    aotm = sim.metadata_mediator.ao_template_manager
+    # Loading once registers a template for the URDF (incl. its ao_config)
+    probe = aom.add_articulated_object_from_urdf(
+        urdf, fixed_base=True, maintain_link_order=True
+    )
+    assert probe is not None, f"failed to load {urdf}"
+    attrs = probe.creation_attributes
+    aom.remove_object_by_handle(probe.handle)
+    attrs.semantic_id = semantic_id
+    handle = f"{os.path.basename(urdf)}_semantic_{semantic_id}"
+    aotm.register_template(attrs, handle)
+    humanoid = aom.add_articulated_object_by_template_handle(handle)
+    assert humanoid is not None, f"failed to instance template {handle}"
+    return humanoid
+
+
 def save(obs, out_dir, tag):
     os.makedirs(out_dir, exist_ok=True)
     Image.fromarray(obs["color"][..., :3]).save(os.path.join(out_dir, f"{tag}_rgb.png"))
@@ -108,25 +131,16 @@ def main():
         save(before, args.out, "before")
 
         # Load the humanoid as an articulated object (Habitat 3.0 style)
-        aom = sim.get_articulated_object_manager()
         t0 = time.time()
-        humanoid = aom.add_articulated_object_from_urdf(
-            urdf, fixed_base=True, maintain_link_order=True
-        )
-        assert humanoid is not None, f"failed to load {urdf}"
+        humanoid = add_humanoid_with_semantic_id(sim, urdf, HUMANOID_SEMANTIC_ID)
         load_s = time.time() - t0
         humanoid.motion_type = habitat_sim.physics.MotionType.KINEMATIC
-        nodes = list(humanoid.visual_scene_nodes)
-        for link_id in [-1] + list(humanoid.get_link_ids()):
-            nodes += list(humanoid.get_link_visual_nodes(link_id))
-        for node in nodes:
-            node.semantic_id = HUMANOID_SEMANTIC_ID
 
         # Stand it ~2 m in front of the camera, facing the camera
         dist = float(min(2.0, max(score * 0.6, 1.0)))
         forward = np.array([-np.sin(yaw), 0.0, -np.cos(yaw)])
         humanoid.translation = floor + forward * dist + np.array([0.0, 0.9, 0.0])
-        humanoid.rotation = quat_to_magnum_yaw(yaw + np.pi)
+        humanoid.rotation = quat_to_magnum_yaw(yaw)  # model faces +Z: turn toward camera
 
         after = sim.get_sensor_observations()
         save(after, args.out, "after")
@@ -158,7 +172,7 @@ def main():
         f"joint_dofs={n_joints} load={load_s:.2f}s | pixels changed by humanoid: {changed:.1%}, "
         f"semantic mask: {mask:.1%}, pixels changed by posing: {moved:.1%} | {fps:.1f} FPS at {args.res}px"
     )
-    ok = changed > 0.01
+    ok = changed > 0.01 and mask > 0.001
     with open(os.path.join(args.out, "report.txt"), "w") as f:
         f.write(("PASS  " if ok else "FAIL  ") + report + "\n")
     print(("[PASS] " if ok else "[FAIL] ") + report)
