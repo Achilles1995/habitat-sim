@@ -1,0 +1,121 @@
+habitat_sim 0.3.3 imported OK
+Cloning into 'D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_test_scenes'...
+Updating files:  33% (3/9)Updating files:  44% (4/9)Updating files:  55% (5/9)Updating files:  66% (6/9)Updating files:  77% (7/9)Updating files:  88% (8/9)Updating files: 100% (9/9)Updating files: 100% (9/9), done.
+Filtering content:  50% (2/4)Filtering content:  75% (3/4)Filtering content: 100% (4/4), 57.85 MiB | 104.67 MiB/sFiltering content: 100% (4/4), 105.54 MiB | 70.50 MiB/s, done.
+4 local objects, 0 retained, done.
+Deleting objects: 100% (4/4), done.
+Cloning into 'D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_humanoids'...
+Filtering content:  75% (30/40)Filtering content:  77% (31/40)Filtering content:  80% (32/40)Filtering content:  82% (33/40)Filtering content:  85% (34/40)Filtering content:  87% (35/40)Filtering content:  90% (36/40)Filtering content:  92% (37/40)Filtering content:  95% (38/40)Filtering content:  97% (39/40)Filtering content: 100% (40/40)Filtering content: 100% (40/40), 56.58 MiB | 46.57 MiB/s, done.
+31 local objects, 0 retained, done.
+Deleting objects: 100% (31/31), done.
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/habitat_test_scenes.git D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_test_scenes
+=======================================================
+Dataset (habitat_test_scenes) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_test_scenes'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\scene_datasets\habitat-test-scenes'
+=======================================================
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/habitat_humanoids.git D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_humanoids
+=======================================================
+Dataset (habitat_humanoids) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_humanoids'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\humanoids\humanoid_data'
+=======================================================
+lrwxrwxrwx 1 runneradmin 197121 66 Oct 24 11:36 data/humanoids/humanoid_data -> /d/a/habitat-sim/habitat-sim/data/versioned_data/habitat_humanoids
+lrwxrwxrwx 1 runneradmin 197121 68 Oct 24 11:36 data/scene_datasets/habitat-test-scenes -> /d/a/habitat-sim/habitat-sim/data/versioned_data/habitat_test_scenes
+[00:04:50:693526]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\managers\LightLayoutAttributesManager.cpp(118)::esp::metadata::managers::LightLayoutAttributesManager::setValsFromJSONDoc : `default_attributes` does not contain a "lights" object or a valid "user_defined" object and so no parsing was done and this attributes is not being saved.
+[00:04:50:695091]:[Error]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\managers\SceneDatasetAttributesManager.cpp(305)::esp::metadata::managers::SceneDatasetAttributesManager::validateMap : `navmesh_instances` Key : `navmesh_path1` Value : `test_navmesh_path1` not found on disk as absolute path or relative to `D:/a/habitat-sim/habitat-sim/data/test_assets/dataset_tests/dataset_0/`
+[00:04:50:695135]:[Error]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\managers\SceneDatasetAttributesManager.cpp(305)::esp::metadata::managers::SceneDatasetAttributesManager::validateMap : `navmesh_instances` Key : `navmesh_path2` Value : `test_navmesh_path2` not found on disk as absolute path or relative to `D:/a/habitat-sim/habitat-sim/data/test_assets/dataset_tests/dataset_0/`
+[00:04:50:695711]:[Error]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\managers\SceneDatasetAttributesManager.cpp(305)::esp::metadata::managers::SceneDatasetAttributesManager::validateMap : `semantic_scene_descriptor_instances` Key : `semantic_descriptor_path1` Value : `test_semantic_descriptor_path1` not found on disk as absolute path or relative to `D:/a/habitat-sim/habitat-sim/data/test_assets/dataset_tests/dataset_0/`
+[00:04:50:695754]:[Error]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\managers\SceneDatasetAttributesManager.cpp(305)::esp::metadata::managers::SceneDatasetAttributesManager::validateMap : `semantic_scene_descriptor_instances` Key : `semantic_descriptor_path2` Value : `test_semantic_descriptor_path2` not found on disk as absolute path or relative to `D:/a/habitat-sim/habitat-sim/data/test_assets/dataset_tests/dataset_0/`
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:04:50:890360]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:04:50:890736]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:04:50:890789]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:04:50:890804]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:04:57:305874]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(601)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:04:57:708535]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:04:57:708756]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:04:57:708799]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:04:57:708814]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:05:04:044809]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(601)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:05:04:231664]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:05:04:231888]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:05:04:231931]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:05:04:231945]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:05:10:635033]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(601)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+Render scene: D:\a\habitat-sim\habitat-sim\data\scene_datasets\habitat-test-scenes\van-gogh-room.glb
+[PASS] import and build info (0.0s) version=0.3.3 python=3.10.11 Windows-10-10.0.20348-SP0 built_with_bullet=True cuda_enabled=False audio_enabled=False
+[PASS] dataset config + glob patterns (0.0s) 7 stage templates (3 from glob), 18 object templates
+[PASS] offscreen render RGB/depth/semantic (6.9s) van-gogh-room.glb: 100% non-black pixels, depth max 0.34 m (agent via navmesh)
+[PASS] bullet physics: falling cube (6.5s) cube fell 4.52 m in 1 s
+[PASS] render throughput (7.7s) 106.5 FPS at 640x640 (RGB+depth+semantic) in van-gogh-room.glb
+
+5/5 checks passed

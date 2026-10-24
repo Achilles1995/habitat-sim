@@ -1,0 +1,34 @@
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:05:13:183933]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:05:13:184260]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:05:13:184310]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:05:13:184325]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `D:/a/habitat-sim/habitat-sim/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:05:19:594556]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(601)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+[00:05:25:717867]:[Error]:[Physics] D:\a\habitat-sim\habitat-sim\src\esp\physics\objectWrappers\ManagedPhysicsObjectBase.h(409)::esp::physics::AbstractManagedPhysicsObject<class esp::physics::ArticulatedObject>::getObjectReference : This object no longer exists.  Please delete any variable references.
+[00:05:25:717904]:[Error]:[Physics] D:\a\habitat-sim\habitat-sim\src\esp\physics\objectWrappers\ManagedPhysicsObjectBase.h(409)::esp::physics::AbstractManagedPhysicsObject<class esp::physics::ArticulatedObject>::getObjectReference : This object no longer exists.  Please delete any variable references.
+viewpoint: floor=[4.13 0.18 0.63] yaw=90 deg, open depth ahead 4.11 m
+[PASS] avatar=female_0 links=-1 joint_dofs=216 load=0.22s | pixels changed by humanoid: 2.8%, semantic mask: 3.1%, pixels changed by posing: 0.9% | 23.7 FPS at 512px
