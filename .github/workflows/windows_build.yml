@@ -156,6 +156,8 @@ jobs:
   # Upstream pytest suite on Windows
   pytest:
     needs: build_wheel
+    # long (2-4 h); only on the main port branch, not on dev branches
+    if: github.ref == 'refs/heads/windows-port'
     runs-on: windows-2022
     timeout-minutes: 300
     env:
@@ -262,8 +264,10 @@ jobs:
           Copy-Item mesa/x/x64/*.dll $pydir -Force
 
       - name: Install habitat-sim wheel and patched habitat-lab
+        id: install
         shell: bash
         run: |
+          exec > >(tee lab-install-log.txt) 2>&1
           set -ex
           python -m pip install -U pip
           # habitat-lab pins numpy 1.26.4; install habitat-sim's deps against it
@@ -310,7 +314,7 @@ jobs:
       - name: Publish outputs to ci-logs-lab branch
         if: always()
         shell: bash
-        run: bash habitat-sim/tools/windows/publish_ci_logs.sh ci-logs-lab hab3 hab3-log.txt hab3-bench-log.txt hab3-data-log.txt
+        run: bash habitat-sim/tools/windows/publish_ci_logs.sh ci-logs-lab hab3 hab3-log.txt hab3-bench-log.txt hab3-data-log.txt lab-install-log.txt
 
       - name: Fail if a step failed
         if: steps.hab3.outcome != 'success' || steps.bench.outcome != 'success'
