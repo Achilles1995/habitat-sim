@@ -309,7 +309,8 @@ jobs:
           python scripts/hab3_bench/hab3_benchmark.py --cfg benchmark/rearrange/hab3_bench/humanoid_oracle.yaml \
             --n-steps 300 --n-procs 1 --out-name human_oracle_win \
             habitat.task.task_spec=tidy_house_2obj habitat.task.pddl_domain_def=fp \
-            habitat.dataset.data_path=data/hab3_bench_assets/episode_datasets/small_small.json.gz 2>&1 | tail -40 | tee ../hab3-bench-log.txt
+            habitat.dataset.data_path=data/hab3_bench_assets/episode_datasets/small_small.json.gz \
+            habitat.dataset.scenes_dir=data/hab3_bench_assets 2>&1 | tail -40 | tee ../hab3-bench-log.txt
 
       - name: Publish outputs to ci-logs-lab branch
         if: always()

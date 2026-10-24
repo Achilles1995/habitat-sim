@@ -32,6 +32,9 @@ OVERRIDES = [
     "habitat.task.task_spec=tidy_house_2obj",
     "habitat.task.pddl_domain_def=fp",
     "habitat.dataset.data_path=data/hab3_bench_assets/episode_datasets/small_small.json.gz",
+    # the inherited default (data/replica_cad/) is only used for an existence
+    # check here; the episodes point at the HSSD scenes in hab3_bench_assets
+    "habitat.dataset.scenes_dir=data/hab3_bench_assets",
 ]
 
 
