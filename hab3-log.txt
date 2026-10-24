@@ -1,0 +1,44 @@
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-10-24 11:39:32,244 Initializing dataset RearrangeDataset-v0
+2026-10-24 11:39:32,244 initializing sim RearrangeSim-v0
+[00:12:25:823387]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+2026-10-24 11:39:38,257 Initializing task RearrangePddlTask-v0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+observation keys: ['ee_pos', 'has_finished_oracle_nav', 'humanoid_joint_sensor', 'is_holding', 'joint', 'localization_sensor', 'obj_goal_gps_compass', 'obj_goal_sensor', 'obj_start_gps_compass', 'obj_start_sensor', 'relative_resting_position', 'third_rgb']
+[PASS] Habitat 3.0 humanoid episode: type=KinematicHumanoid walked 4.88 m over 120 steps, 28.2 steps/s single process, last frame 65% non-black
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-10-24 11:39:54,961 Initializing dataset RearrangeDataset-v0
+2026-10-24 11:39:54,961 initializing sim RearrangeSim-v0
+[00:12:48:522761]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+2026-10-24 11:40:00,956 Initializing task RearrangePddlTask-v0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+[PASS] spawned worker process: spawned child built and stepped the env (exitcode=0)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-10-24 11:40:14,156 Initializing dataset RearrangeDataset-v0
+2026-10-24 11:40:14,156 initializing sim RearrangeSim-v0
+2026-10-24 11:40:14,297 Initializing dataset RearrangeDataset-v0
+2026-10-24 11:40:14,297 initializing sim RearrangeSim-v0
+[00:13:07:783164]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:13:08:000782]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+2026-10-24 11:40:25,045 Initializing task RearrangePddlTask-v0
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\gym\spaces\box.py:84: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+2026-10-24 11:40:25,202 Initializing task RearrangePddlTask-v0
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\gym\spaces\box.py:84: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+[PASS] VectorEnv multiprocessing: 2 worker processes (spawn): 18.4 total steps/s

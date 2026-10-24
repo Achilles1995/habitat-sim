@@ -1,0 +1,3 @@
+PASS  Habitat 3.0 humanoid episode  type=KinematicHumanoid walked 4.88 m over 120 steps, 28.2 steps/s single process, last frame 65% non-black
+PASS  spawned worker process  spawned child built and stepped the env (exitcode=0)
+PASS  VectorEnv multiprocessing  2 worker processes (spawn): 18.4 total steps/s
