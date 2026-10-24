@@ -79,6 +79,20 @@ jobs:
           name: habitat-sim-windows-wheel
           path: dist/*.whl
 
+      - name: Publish wheel to the windows-wheel-latest release
+        shell: bash
+        run: |
+          set -e
+          tag=windows-wheel-latest
+          printf "habitat-sim Windows wheel\nbranch: %s\ncommit: %s\nrun: %s/%s/actions/runs/%s\n" \
+            "$GITHUB_REF_NAME" "$GITHUB_SHA" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" > dist/BUILD_INFO.txt
+          if ! gh release view "$tag" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$tag" -R "$GITHUB_REPOSITORY" --prerelease --target "$GITHUB_SHA" \
+              --title "Habitat-Sim for Windows (latest CI build)" \
+              --notes "Unofficial Windows build of habitat-sim from the windows-port work. Python 3.10, x64, Bullet physics. See BUILD_INFO.txt for the exact commit."
+          fi
+          gh release upload "$tag" dist/*.whl dist/BUILD_INFO.txt -R "$GITHUB_REPOSITORY" --clobber
+
   # Smoke test + Habitat 3.0 humanoid, with Mesa software OpenGL (no GPU)
   test_wheel:
     needs: build_wheel
