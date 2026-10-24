@@ -43,9 +43,24 @@ function Fail($msg) {
     Stop-Transcript | Out-Null
     exit 1
 }
+# Run python with output shown and saved to a log. Windows PowerShell 5.1 turns
+# redirected stderr lines into errors, which with -ErrorAction Stop would abort
+# the script on harmless warnings, so relax that around the call.
+function RunLogged([string]$logFile, [string[]]$argList) {
+    $old = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        & $script:vpy @argList 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $logFile | Out-Host
+        $code = $LASTEXITCODE
+    } finally { $ErrorActionPreference = $old }
+    return $code
+}
 function Run($exe, [string[]]$argList) {
-    & $exe @argList
-    if ($LASTEXITCODE -ne 0) { throw "'$exe $($argList -join ' ')' failed with exit code $LASTEXITCODE" }
+    $old = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try { & $exe @argList 2>&1 | ForEach-Object { "$_" } | Out-Host; $code = $LASTEXITCODE }
+    finally { $ErrorActionPreference = $old }
+    if ($code -ne 0) { throw "'$exe $($argList -join ' ')' failed with exit code $code" }
 }
 
 $summary = [ordered]@{}
@@ -78,7 +93,8 @@ try {
 Step "2/5 Creating virtual environment and installing habitat-sim"
 $venv = Join-Path $Dir "venv"
 if (-not (Test-Path "$venv\Scripts\python.exe")) { Run "py" @("-3.10", "-m", "venv", $venv) }
-$vpy = "$venv\Scripts\python.exe"
+$script:vpy = "$venv\Scripts\python.exe"
+$vpy = $script:vpy
 Run $vpy @("-m", "pip", "install", "-q", "-U", "pip")
 
 # Prefer the NVIDIA GPU for this Python (matters on laptops with Intel/AMD + NVIDIA graphics).
@@ -131,10 +147,10 @@ Step "4/5 Running habitat-sim tests on the GPU"
 $env:PYTHONUTF8 = "1"
 Push-Location $Dir
 try {
-    & $vpy "tools\windows\smoke_test.py" --out "$Results\smoke" 2>&1 | Tee-Object -FilePath "$Results\smoke_log.txt"
-    $summary["Smoke test"] = if ($LASTEXITCODE -eq 0) { "PASS" } else { "FAIL (exit $LASTEXITCODE)" }
-    & $vpy "tools\windows\humanoid_test.py" --out "$Results\humanoid" 2>&1 | Tee-Object -FilePath "$Results\humanoid_log.txt"
-    $summary["Humanoid test"] = if ($LASTEXITCODE -eq 0) { "PASS" } else { "FAIL (exit $LASTEXITCODE)" }
+    $code = RunLogged "$Results\smoke_log.txt" @("tools\windows\smoke_test.py", "--out", "$Results\smoke")
+    $summary["Smoke test"] = if ($code -eq 0) { "PASS" } else { "FAIL (exit $code)" }
+    $code = RunLogged "$Results\humanoid_log.txt" @("tools\windows\humanoid_test.py", "--out", "$Results\humanoid")
+    $summary["Humanoid test"] = if ($code -eq 0) { "PASS" } else { "FAIL (exit $code)" }
 } finally { Pop-Location }
 
 $renderer = Select-String -Path "$Results\smoke_log.txt" -Pattern "^Renderer:" | Select-Object -First 1
@@ -151,12 +167,13 @@ if ($WithHabitatLab) {
         Run "git" @("apply", "--whitespace=nowarn", (Join-Path $tools "habitat-lab-windows.patch"))
         Run $vpy @("-m", "pip", "install", "-q", "-c", (Join-Path $Dir "constraints.txt"), "-e", "habitat-lab", "-e", "habitat-baselines")
         Run $vpy @("-m", "habitat_sim.utils.datasets_download", "--uids", "hab3_bench_assets", "ycb", "--data-path", "data/", "--no-replace")
-        & $vpy (Join-Path $tools "hab3_humanoid_episode.py") --out "$Results\hab3" 2>&1 | Tee-Object -FilePath "$Results\hab3_log.txt"
-        $summary["Habitat 3.0 episode"] = if ($LASTEXITCODE -eq 0) { "PASS" } else { "FAIL (exit $LASTEXITCODE)" }
-        & $vpy "scripts\hab3_bench\hab3_benchmark.py" --cfg benchmark/rearrange/hab3_bench/humanoid_oracle.yaml --n-steps 300 --n-procs 1 --out-name human_oracle_win `
-            habitat.task.task_spec=tidy_house_2obj habitat.task.pddl_domain_def=fp `
-            habitat.dataset.data_path=data/hab3_bench_assets/episode_datasets/small_small.json.gz `
-            habitat.dataset.scenes_dir=data/hab3_bench_assets 2>&1 | Tee-Object -FilePath "$Results\hab3_bench_log.txt"
+        $code = RunLogged "$Results\hab3_log.txt" @((Join-Path $tools "hab3_humanoid_episode.py"), "--out", "$Results\hab3")
+        $summary["Habitat 3.0 episode"] = if ($code -eq 0) { "PASS" } else { "FAIL (exit $code)" }
+        $null = RunLogged "$Results\hab3_bench_log.txt" @("scripts\hab3_bench\hab3_benchmark.py",
+            "--cfg", "benchmark/rearrange/hab3_bench/humanoid_oracle.yaml", "--n-steps", "300", "--n-procs", "1", "--out-name", "human_oracle_win",
+            "habitat.task.task_spec=tidy_house_2obj", "habitat.task.pddl_domain_def=fp",
+            "habitat.dataset.data_path=data/hab3_bench_assets/episode_datasets/small_small.json.gz",
+            "habitat.dataset.scenes_dir=data/hab3_bench_assets")
         $fps = Select-String -Path "$Results\hab3_bench_log.txt" -Pattern "average FPS" | Select-Object -Last 1
         $summary["Habitat 3.0 benchmark"] = if ($fps) { $fps.Line.Trim() } else { "no result" }
     } catch {

@@ -14,6 +14,14 @@ if(NOT USE_SYSTEM_MAGNUM)
   set(CORRADE_BUILD_PLUGINS_STATIC ON CACHE BOOL "" FORCE)
   set(CORRADE_BUILD_STATIC ON CACHE BOOL "" FORCE)
   set(CORRADE_BUILD_STATIC_PIC ON CACHE BOOL "" FORCE)
+  if(WIN32)
+    # On Windows, "unique globals" for static builds work by looking the
+    # symbols up in the main executable, which python.exe doesn't export.
+    # Every .pyd keeps its own globals either way; disabling avoids the lookup
+    # and the "Cannot query global symbol ..." warnings it prints.
+    set(CORRADE_BUILD_STATIC_UNIQUE_GLOBALS OFF CACHE BOOL "" FORCE)
+    set(MAGNUM_BUILD_STATIC_UNIQUE_GLOBALS OFF CACHE BOOL "" FORCE)
+  endif()
   add_subdirectory("${DEPS_DIR}/corrade")
 endif()
 find_package(Corrade REQUIRED Utility)
