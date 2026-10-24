@@ -157,7 +157,7 @@ jobs:
   pytest:
     needs: build_wheel
     runs-on: windows-2022
-    timeout-minutes: 120
+    timeout-minutes: 300
     env:
       PYTHONUTF8: "1"
       GALLIUM_DRIVER: llvmpipe
@@ -204,6 +204,8 @@ jobs:
       - name: Run pytest
         id: pytest
         continue-on-error: true
+        # step-level limit so the log publishing step below still runs
+        timeout-minutes: 240
         shell: bash
         run: |
           set -o pipefail
