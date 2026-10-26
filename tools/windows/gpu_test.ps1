@@ -110,7 +110,7 @@ try {
 } catch { Write-Host "Could not set GPU preference (not critical): $_" -ForegroundColor Yellow }
 
 $rel = Invoke-RestMethod -UseBasicParsing "https://api.github.com/repos/$Repo/releases/tags/windows-wheel-latest"
-$wheelAsset = $rel.assets | Where-Object { $_.name -like "*.whl" } | Select-Object -First 1
+$wheelAsset = $rel.assets | Where-Object { $_.name -like "*-cp310-cp310-win_amd64.whl" } | Select-Object -First 1
 $infoAsset = $rel.assets | Where-Object { $_.name -eq "BUILD_INFO.txt" } | Select-Object -First 1
 if (-not $wheelAsset) { Fail "No wheel found in the windows-wheel-latest release of $Repo." }
 $wheelPath = Join-Path $Dir $wheelAsset.name
