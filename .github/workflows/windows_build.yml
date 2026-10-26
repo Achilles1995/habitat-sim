@@ -459,6 +459,9 @@ jobs:
             echo "== hab3-hssd top level:"; ls -la "$(dirname "$ds")"
             echo "== semantic files:"; find -L "$(dirname "$ds")/.." -maxdepth 3 \( -iname "*semantic*" -o -iname "*ssd*" -o -iname "*lexicon*" \) | head -20
             echo "== scene instance file:"; si=$(find -L "$(dirname "$ds")" -name "${scene}*.scene_instance.json" | head -1); echo "$si"; head -c 1500 "$si"; echo
+            echo "== semantics folder:"; find -L "$(dirname "$ds")/semantics" | head -20
+            echo "== a semantic config:"; f=$(find -L "$(dirname "$ds")/semantics" -name "*.json" | head -1); echo "$f"; head -c 800 "$f"; echo
+            echo "== registered semantic attributes:"; python -c "import habitat_sim,sys; c=habitat_sim.SimulatorConfiguration(); c.scene_dataset_config_file=sys.argv[1]; mm=habitat_sim.metadata.MetadataMediator(c); m=getattr(mm,'semantic_template_manager',None) or getattr(mm,'semantic_attributes_manager',None); print('manager:', m); print(m.get_template_handles() if m else 'no python access')" "$ds" 2>&1 | grep -v Warning
             echo "== episodes reference:"; python -c "import gzip,json,glob; f=sorted(glob.glob('data/hab3_bench_assets/episode_datasets/*.json.gz'))[0]; e=json.load(gzip.open(f))['episodes'][0]; print(f, e.get('scene_dataset_config'), e.get('scene_id'))"
           } 2>&1 | tee -a hssd-log.txt
           python tools/windows/interactive_viewer.py --dataset "$ds" --scene "$scene" --robot spot --selftest 400 --out hssd-out 2>&1 \
