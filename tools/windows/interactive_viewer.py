@@ -286,9 +286,16 @@ def set_sensor_pitch(agent, pitch):
         sensor.node.rotation = q
 
 
-def colorize_depth(depth, max_m=8.0):
-    d = np.clip(np.nan_to_num(depth) / max_m, 0, 1)
-    return cv2.applyColorMap((255 - d * 255).astype(np.uint8), cv2.COLORMAP_TURBO)
+def colorize_depth(depth, max_m=None):
+    """Near = warm, far = cool. Scales to the visible depth range unless max_m is given."""
+    d = np.nan_to_num(depth, nan=0.0, posinf=0.0)
+    if max_m is None:
+        valid = d[d > 0]
+        max_m = float(np.percentile(valid, 98)) if valid.size else 1.0
+    d = np.clip(d / max(max_m, 0.1), 0, 1)
+    img = cv2.applyColorMap((255 - d * 255).astype(np.uint8), cv2.COLORMAP_TURBO)
+    img[depth <= 0] = 0
+    return img
 
 
 def compose(obs, mode):
@@ -316,11 +323,16 @@ def compose(obs, mode):
     return np.vstack([top, bottom])
 
 
-def draw_text(img, lines, y0=24):
+def draw_text(img, lines, y0=8):
+    """White text on a translucent dark panel (top-left)."""
+    font, scale, thick, line_h = cv2.FONT_HERSHEY_SIMPLEX, 0.55, 1, 22
+    width = max(cv2.getTextSize(line, font, scale, thick)[0][0] for line in lines) + 16
+    height = line_h * len(lines) + 10
+    h, w = img.shape[:2]
+    x1, y1 = min(width, w), min(y0 + height, h)
+    img[y0:y1, 0:x1] = (img[y0:y1, 0:x1] * 0.35).astype(img.dtype)
     for i, line in enumerate(lines):
-        y = y0 + 22 * i
-        cv2.putText(img, line, (10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 0), 3, cv2.LINE_AA)
-        cv2.putText(img, line, (10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 1, cv2.LINE_AA)
+        cv2.putText(img, line, (8, y0 + 20 + line_h * i), font, scale, (255, 255, 255), thick, cv2.LINE_AA)
 
 
 # ----------------------------------------------------------------- main
