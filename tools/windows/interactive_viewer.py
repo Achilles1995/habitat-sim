@@ -93,6 +93,10 @@ HELP = [
 
 
 # ----------------------------------------------------------------- helpers
+def finite(v):
+    return v is not None and bool(np.all(np.isfinite(np.array(v))))
+
+
 def yaw_quat(yaw):
     return quat_from_angle_axis(yaw, np.array([0.0, 1.0, 0.0]))
 
@@ -202,7 +206,8 @@ class Humanoid:
             # keep the humanoid on walkable floor
             pf = self.sim.pathfinder
             if pf.is_loaded:
-                ok = mn.Vector3(pf.try_step(np.array(before), np.array(after)))
+                ok = pf.try_step(np.array(before), np.array(after))
+                ok = mn.Vector3(ok) if finite(ok) else before
                 self.ctrl.obj_transform_base.translation = ok + self.HIP
         elif turn:
             self.ctrl.calculate_turn_pose(self.heading)
@@ -242,7 +247,9 @@ class Robot:
         if move:
             target = self.pos + self.forward * (0.06 * move)
             pf = self.sim.pathfinder
-            self.pos = mn.Vector3(pf.try_step(np.array(self.pos), np.array(target))) if pf.is_loaded else target
+            new = pf.try_step(np.array(self.pos), np.array(target)) if pf.is_loaded else target
+            if finite(new):
+                self.pos = mn.Vector3(new)
         self.apply()
 
     def apply(self):
@@ -355,10 +362,19 @@ def main():
     def cam_forward():
         return mn.Vector3(-math.sin(cam_yaw), 0, -math.cos(cam_yaw))
 
-    def in_front(dist):
-        p = cam_pos + cam_forward() * dist
+    def in_front(dist, side=0.0):
+        """Walkable floor point ~dist ahead of the camera (and `side` m to the right)."""
+        p = cam_pos + cam_forward() * dist + mn.math.cross(cam_forward(), mn.Vector3(0, 1, 0)) * side
         floor = mn.Vector3(p.x, cam_pos.y - 1.5, p.z)
-        return mn.Vector3(pf.snap_point(np.array(floor))) if pf.is_loaded else floor
+        if not pf.is_loaded:
+            return floor
+        snapped = pf.snap_point(np.array(floor))
+        if finite(snapped):
+            return mn.Vector3(snapped)
+        near = pf.get_random_navigable_point_near(np.array(floor), 3.0)
+        if finite(near):
+            return mn.Vector3(near)
+        return nav_point()
 
     humanoid = robot = None
     if args.humanoid.lower() != "none":
@@ -372,7 +388,7 @@ def main():
             print(f"Humanoid files not found in {hdir}; download with:\n"
                   "  python -m habitat_sim.utils.datasets_download --uids habitat_humanoids --data-path data/")
     if args.robot != "none":
-        robot = Robot(sim, args.robot, in_front(2.0) + mn.math.cross(cam_forward(), mn.Vector3(0, 1, 0)) * 1.0)
+        robot = Robot(sim, args.robot, in_front(2.0, side=1.0))
 
     mode, cam_mode, show_help = 1, 0, True
     cam_modes = ["free", "follow humanoid", "robot view"]
@@ -450,7 +466,7 @@ def main():
             if humanoid:
                 humanoid.place(in_front(2.5), heading=-cam_forward())
             if robot:
-                robot.pos = in_front(2.0) + mn.math.cross(cam_forward(), mn.Vector3(0, 1, 0)) * 1.0
+                robot.pos = in_front(2.0, side=1.0)
                 robot.apply()
         elif ch == "o":
             otm = sim.get_object_template_manager()
@@ -488,6 +504,8 @@ def main():
             pos = robot.pos + f * 0.3 + mn.Vector3(0, robot.height + 0.45, 0)
             yaw, pitch = yaw_from_forward(f.x, f.z), -0.1
         else:
+            pos, yaw, pitch = cam_pos, cam_yaw, cam_pitch
+        if not finite(pos):
             pos, yaw, pitch = cam_pos, cam_yaw, cam_pitch
         st = habitat_sim.AgentState()
         st.position = np.array(pos)
