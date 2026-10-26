@@ -183,8 +183,11 @@ class Humanoid:
 
     @property
     def forward(self):
-        f = self.ctrl.obj_transform_base.transform_vector(mn.Vector3(1, 0, 0))
-        f = mn.Vector3(f.x, 0, f.z)
+        # the controller tracks the walking direction in world space
+        f = self.ctrl.prev_orientation
+        if f is None:
+            return self.heading
+        f = mn.Vector3(f[0], 0, f[2])
         return f.normalized() if f.length() > 1e-6 else self.heading
 
     def step(self, walk, turn):
@@ -398,7 +401,8 @@ def main():
             if step_i >= len(script):
                 break
             k = script[step_i]
-            key = {"up": 2490368, "left": 2424832, "": -1}.get(k, ord(k) if k else -1)
+            special = {"up": 2490368, "left": 2424832, "": -1}
+            key = special[k] if k in special else ord(k)
         else:
             key = cv2.waitKeyEx(1)
         step_i += 1
