@@ -441,11 +441,26 @@ jobs:
           set -o pipefail
           python tools/windows/interactive_viewer.py --robot spot --selftest 400 --out viewer-out 2>&1 | grep -v "^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-" | tail -60 | tee viewer-log.txt
 
+      - name: Viewer in an HSSD house (Habitat 3.0 benchmark subset)
+        id: hssd
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m habitat_sim.utils.datasets_download --uids hab3_bench_assets --data-path data/ --no-replace 2>&1 | tail -5
+          ds=$(find -L data/hab3_bench_assets -name "*.scene_dataset_config.json" | head -1)
+          echo "dataset: $ds" | tee hssd-log.txt
+          python tools/windows/interactive_viewer.py --dataset "$ds" --list-scenes 2>&1 | grep -v "Warning\|Error\|SSD" | tee -a hssd-log.txt
+          scene=$(python tools/windows/interactive_viewer.py --dataset "$ds" --list-scenes 2>/dev/null | grep -v "scenes$" | head -1)
+          echo "scene: $scene" | tee -a hssd-log.txt
+          python tools/windows/interactive_viewer.py --dataset "$ds" --scene "$scene" --robot spot --selftest 400 --out hssd-out 2>&1 \
+            | grep -v "^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-\|Warning\|SSD" | tail -30 | tee -a hssd-log.txt
+
       - name: Publish outputs to ci-logs-viewer branch
         if: always()
         shell: bash
-        run: bash tools/windows/publish_ci_logs.sh ci-logs-viewer viewer-out viewer-log.txt
+        run: bash tools/windows/publish_ci_logs.sh ci-logs-viewer viewer-out viewer-log.txt hssd-out hssd-log.txt
 
       - name: Fail if the viewer failed
-        if: steps.viewer.outcome != 'success'
+        if: steps.viewer.outcome != 'success' || steps.hssd.outcome != 'success'
         run: exit 1

@@ -23,6 +23,9 @@ Run:
   python interactive_viewer.py                      # van Gogh room + humanoid
   python interactive_viewer.py --robot spot         # + Spot robot
   python interactive_viewer.py --scene path\\to\\scene.glb --humanoid male_1
+  # HSSD (Habitat 3.0 houses):
+  python interactive_viewer.py --dataset data/scene_datasets/hssd-hab/hssd-hab.scene_dataset_config.json --list-scenes
+  python interactive_viewer.py --dataset data/scene_datasets/hssd-hab/hssd-hab.scene_dataset_config.json --scene 102344049
 
 Keys (click the window first so it has keyboard focus):
   Camera     W/S forward/back   A/D turn   Q/E down/up   R/F look up/down
@@ -258,8 +261,10 @@ class Robot:
 
 
 # ----------------------------------------------------------------- simulator
-def make_sim(scene, width, height):
+def make_sim(scene, width, height, dataset=None):
     backend = habitat_sim.SimulatorConfiguration()
+    if dataset:
+        backend.scene_dataset_config_file = dataset
     backend.scene_id = scene
     backend.enable_physics = True
     sensors = []
@@ -340,7 +345,9 @@ def main():
     here = os.getcwd()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--scene", default=os.path.join(here, "data/scene_datasets/habitat-test-scenes/van-gogh-room.glb"))
-    ap.add_argument("--dataset", default=None, help="optional scene_dataset_config.json")
+    ap.add_argument("--dataset", default=None,
+                    help="scene_dataset_config.json (e.g. HSSD); then --scene is a scene name from --list-scenes")
+    ap.add_argument("--list-scenes", action="store_true", help="print the scenes in --dataset and exit")
     ap.add_argument("--humanoid", default="female_0", help="avatar folder in data/humanoids/humanoid_data, or 'none'")
     ap.add_argument("--robot", default="none", choices=["none", "spot", "fetch"])
     ap.add_argument("--width", type=int, default=1024)
@@ -349,16 +356,40 @@ def main():
     ap.add_argument("--selftest", type=int, default=0, help="run N scripted steps headless (no window) and exit")
     args = ap.parse_args()
 
-    if not os.path.exists(args.scene):
+    if args.list_scenes:
+        if not args.dataset:
+            print("--list-scenes needs --dataset path/to/*.scene_dataset_config.json")
+            sys.exit(1)
+        cfg = habitat_sim.SimulatorConfiguration()
+        cfg.scene_dataset_config_file = args.dataset
+        mm = habitat_sim.metadata.MetadataMediator(cfg)
+        names = sorted(mm.get_scene_handles())
+        for n in names:
+            print(os.path.basename(n).replace(".scene_instance.json", ""))
+        print(f"{len(names)} scenes")
+        sys.exit(0)
+
+    if not args.dataset and not os.path.exists(args.scene):
         print(f"Scene not found: {args.scene}\nDownload test scenes with:\n"
               "  python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes --data-path data/")
         sys.exit(1)
 
-    sim = make_sim(args.scene, args.width, args.height)
-    if args.dataset:
-        print("note: --dataset is used only when the scene id is a scene instance of that dataset")
+    sim = make_sim(args.scene, args.width, args.height, args.dataset)
     agent = sim.get_agent(0)
     pf = sim.pathfinder
+    if not pf.is_loaded:
+        # scene came without a navmesh: compute one so humans/robots stay on the floor
+        print("No navmesh in this scene; computing one ...")
+        settings = habitat_sim.NavMeshSettings()
+        settings.set_defaults()
+        settings.agent_radius = 0.25
+        settings.agent_height = 1.8
+        try:
+            settings.include_static_objects = True
+        except Exception:  # noqa: BLE001
+            pass
+        sim.recompute_navmesh(pf, settings)
+        print("navmesh ready" if pf.is_loaded else "navmesh failed; movement is unconstrained")
     rng = np.random.default_rng(3)
 
     def nav_point():
