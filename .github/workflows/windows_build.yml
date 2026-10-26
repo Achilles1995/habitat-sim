@@ -101,6 +101,10 @@ jobs:
   test_wheel:
     needs: build_wheel
     runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.12"]
     timeout-minutes: 60
     env:
       PYTHONUTF8: "1"
@@ -111,11 +115,11 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: ${{ matrix.python }}
 
       - uses: actions/download-artifact@v4
         with:
-          name: habitat-sim-windows-wheel-py3.10
+          name: habitat-sim-windows-wheel-py${{ matrix.python }}
           path: dist
 
       - name: Install wheel
@@ -165,7 +169,7 @@ jobs:
       - name: Publish outputs to ci-logs-test branch
         if: always()
         shell: bash
-        run: bash tools/windows/publish_ci_logs.sh ci-logs-test smoke smoke-log.txt humanoid humanoid-log.txt
+        run: bash tools/windows/publish_ci_logs.sh ci-logs-test-py${{ matrix.python }} smoke smoke-log.txt humanoid humanoid-log.txt
 
       - name: Fail if a test failed
         if: steps.smoke.outcome != 'success' || steps.humanoid.outcome != 'success'
