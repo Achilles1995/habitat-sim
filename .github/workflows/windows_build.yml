@@ -439,7 +439,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          python tools/windows/interactive_viewer.py --robot spot --selftest 200 --out viewer-out 2>&1 | grep -v "^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-" | tail -60 | tee viewer-log.txt
+          python tools/windows/interactive_viewer.py --robot spot --selftest 400 --out viewer-out 2>&1 | grep -v "^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-" | tail -60 | tee viewer-log.txt
 
       - name: Publish outputs to ci-logs-viewer branch
         if: always()

@@ -29,7 +29,7 @@ Keys (click the window first so it has keyboard focus):
   Humanoid   Arrow Up walk   Arrow Left/Right turn   (release = stand)
   Robot      I/K forward/back   J/L turn
   View       1 RGB  2 depth  3 human mask overlay  4 all side by side
-  Camera     C cycle: free / follow humanoid / robot view
+  Camera     C cycle: free / follow humanoid / follow robot
   Other      T bring humanoid+robot in front of camera   O drop a box
              P save snapshot   H toggle help   Esc quit
 """
@@ -391,7 +391,7 @@ def main():
         robot = Robot(sim, args.robot, in_front(2.0, side=1.0))
 
     mode, cam_mode, show_help = 1, 0, True
-    cam_modes = ["free", "follow humanoid", "robot view"]
+    cam_modes = ["free", "follow humanoid", "follow robot"]
     walk_until = 0.0
     turn_h = 0
     boxes = []
@@ -402,8 +402,10 @@ def main():
 
     script = []  # selftest key script
     if args.selftest:
-        script = (["up"] * 30 + ["left"] * 6 + ["up"] * 20 + ["i"] * 20 + ["j"] * 8 + ["w"] * 10
-                  + ["o"] + ["c"] + [""] * 5 + ["c"] + [""] * 5 + ["4", "p"])
+        script = (["up"] * 30 + ["left"] * 6 + ["up"] * 20 + ["i"] * 20 + ["j"] * 8 + ["s"] * 6
+                  + ["o"] + [""] * 10 + ["4", "p", "1", "p"]          # free camera: all views, RGB
+                  + ["c"] + [""] * 3 + ["p"]                           # follow humanoid
+                  + ["c"] + [""] * 3 + ["p"])                          # follow robot
         script = script[: args.selftest] if args.selftest < len(script) else script
 
     fps, t_last, step_i = 0.0, time.time(), 0
@@ -501,8 +503,8 @@ def main():
             pos, yaw, pitch = eye, yaw_from_forward(f.x, f.z), -0.25
         elif cam_mode == 2 and robot:
             f = robot.forward
-            pos = robot.pos + f * 0.3 + mn.Vector3(0, robot.height + 0.45, 0)
-            yaw, pitch = yaw_from_forward(f.x, f.z), -0.1
+            pos = robot.pos - f * 2.2 + mn.Vector3(0, 1.4, 0)
+            yaw, pitch = yaw_from_forward(f.x, f.z), -0.3
         else:
             pos, yaw, pitch = cam_pos, cam_yaw, cam_pitch
         if not finite(pos):
