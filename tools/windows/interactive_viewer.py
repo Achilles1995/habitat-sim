@@ -369,6 +369,17 @@ def main():
         print(f"{len(names)} scenes")
         sys.exit(0)
 
+    if args.dataset and not os.path.exists(args.scene):
+        # resolve a short scene name to its scene instance file, as habitat-lab
+        # episodes do (some datasets only resolve their semantics that way)
+        import glob
+
+        root = os.path.dirname(os.path.abspath(args.dataset))
+        hits = glob.glob(os.path.join(root, "**", f"{args.scene}.scene_instance.json"), recursive=True)
+        if hits:
+            args.scene = hits[0]
+            print(f"scene: {args.scene}")
+
     if not args.dataset and not os.path.exists(args.scene):
         print(f"Scene not found: {args.scene}\nDownload test scenes with:\n"
               "  python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes --data-path data/")
