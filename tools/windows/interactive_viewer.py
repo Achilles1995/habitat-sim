@@ -369,7 +369,7 @@ def main():
             print(f"Humanoid files not found in {hdir}; download with:\n"
                   "  python -m habitat_sim.utils.datasets_download --uids habitat_humanoids --data-path data/")
     if args.robot != "none":
-        robot = Robot(sim, args.robot, in_front(2.0) + cam_forward().cross(mn.Vector3(0, 1, 0)) * 1.0)
+        robot = Robot(sim, args.robot, in_front(2.0) + mn.math.cross(cam_forward(), mn.Vector3(0, 1, 0)) * 1.0)
 
     mode, cam_mode, show_help = 1, 0, True
     cam_modes = ["free", "follow humanoid", "robot view"]
@@ -446,7 +446,7 @@ def main():
             if humanoid:
                 humanoid.place(in_front(2.5), heading=-cam_forward())
             if robot:
-                robot.pos = in_front(2.0) + cam_forward().cross(mn.Vector3(0, 1, 0)) * 1.0
+                robot.pos = in_front(2.0) + mn.math.cross(cam_forward(), mn.Vector3(0, 1, 0)) * 1.0
                 robot.apply()
         elif ch == "o":
             otm = sim.get_object_template_manager()
