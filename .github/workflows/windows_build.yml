@@ -453,6 +453,14 @@ jobs:
           python tools/windows/interactive_viewer.py --dataset "$ds" --list-scenes 2>&1 | grep -v "Warning\|Error\|SSD" | tee -a hssd-log.txt
           scene=$(python tools/windows/interactive_viewer.py --dataset "$ds" --list-scenes 2>/dev/null | grep -v "scenes$" | head -1)
           echo "scene: $scene" | tee -a hssd-log.txt
+          {
+            echo "== dataset configs:"; find -L data/hab3_bench_assets -name "*.scene_dataset_config.json"
+            echo "== $ds:"; cat "$ds"
+            echo "== hab3-hssd top level:"; ls -la "$(dirname "$ds")"
+            echo "== semantic files:"; find -L "$(dirname "$ds")/.." -maxdepth 3 \( -iname "*semantic*" -o -iname "*ssd*" -o -iname "*lexicon*" \) | head -20
+            echo "== scene instance file:"; si=$(find -L "$(dirname "$ds")" -name "${scene}*.scene_instance.json" | head -1); echo "$si"; head -c 1500 "$si"; echo
+            echo "== episodes reference:"; python -c "import gzip,json,glob; f=sorted(glob.glob('data/hab3_bench_assets/episode_datasets/*.json.gz'))[0]; e=json.load(gzip.open(f))['episodes'][0]; print(f, e.get('scene_dataset_config'), e.get('scene_id'))"
+          } 2>&1 | tee -a hssd-log.txt
           python tools/windows/interactive_viewer.py --dataset "$ds" --scene "$scene" --robot spot --selftest 400 --out hssd-out 2>&1 \
             | grep -v "^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-\|Warning\|SSD" | tail -30 | tee -a hssd-log.txt
 
