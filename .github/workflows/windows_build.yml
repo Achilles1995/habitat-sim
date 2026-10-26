@@ -390,3 +390,62 @@ jobs:
       - name: Fail if the script failed
         if: steps.script.outcome != 'success'
         run: exit 1
+
+  # Live viewer (tools/windows/interactive_viewer.py) driven by a scripted key sequence
+  viewer:
+    needs: build_wheel
+    runs-on: windows-2022
+    timeout-minutes: 60
+    env:
+      PYTHONUTF8: "1"
+      GALLIUM_DRIVER: llvmpipe
+      GH_TOKEN: ${{ github.token }}
+      GIT_CLONE_PROTECTION_ACTIVE: "false"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: habitat-sim-windows-wheel-py3.12
+          path: dist
+
+      - name: Install wheel + OpenCV
+        shell: pwsh
+        run: |
+          python -m pip install -U pip
+          python -m pip install (Get-ChildItem dist/*.whl).FullName opencv-python
+
+      - name: Install Mesa software OpenGL (runners have no GPU)
+        shell: pwsh
+        run: |
+          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
+          $pydir = Split-Path (python -c "import sys; print(sys.executable)")
+          Copy-Item mesa/x/x64/*.dll $pydir -Force
+
+      - name: Download scenes, humanoids, Spot
+        shell: bash
+        run: |
+          git lfs install
+          python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes habitat_humanoids hab_spot_arm --data-path data/ --no-replace 2>&1 | tail -20
+
+      - name: Viewer self-test
+        id: viewer
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python tools/windows/interactive_viewer.py --robot spot --selftest 200 --out viewer-out 2>&1 | grep -v "^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-" | tail -60 | tee viewer-log.txt
+
+      - name: Publish outputs to ci-logs-viewer branch
+        if: always()
+        shell: bash
+        run: bash tools/windows/publish_ci_logs.sh ci-logs-viewer viewer-out viewer-log.txt
+
+      - name: Fail if the viewer failed
+        if: steps.viewer.outcome != 'success'
+        run: exit 1
