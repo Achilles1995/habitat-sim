@@ -26,7 +26,10 @@ Output (one folder per episode):
   events_<cam>.h5      /events/{x,y,p,t,instance,depth,flow_x,flow_y}, /pose/{t,T_world_cam}
   gt.npz               t, human_joints (T,H,J,3), human_vel (T,H,3), robot_T (T,4,4), robot_vel,
                        clearance, cpa_dist, cpa_time, ttc, risk (safety) | segments (actions)
-  frames_<cam>/        optional (--frames-every N): rgb/*.png, depth/*.png (mm), instance/*.png
+  frames_<cam>.h5      synchronised RGB video of the same camera (default 30 fps, --rgb-every): /rgb, /t_us
+                       (end of exposure, same clock as the events), /depth, /instance, /T_world_cam;
+                       pixel-aligned with the events (shared optics), 8 ms exposure with motion blur
+  frames_<cam>/        optional PNGs (--png-every N): rgb/*.png, depth/*.png (mm), instance/*.png
   preview_<cam>.mp4    optional (--preview): event visualisation
 
 Usage:
@@ -115,6 +118,46 @@ class EventWriter:
     def close(self):
         self.flush()
         self.f.attrs["n_events"] = self.n
+        self.f.close()
+
+
+class FrameWriter:
+    """Synchronised RGB (+ depth + instance) frames of one EVK4, in one HDF5 file:
+    /rgb (N,H,W,3) uint8 sRGB, /t_us (N,) frame time = end of exposure, on the event clock,
+    /depth (N,H,W) float16 [m, z], /instance (N,H,W) int32, /T_world_cam (N,4,4)."""
+
+    def __init__(self, path, cam, depth=True, instance=True):
+        import h5py
+        self.f = h5py.File(path, "w")
+        H, W = cam.Hr, cam.Wr
+        mk = lambda name, shape, dt, chunk: self.f.create_dataset(
+            name, (0,) + shape, dtype=dt, maxshape=(None,) + shape, chunks=(1,) + shape if chunk else None,
+            compression="lzf" if chunk else None)
+        self.ds = {"rgb": mk("rgb", (H, W, 3), "u1", True), "t_us": mk("t_us", (), "i8", False),
+                   "T_world_cam": mk("T_world_cam", (4, 4), "f8", False)}
+        if depth:
+            self.ds["depth"] = mk("depth", (H, W), "f2", True)
+        if instance:
+            self.ds["instance"] = mk("instance", (H, W), "i4", True)
+        a = self.f.attrs
+        a["width"], a["height"] = W, H
+        a["K"] = np.array([[cam.fr, 0, cam.cxr], [0, cam.fr, cam.cyr], [0, 0, 1.0]])
+        a["exposure_s"] = cam.rgb_exposure_s
+        a["pixel_aligned_with_events"] = bool(cam.direct)
+        a["note"] = ("global-shutter RGB through the EVK4's optics (beam-splitter / APS-style); t_us is the end "
+                     "of the exposure on the same clock as the events; motion blur from the sub-step renders")
+        self.n = 0
+
+    def add(self, fr):
+        vals = {"rgb": fr["rgb"], "t_us": int(round(fr["t"] * 1e6)), "T_world_cam": fr["T_world_cam"],
+                "depth": fr["depth"].astype(np.float16), "instance": fr["instance"]}
+        for k, d in self.ds.items():
+            d.resize((self.n + 1,) + d.shape[1:])
+            d[self.n] = vals[k]
+        self.n += 1
+
+    def close(self):
+        self.f.attrs["n_frames"] = self.n
         self.f.close()
 
 
@@ -255,6 +298,12 @@ class Episode:
             self.wall_poses[f"wall{k}"] = pose
         self.cams = cams
         self.writers = {k: EventWriter(os.path.join(self.dir, f"events_{k}.h5"), c) for k, c in cams.items()}
+        self.frame_writers = {}
+        if a.rgb_every > 0:
+            for k, c in cams.items():
+                c.rgb_exposure_s = a.rgb_exposure_ms * 1e-3
+                self.frame_writers[k] = FrameWriter(os.path.join(self.dir, f"frames_{k}.h5"), c,
+                                                    depth=not a.no_depth_frames, instance=not a.no_depth_frames)
         self.preview = {k: [] for k in cams}
 
     def record(self):
@@ -267,7 +316,9 @@ class Episode:
             self.writers[k].add(ev, self.t, c.T_world_cam())
             if a.preview:
                 self.preview[k].append(event_rgb(ev, c.W, c.H, hid))
-            if a.frames_every and self.tick % a.frames_every == 0:
+            if k in self.frame_writers and self.tick % a.rgb_every == 0:
+                self.frame_writers[k].add(c.frame())
+            if a.png_every and self.tick % a.png_every == 0:
                 self.save_frame(k, c)
         self.gt["t"].append(self.t)
         J = []
@@ -293,7 +344,7 @@ class Episode:
         cv2.imwrite(os.path.join(d, "instance", name), np.clip(fr["instance"], 0, 65535).astype(np.uint16))
 
     def finish(self, extra_gt, extra_meta):
-        for w in self.writers.values():
+        for w in list(self.writers.values()) + list(self.frame_writers.values()):
             w.close()
         g = {k: np.array(v) for k, v in self.gt.items()}
         g["human_vel"] = np.gradient(g["human_feet"], TICK, axis=0) if len(g["t"]) > 1 else \
@@ -645,7 +696,11 @@ def main():
     ap.add_argument("--humanoids", nargs="+", default=["female_2", "male_1", "female_0", "male_0"])
     ap.add_argument("--max-humans", type=int, default=2)
     ap.add_argument("--fall-prob", type=float, default=0.3)
-    ap.add_argument("--frames-every", type=int, default=0, help="save paired RGB/depth/instance every N ticks")
+    ap.add_argument("--rgb-every", type=int, default=1,
+                    help="synchronised RGB frame every N control ticks (1 = 30 fps; 0 = no RGB)")
+    ap.add_argument("--rgb-exposure-ms", type=float, default=8.0, help="RGB exposure time (motion blur)")
+    ap.add_argument("--no-depth-frames", action="store_true", help="RGB only in frames_<cam>.h5 (no depth / instance)")
+    ap.add_argument("--png-every", type=int, default=0, help="also save RGB/depth/instance PNGs every N ticks")
     ap.add_argument("--preview", action="store_true", help="write an event-visualisation mp4 per camera")
     args = ap.parse_args()
     run = run_safety if args.app == "safety" else run_actions

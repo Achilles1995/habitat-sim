@@ -306,6 +306,8 @@ class EVK4Habitat:
         self.nsub = 0
         self._pp = None
         self._last_obs = None
+        self._history = []          # (t, linear RGB render) of the sub-steps of the last update
+        self.rgb_exposure_s = 0.008   # exposure time of the paired RGB frames (motion blur)
         self.probe_np = np.zeros((0, 3))
         self.lux_per_unit = float(c["lux_per_unit"]) if hab["lux_per_unit_given"] else None
         self._timing = dict(render=0.0, readback=0.0, pixel=0.0, readout=0.0, n=0)
@@ -416,6 +418,7 @@ class EVK4Habitat:
         depth = np.ascontiguousarray(obs["depth"], dtype=np.float32).reshape(-1)
         sem = np.ascontiguousarray(obs["sem"]).view(np.int32).reshape(-1)
         self._last_obs = obs
+        self._history.append((float(t), np.array(obs["rad"][..., :3], dtype=np.float32)))   # for RGB exposure
         fl = 1.0
         if c["flicker_hz"] > 0 and c["flicker_depth"] > 0:
             fl = 1.0 - c["flicker_depth"] * 0.5 * (1.0 + math.cos(2 * math.pi * c["flicker_hz"] * t))
@@ -525,6 +528,7 @@ class EVK4Habitat:
         c, dev = self.cfg, self.device
         S1 = self.motion.capture()
         T1 = world_pose(self.node)
+        self._history = []
         kp1 = self.motion.key_points()
         t1 = float(t)
         if (not self.initialized) or t1 < self.t_prev - 1e-12 or t1 - self.t_prev > 0.05:
@@ -663,13 +667,25 @@ class EVK4Habitat:
             self._timing = dict(render=0.0, readback=0.0, pixel=0.0, readout=0.0, n=0)
         return out
 
-    def frame(self):
-        """Paired ground-truth frame of the last render, on the render grid (Hr, Wr):
-        luminance [cd/m^2], 8-bit sRGB preview, z-depth [m], instance ids, K of the render and the
-        OpenCV world pose of the camera.  On the pixel grid when `direct` (no distortion, spp 1)."""
+    def frame(self, exposure_s: float | None = None):
+        """Paired RGB / depth / instance frame at the sensor time, synchronised with the events.
+
+        The RGB image is what a global-shutter colour camera sharing the EVK4's optics (beam
+        splitter / DAVIS-style APS) records with an exposure of `exposure_s` ending at `t`
+        (default `self.rgb_exposure_s`): the linear radiance of the sub-step renders inside the
+        exposure window is averaged (true motion blur), then exposed for the scene illuminance
+        and tonemapped to 8-bit sRGB.  Depth and instance ids are those of the end of the exposure.
+
+        Returned on the render grid (Hr, Wr), which is the event pixel grid when `direct`
+        (no lens distortion, spp 1 - the default); K is the matching intrinsic matrix."""
         obs = self._last_obs
         lux = self.lux_per_unit or float(self.cfg["lux_per_unit"])
-        rgb_lin = np.maximum(obs["rad"][..., :3], 0) * lux / math.pi       # cd/m^2 per channel
+        exp = self.rgb_exposure_s if exposure_s is None else float(exposure_s)
+        t_end = self.t_prev
+        hist = [r for (tt, r) in self._history if tt >= t_end - exp - 1e-9] or \
+            [np.asarray(obs["rad"][..., :3], np.float32)]
+        rad = np.mean(hist, axis=0)
+        rgb_lin = np.maximum(rad, 0) * lux / math.pi                         # cd/m^2 per channel
         lum = rgb_lin @ self.rgbw / self.rgbw.sum()
         # fixed exposure per scene: an 18 % grey surface at the scene illuminance maps to mid-grey
         key = 0.18 * float(self.hab["scene_lux"]) / math.pi
@@ -679,4 +695,5 @@ class EVK4Habitat:
         Kr = np.array([[self.fr, 0, self.cxr], [0, self.fr, self.cyr], [0, 0, 1.0]])
         return dict(luminance=lum.astype(np.float32), rgb=(np.clip(srgb, 0, 1) * 255).astype(np.uint8),
                     depth=np.asarray(obs["depth"], np.float32), instance=np.asarray(obs["sem"]).astype(np.int32),
-                    K=Kr, T_world_cam=self.T_world_cam(), t=self.t_prev)
+                    K=Kr, T_world_cam=self.T_world_cam(), t=t_end, exposure_s=exp, n_blur_samples=len(hist),
+                    pixel_aligned=bool(self.direct))

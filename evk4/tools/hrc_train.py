@@ -61,6 +61,26 @@ def tick_frames(ep_dir, cam, size):
     return out
 
 
+def tick_rgb(ep_dir, cam, size):
+    """(T, 3, h, w) uint8 synchronised RGB frame of every control tick (the latest frame whose
+    exposure ended at or before the tick), from frames_<cam>.h5; cached."""
+    w, h = size
+    cache = os.path.join(ep_dir, f"cache_rgb_{cam}_{w}x{h}.npy")
+    if os.path.exists(cache):
+        return np.load(cache)
+    import cv2
+    import h5py
+    t_ticks = np.load(os.path.join(ep_dir, "gt.npz"))["t"]
+    with h5py.File(os.path.join(ep_dir, f"frames_{cam}.h5"), "r") as f:
+        tf = f["t_us"][:] * 1e-6
+        rgb = f["rgb"]
+        idx = np.clip(np.searchsorted(tf, t_ticks + 1e-7, side="right") - 1, 0, len(tf) - 1)
+        small = np.stack([cv2.resize(rgb[i], (w, h), interpolation=cv2.INTER_AREA) for i in range(len(tf))])
+    out = np.ascontiguousarray(small[idx].transpose(0, 3, 1, 2))
+    np.save(cache, out)
+    return out
+
+
 def episodes(root):
     return sorted(d for d in glob.glob(os.path.join(root, "ep*")) if os.path.exists(os.path.join(d, "gt.npz")))
 
@@ -132,10 +152,11 @@ def build_model(in_ch, n_cls, n_reg, n_cams):
 class Samples:
     """(episode, camera, tick) samples with lazily loaded tick frames."""
 
-    def __init__(self, eps, cams, size, win, app, stride=1):
-        self.items, self.frames, self.targets = [], {}, {}
+    def __init__(self, eps, cams, size, win, app, stride=1, modality="events"):
+        self.items, self.frames, self.rgb, self.targets = [], {}, {}, {}
         self.cams = cams
         self.win = win
+        self.modality = modality
         for e in eps:
             meta = json.load(open(os.path.join(e, "meta.json")))
             for ci, c in enumerate(cams):
@@ -143,6 +164,8 @@ class Samples:
                     continue
                 fr = tick_frames(e, c, size)
                 self.frames[(e, c)] = fr
+                if modality != "events":
+                    self.rgb[(e, c)] = tick_rgb(e, c, size)
                 for k in range(win, len(fr), stride):
                     self.items.append((e, c, ci, k))
             if app == "safety":
@@ -158,7 +181,12 @@ class Samples:
         X, C, Y, R = [], [], [], []
         for i in idx:
             e, c, ci, k = self.items[i]
-            X.append(window(self.frames[(e, c)], k, self.win))
+            parts = []
+            if self.modality in ("events", "both"):
+                parts.append(window(self.frames[(e, c)], k, self.win))
+            if self.modality in ("rgb", "both"):
+                parts.append(self.rgb[(e, c)][k].astype(np.float32) / 255.0)    # frame synchronised with tick k
+            X.append(np.concatenate(parts, 0))
             C.append(ci)
             if app == "safety":
                 risk, clr, fut = self.targets[e]
@@ -243,15 +271,16 @@ def run(args):
     names = meta.get("risk_names") if args.app == "safety" else meta.get("action_names")
     n_cls = len(names)
     n_reg = 7 if args.app == "safety" else 0
-    tr = Samples(train_eps, cams, size, win, args.app, stride=args.stride)
-    te = Samples(test_eps, cams, size, win, args.app, stride=1)
+    tr = Samples(train_eps, cams, size, win, args.app, stride=args.stride, modality=args.modality)
+    te = Samples(test_eps, cams, size, win, args.app, stride=1, modality=args.modality)
+    in_ch = {"events": 2 * win, "rgb": 3, "both": 2 * win + 3}[args.modality]
     print(f"{len(train_eps)} train / {len(test_eps)} test episodes, cameras {cams}, "
-          f"{len(tr)} train / {len(te)} test samples, input {2 * win}x{size[1]}x{size[0]}", flush=True)
+          f"{len(tr)} train / {len(te)} test samples, modality {args.modality}, input {in_ch}x{size[1]}x{size[0]}", flush=True)
     # class weights against imbalance
     ys = np.array([tr.batch([i], args.app)[2].item() for i in range(0, len(tr), max(1, len(tr) // 2000))])
     cnt = np.bincount(ys, minlength=n_cls).astype(np.float64)
     wts = torch.tensor(np.where(cnt > 0, (cnt.sum() / np.maximum(cnt, 1)) ** 0.5, 0.0), dtype=torch.float32, device=dev)
-    model = build_model(2 * win, n_cls, n_reg, len(cams)).to(dev)
+    model = build_model(in_ch, n_cls, n_reg, len(cams)).to(dev)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, args.lr, total_steps=args.epochs * max(1, math.ceil(len(tr) / args.batch)))
     os.makedirs(args.out, exist_ok=True)
@@ -276,7 +305,8 @@ def run(args):
             tot += loss.item() * len(Y)
             n += len(Y)
         print(f"epoch {epoch + 1}/{args.epochs}  train loss {tot / max(1, n):.4f}", flush=True)
-    torch.save(dict(model=model.state_dict(), cams=cams, size=size, window=win, names=names, app=args.app),
+    torch.save(dict(model=model.state_dict(), cams=cams, size=size, window=win, names=names, app=args.app,
+                    modality=args.modality),
                os.path.join(args.out, "model.pt"))
     # ---------------- test
     model.eval()
@@ -294,7 +324,7 @@ def run(args):
     P, G = np.concatenate(preds), np.concatenate(gts)
     cm = np.zeros((n_cls, n_cls), np.int64)
     np.add.at(cm, (G, P), 1)
-    res = dict(app=args.app, n_test=int(len(G)), accuracy=float((P == G).mean()), macro_f1=macro_f1(cm),
+    res = dict(app=args.app, modality=args.modality, n_test=int(len(G)), accuracy=float((P == G).mean()), macro_f1=macro_f1(cm),
                confusion=cm.tolist(), classes=names)
     if args.app == "safety":
         RP, RT = np.concatenate(regs), np.concatenate(regt)
@@ -359,6 +389,8 @@ def main():
     ap.add_argument("--lr", type=float, default=2e-3)
     ap.add_argument("--test-frac", type=float, default=0.2)
     ap.add_argument("--augment", action="store_true")
+    ap.add_argument("--modality", choices=["events", "rgb", "both"], default="events",
+                    help="events only, the synchronised RGB frame only, or both (early fusion)")
     ap.add_argument("--device", default=None)
     ap.add_argument("--seed", type=int, default=0)
     run(ap.parse_args())

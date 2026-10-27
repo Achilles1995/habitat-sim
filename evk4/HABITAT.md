@@ -48,8 +48,27 @@ and bias mapping. There is no v2e-style frame differencing.
 - `flow_x, flow_y` [px/s]. Flow is exact for the static scene, robot links and rigid objects.
   On skinned humans it uses the nearest bone, a rigid-skinning approximation.
 
-`SceneMotion.instances()` maps ids to names, links and kinds. `cam.frame()` gives the paired
-luminance, sRGB preview, depth and instance images, plus K and the camera pose.
+`SceneMotion.instances()` maps ids to names, links and kinds.
+
+## Synchronised RGB
+
+`cam.frame()` returns the RGB frame at the sensor time, plus luminance, depth, instance ids, K and
+the camera pose. It models a global-shutter colour camera that shares the EVK4's optics, like a
+beam splitter or a DAVIS-style APS:
+- The frame is pixel-aligned with the events in the default configuration (no distortion, spp 1).
+- Its timestamp is the end of the exposure, on the same microsecond clock as the events.
+- Motion blur is real: the linear renders of the sub-steps inside the exposure (`cam.rgb_exposure_s`,
+  default 8 ms) are averaged before the image is exposed and tonemapped.
+
+`hrc_generate.py` records this for every camera by default, at 30 fps, into `frames_<cam>.h5`
+(`/rgb`, `/t_us`, `/depth`, `/instance`, `/T_world_cam`).
+- `--rgb-every N`: record every N-th frame.
+- `--rgb-exposure-ms`: exposure time.
+- `--rgb-every 0`: events only.
+
+`hrc_inspect.py <episode> --cam <cam> --out sync.png` overlays the events on the RGB frames and
+measures the alignment. `hrc_train.py --modality events|rgb|both` trains on events, on the
+synchronised RGB frames, or on both fused.
 
 ## Quick start
 
@@ -75,7 +94,7 @@ while human.path:
 Mounts:
 - `wall_mount(eye, target)`.
 - `link_mount(ao, link, pos, look_dir, pitch_deg)`: any robot, any link.
-- `spot_mount(ao, "front" | "top" | "rear")`.
+- `spot_mount(ao, "front" | "head" | "top" | "rear")`.
 - `Mount(T_parent_cam, (ao, link))`: a hand-eye calibration in OpenCV convention, via `pose_cv`.
 
 ## Datasets and baselines for the two HRC applications
@@ -84,15 +103,17 @@ Mounts:
 # 1) human-aware robot safety: proximity, intent / trajectory, collision risk
 python evk4/tools/hrc_generate.py safety  --data data --episodes 50 --seconds 12 --out datasets --preview
 # 2) collaborative action recognition: approach, handover, point, wave, pick, place, sit, walk past, idle, fall
-python evk4/tools/hrc_generate.py actions --data data --episodes 50 --out datasets --frames-every 10
+python evk4/tools/hrc_generate.py actions --data data --episodes 50 --out datasets
 #    in an HSSD house:  --dataset data/hab3_bench_assets/hab3-hssd/hab3-hssd.scene_dataset_config.json --scene 102816009
 
 python evk4/tools/hrc_train.py safety  --root datasets/safety  --epochs 15 --out runs/safety
 python evk4/tools/hrc_train.py actions --root datasets/actions --epochs 25 --out runs/actions --augment
+python evk4/tools/hrc_train.py actions --root datasets/actions --epochs 25 --out runs/actions_rgb --modality rgb
+python evk4/tools/hrc_train.py actions --root datasets/actions --epochs 25 --out runs/actions_both --modality both
 ```
 
-`hrc_generate.py --help` describes the episode format: HDF5 events per camera, `gt.npz` and
-`meta.json`.
+`hrc_generate.py --help` describes the episode format: per camera `events_<cam>.h5` and the
+synchronised `frames_<cam>.h5`, plus `gt.npz` and `meta.json`.
 
 Speed depends on the GPU: on an RTX 4070, Warp runs on CUDA and Habitat renders on the same GPU.
 Lower `--binning`, the number of cameras or `max_substeps` to trade fidelity for speed.
