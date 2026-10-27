@@ -527,6 +527,12 @@ jobs:
           mkdir -p evk4-out
           python evk4/tests/test_habitat_chain.py 2>&1 | tee evk4-out/chain-log.txt
 
+      - name: Humanoid action poses (contact sheet)
+        continue-on-error: true
+        shell: bash
+        run: |
+          python evk4/tests/test_poses.py --data data --out evk4-out 2>&1 | grep -v "Warning\]\|Error\]\|^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-" | tail -20 | tee evk4-out/poses-log.txt
+
       - name: EVK4 in a Habitat scene (humanoid, Spot, wall camera)
         id: scene
         continue-on-error: true

@@ -457,15 +457,25 @@ def run_safety(args, idx, rng):
 def run_actions(args, idx, rng):
     ep = Episode(args, "actions", idx, rng)
     sim = ep.sim
-    rpos = nav_point(sim, rng)
-    ep.robot = evkh.Robot(sim, ep.motion, "spot", rpos, data_dir=args.data, yaw=float(rng.uniform(-math.pi, math.pi)))
+    # Spot waits facing the open part of the room (the longest free line of sight it can find)
+    rpos, yaw, best = nav_point(sim, rng), 0.0, -1.0
+    import habitat_sim
+    for _ in range(40):
+        p = nav_point(sim, rng)
+        a = float(rng.uniform(-math.pi, math.pi))
+        d = mn.Vector3(math.cos(a), 0, -math.sin(a))
+        res = sim.cast_ray(habitat_sim.geo.Ray(np.array(p + mn.Vector3(0, 0.5, 0)), np.array(d)), 20.0)
+        free = res.hits[0].ray_distance if res.has_hits() else 20.0
+        if free > best:
+            rpos, yaw, best = p, a, free
+    ep.robot = evkh.Robot(sim, ep.motion, "spot", rpos, data_dir=args.data, yaw=yaw)
     rf = ep.robot.forward
     # props: an object to pick (on the floor) and a stool to sit on
     box_p = nav_point(sim, rng, near=rpos + rf * 2.0, radius=2.5)
     stool_p = nav_point(sim, rng, near=rpos, radius=4.0)
     box = spawn_box(sim, ep.motion, box_p, (0.22, 0.22, 0.22), "box")
     stool = spawn_box(sim, ep.motion, stool_p, (0.45, 0.45, 0.45), "stool")
-    hp = nav_point(sim, rng, near=rpos, radius=6.0)
+    hp = nav_point(sim, rng, near=rpos + rf * min(3.0, 0.7 * best), radius=1.5)   # starts in view
     h = ep.add_human(hp, mn.Vector3(rpos - hp), "human0", float(rng.uniform(0.8, 1.3)))
     actor = ep.actors[0]
     ep.make_cameras(np.array(rpos))

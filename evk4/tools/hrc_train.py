@@ -273,7 +273,7 @@ def run(args):
             loss.backward()
             opt.step()
             sched.step()
-            tot += float(loss) * len(Y)
+            tot += loss.item() * len(Y)
             n += len(Y)
         print(f"epoch {epoch + 1}/{args.epochs}  train loss {tot / max(1, n):.4f}", flush=True)
     torch.save(dict(model=model.state_dict(), cams=cams, size=size, window=win, names=names, app=args.app),

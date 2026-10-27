@@ -35,16 +35,16 @@ TICK = 1 / 30.0
 def event_image(ev, W, H, ids=None, human_id=None):
     """Metavision-like event frame: dark background, ON blue-white, OFF dark blue; human events
     tinted orange (if human_id given)."""
-    img = np.full((H, W, 3), (30, 37, 52), np.uint8)
+    img = np.full((H, W, 3), (30, 37, 52), np.uint8)            # RGB
     if not len(ev):
         return img
     on = ev["p"] == 1
-    img[ev["y"][~on], ev["x"][~on]] = (200, 126, 64)
+    img[ev["y"][~on], ev["x"][~on]] = (64, 126, 200)
     img[ev["y"][on], ev["x"][on]] = (255, 255, 255)
     if human_id is not None:
         h = ev["geom"] == human_id
-        img[ev["y"][h & on], ev["x"][h & on]] = (40, 170, 255)
-        img[ev["y"][h & ~on], ev["x"][h & ~on]] = (0, 90, 200)
+        img[ev["y"][h & on], ev["x"][h & on]] = (255, 170, 40)
+        img[ev["y"][h & ~on], ev["x"][h & ~on]] = (200, 90, 0)
     return img
 
 
