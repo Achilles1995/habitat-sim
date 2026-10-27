@@ -568,6 +568,9 @@ def main():
     fps, t_last, step_i = 0.0, time.time(), 0
     start_h = humanoid.feet if humanoid else None
     start_r = robot.pos if robot else None
+    last_h, last_r = start_h, start_r
+    travel = {"human": 0.0, "robot": 0.0}  # path length walked / driven (self-test)
+    click_travel = {"human": 0.0, "robot": 0.0}  # ... of which while following a clicked path
     view = {"pos": cam_pos, "yaw": cam_yaw, "pitch": cam_pitch}  # camera used for the last frame
 
     def focus():
@@ -598,6 +601,22 @@ def main():
             return hit
         snapped = pf.snap_point(np.array(hit))
         return mn.Vector3(snapped) if finite(snapped) else None
+
+    def unblocked(look, want):
+        """Pull a follow camera in front of the first wall between it and its target, so it
+        never ends up inside or behind a wall (only the static stage counts as a wall)."""
+        d = want - look
+        dist = d.length()
+        if dist < 1e-6:
+            return want
+        try:
+            res = sim.cast_ray(habitat_sim.geo.Ray(np.array(look), np.array(d / dist)), dist)
+            for hit in res.hits:
+                if hit.object_id == habitat_sim.stage_id and hit.ray_distance < dist:
+                    return look + d / dist * max(0.3, hit.ray_distance - 0.25)
+        except Exception:  # noqa: BLE001
+            pass
+        return want
 
     def plan(start, goal):
         if not pf.is_loaded:
@@ -734,6 +753,8 @@ def main():
                         (agent_obj.walk_to if kind == "human" else agent_obj.go_to)(pts)
 
         # ---------------- simulate
+        humanoid_on_path = bool(humanoid and humanoid.path)
+        robot_on_path = bool(robot and robot.path)
         if humanoid:
             manual = (now < walk_until) or (args.selftest and ch in ("w", "s") and not free_cam) or turn_h
             if manual:
@@ -749,6 +770,18 @@ def main():
             else:
                 robot.follow_path()
         sim.step_physics(1.0 / TICK_HZ)
+        if humanoid:
+            step_len = (humanoid.feet - last_h).length()
+            travel["human"] += step_len
+            if humanoid_on_path:
+                click_travel["human"] += step_len
+            last_h = humanoid.feet
+        if robot:
+            step_len = (robot.pos - last_r).length()
+            travel["robot"] += step_len
+            if robot_on_path:
+                click_travel["robot"] += step_len
+            last_r = robot.pos
 
         # ---------------- camera
         name = cam_modes[cam_mode]
@@ -761,7 +794,7 @@ def main():
             pos, yaw, pitch = tgt + mn.Vector3(0, max(3.0, orbit["dist"] * 2.5), 0), orbit["yaw"], -math.pi / 2 + 1e-3
         elif name == "follow robot" and robot:
             f = robot.forward
-            pos = robot.pos - f * 2.2 + mn.Vector3(0, 1.4, 0)
+            pos = unblocked(robot.pos + mn.Vector3(0, 0.9, 0), robot.pos - f * 2.2 + mn.Vector3(0, 1.4, 0))
             yaw, pitch = yaw_from_forward(f.x, f.z), -0.3
         else:
             pos, yaw, pitch = cam_pos, cam_yaw, cam_pitch
@@ -822,13 +855,14 @@ def main():
     if args.selftest:
         report = []
         if humanoid:
-            report.append(f"humanoid moved {(humanoid.feet - start_h).length():.2f} m")
+            report.append(f"humanoid walked {travel['human']:.2f} m "
+                          f"(click-walk {click_travel['human']:.2f} m)")
         if robot:
-            report.append(f"robot moved {(robot.pos - start_r).length():.2f} m")
+            report.append(f"robot drove {travel['robot']:.2f} m (click-drive {click_travel['robot']:.2f} m)")
         report.append(f"{len(boxes)} box(es), {shots} snapshot(s), last FPS {fps:.0f}")
         print("SELFTEST: " + "; ".join(report))
-        ok = (humanoid is None or (humanoid.feet - start_h).length() > 0.3) and (
-            robot is None or (robot.pos - start_r).length() > 0.3
+        ok = (humanoid is None or click_travel["human"] > 0.3) and (
+            robot is None or click_travel["robot"] > 0.3
         )
         sim.close()
         sys.exit(0 if ok else 1)
