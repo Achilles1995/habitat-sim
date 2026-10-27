@@ -27,14 +27,15 @@ Run:
   python interactive_viewer.py --dataset data/scene_datasets/hssd-hab/hssd-hab.scene_dataset_config.json --list-scenes
   python interactive_viewer.py --dataset data/scene_datasets/hssd-hab/hssd-hab.scene_dataset_config.json --scene 102344049
 
-Keys (click the window first so it has keyboard focus):
-  Camera     W/S forward/back   A/D turn   Q/E down/up   R/F look up/down
-  Humanoid   Arrow Up walk   Arrow Left/Right turn   (release = stand)
+Controls (HITL-style; click the window once so it gets keyboard focus):
+  Mouse      Right-click floor: humanoid walks there   Middle-click / Shift+Right-click: robot goes there
+             Left-drag: rotate camera   Wheel: zoom
+  Humanoid   W/S walk forward/back   A/D turn   (also Arrow keys)
   Robot      I/K forward/back   J/L turn
-  View       1 RGB  2 depth  3 human mask overlay  4 all side by side
-  Camera     C cycle: free / follow humanoid / follow robot
-  Other      T bring humanoid+robot in front of camera   O drop a box
-             P save snapshot   H toggle help   Esc quit
+  Camera     C cycle: orbit humanoid / top-down / free / follow robot
+             in free mode W/S/A/D/Q/E/R/F move the camera instead of the humanoid
+  View       1 RGB  2 depth  3 RGB + human/robot masks  4 all side by side
+  Other      T bring humanoid+robot to the view   O drop a box   P snapshot   H help   Esc quit
 """
 
 import argparse
@@ -88,10 +89,10 @@ KEY_LEFT = {2424832, 65361}
 KEY_RIGHT = {2555904, 65363}
 
 HELP = [
-    "Camera: W/S move  A/D turn  Q/E down/up  R/F look",
-    "Human: Arrows walk/turn   Robot: I/K move  J/L turn",
-    "1 RGB  2 depth  3 mask  4 all   C camera mode",
-    "T bring to camera  O drop box  P snapshot  H help  Esc quit",
+    "Right-click: walk human there   Middle/Shift+Right-click: send robot",
+    "Left-drag: rotate camera   Wheel: zoom   C: orbit/top-down/free/robot",
+    "W/S/A/D: walk/turn human (free cam: move camera)   I/K/J/L: robot",
+    "1 RGB  2 depth  3 masks  4 all   T bring here  O box  P snapshot  H help",
 ]
 
 
@@ -197,14 +198,32 @@ class Humanoid:
         f = mn.Vector3(f[0], 0, f[2])
         return f.normalized() if f.length() > 1e-6 else self.heading
 
-    def step(self, walk, turn):
+    path = None  # remaining waypoints when walking to a clicked goal
+
+    def walk_to(self, points):
+        self.path = [mn.Vector3(p) for p in points[1:]] or None
+
+    def follow_path(self):
+        """Walk along self.path; returns False when there's nothing to follow."""
+        while self.path:
+            d = self.path[0] - self.feet
+            d = mn.Vector3(d.x, 0, d.z)
+            if d.length() > 0.25:
+                self.heading = d.normalized()
+                self.step(walk=True, turn=0, target=d)
+                return True
+            self.path.pop(0)
+        self.path = None
+        return False
+
+    def step(self, walk, turn, target=None):
         if turn:
             self.heading = mn.Quaternion.rotation(mn.Deg(12.0 * turn), mn.Vector3(0, 1, 0)).transform_vector(
                 self.heading
             )
         if walk:
             before = self.feet
-            self.ctrl.calculate_walk_pose(self.heading)
+            self.ctrl.calculate_walk_pose(target if target is not None else self.heading)
             after = self.feet
             # keep the humanoid on walkable floor
             pf = self.sim.pathfinder
@@ -255,6 +274,32 @@ class Robot:
                 self.pos = mn.Vector3(new)
         self.apply()
 
+    path = None
+
+    def go_to(self, points):
+        self.path = [mn.Vector3(p) for p in points[1:]] or None
+
+    def follow_path(self):
+        while self.path:
+            d = self.path[0] - self.pos
+            d = mn.Vector3(d.x, 0, d.z)
+            if d.length() > 0.15:
+                want = math.atan2(-d.z, d.x)  # yaw whose +X points along d
+                diff = (want - self.yaw + math.pi) % (2 * math.pi) - math.pi
+                step_turn = max(-math.radians(8), min(math.radians(8), diff))
+                self.yaw += step_turn
+                if abs(diff) < math.radians(25):
+                    target = self.pos + self.forward * min(0.06, d.length())
+                    pf = self.sim.pathfinder
+                    new = pf.try_step(np.array(self.pos), np.array(target)) if pf.is_loaded else target
+                    if finite(new):
+                        self.pos = mn.Vector3(new)
+                self.apply()
+                return True
+            self.path.pop(0)
+        self.path = None
+        return False
+
     def apply(self):
         self.ao.rotation = mn.Quaternion.rotation(mn.Rad(self.yaw), mn.Vector3(0, 1, 0))
         self.ao.translation = self.pos + mn.Vector3(0, self.height, 0)
@@ -278,7 +323,7 @@ def make_sim(scene, width, height, dataset=None):
         spec.sensor_type = stype
         spec.resolution = [height, width]
         spec.position = [0.0, 0.0, 0.0]
-        spec.hfov = 90
+        spec.hfov = HFOV_DEG
         sensors.append(spec)
     agent_cfg = habitat_sim.agent.AgentConfiguration()
     agent_cfg.sensor_specifications = sensors
@@ -289,6 +334,36 @@ def set_sensor_pitch(agent, pitch):
     q = mn.Quaternion.rotation(mn.Rad(pitch), mn.Vector3(1, 0, 0))
     for sensor in agent.scene_node.subtree_sensors.values():
         sensor.node.rotation = q
+
+
+HFOV_DEG = 90.0
+
+
+def camera_rotation(yaw, pitch):
+    return mn.Quaternion.rotation(mn.Rad(yaw), mn.Vector3(0, 1, 0)) * mn.Quaternion.rotation(
+        mn.Rad(pitch), mn.Vector3(1, 0, 0)
+    )
+
+
+def pixel_ray(u, v, w, h, cam_pos, yaw, pitch):
+    """World-space ray through pixel (u, v) of the pinhole camera used here."""
+    t = math.tan(math.radians(HFOV_DEG) / 2)
+    x = (2 * (u + 0.5) / w - 1) * t
+    y = (1 - 2 * (v + 0.5) / h) * t * h / w
+    d = camera_rotation(yaw, pitch).transform_vector(mn.Vector3(x, y, -1)).normalized()
+    return mn.Vector3(cam_pos), d
+
+
+def project(p, w, h, cam_pos, yaw, pitch):
+    """World point -> pixel (or None if behind the camera)."""
+    q = camera_rotation(yaw, pitch).inverted()
+    c = q.transform_vector(mn.Vector3(p) - mn.Vector3(cam_pos))
+    if c.z > -0.05:
+        return None
+    t = math.tan(math.radians(HFOV_DEG) / 2)
+    u = ((c.x / -c.z) / t + 1) / 2 * w
+    v = (1 - (c.y / -c.z) / (t * h / w)) / 2 * h
+    return int(u), int(v)
 
 
 def colorize_depth(depth, max_m=None):
@@ -444,27 +519,95 @@ def main():
     if args.robot != "none":
         robot = Robot(sim, args.robot, in_front(2.0, side=1.0))
 
-    mode, cam_mode, show_help = 1, 0, True
-    cam_modes = ["free", "follow humanoid", "follow robot"]
+    mode, show_help = 1, True
+    cam_modes = ["orbit humanoid", "top-down", "free", "follow robot"]
+    cam_mode = 0 if humanoid else (1 if robot else 2)
+    # orbit / top-down camera parameters (HITL-style), controlled by mouse
+    start_yaw = yaw_from_forward(humanoid.forward.x, humanoid.forward.z) if humanoid else cam_yaw
+    orbit = {"yaw": start_yaw, "pitch": -0.6, "dist": 4.0}
     walk_until = 0.0
     turn_h = 0
+    last_turnaround = 0.0
     boxes = []
     shots = 0
     window = "Habitat-Sim live viewer"
+    clicks = []  # (kind, u, v) from the mouse callback: kind "human" | "robot"
+    mouse = {"drag": None}
+
+    def on_mouse(event, x, y, flags, _param):
+        if event == cv2.EVENT_RBUTTONDOWN:
+            clicks.append(("robot" if flags & cv2.EVENT_FLAG_SHIFTKEY else "human", x, y))
+        elif event == cv2.EVENT_MBUTTONDOWN:
+            clicks.append(("robot", x, y))
+        elif event == cv2.EVENT_LBUTTONDOWN:
+            mouse["drag"] = (x, y)
+        elif event == cv2.EVENT_LBUTTONUP:
+            mouse["drag"] = None
+        elif event == cv2.EVENT_MOUSEMOVE and mouse["drag"] and (flags & cv2.EVENT_FLAG_LBUTTON):
+            dx, dy = x - mouse["drag"][0], y - mouse["drag"][1]
+            mouse["drag"] = (x, y)
+            clicks.append(("drag", dx, dy))
+        elif event == cv2.EVENT_MOUSEWHEEL:
+            clicks.append(("zoom", 1 if cv2.getMouseWheelDelta(flags) > 0 else -1, 0))
+
     if not args.selftest:
         cv2.namedWindow(window, cv2.WINDOW_AUTOSIZE)
+        cv2.setMouseCallback(window, on_mouse)
 
-    script = []  # selftest key script
+    script = []  # selftest: keys, or ("click", kind, fu, fv) with fractions of the view
     if args.selftest:
-        script = (["up"] * 30 + ["left"] * 6 + ["up"] * 20 + ["i"] * 20 + ["j"] * 8 + ["s"] * 6
-                  + ["o"] + [""] * 10 + ["4", "p", "1", "p"]          # free camera: all views, RGB
-                  + ["c"] + [""] * 3 + ["p"]                           # follow humanoid
-                  + ["c"] + [""] * 3 + ["p"])                          # follow robot
+        script = (["w"] * 25 + ["a"] * 6 + ["w"] * 15 + ["i"] * 20 + ["j"] * 8
+                  + ["c"] + [("click", "human", 0.5, 0.62)] + [""] * 80          # top-down, right-click walk
+                  + [("click", "robot", 0.42, 0.6)] + [""] * 80                   # middle-click robot
+                  + [("drag", 60, -20), ("zoom", -1, 0)] + [""] * 3 + ["p"]
+                  + ["c", "c"] + ["o"] + [""] * 10 + ["4", "p", "1"]              # orbit humanoid
+                  + ["c"] + [""] * 3 + ["p"]                                       # top-down
+                  + ["c", "c", "c"] + [""] * 3 + ["p"])                            # follow robot
         script = script[: args.selftest] if args.selftest < len(script) else script
 
     fps, t_last, step_i = 0.0, time.time(), 0
     start_h = humanoid.feet if humanoid else None
     start_r = robot.pos if robot else None
+    view = {"pos": cam_pos, "yaw": cam_yaw, "pitch": cam_pitch}  # camera used for the last frame
+
+    def focus():
+        if humanoid:
+            return humanoid.feet
+        if robot:
+            return robot.pos
+        return cam_pos - mn.Vector3(0, 1.5, 0)
+
+    def click_to_floor(u, v):
+        """Map a click to a navigable floor point using a physics ray cast."""
+        w, h = args.width, args.height
+        if mode == 4:  # 2x2 tiles: use the click's position within its tile
+            u, v = (u % (w // 2)) * 2, (v % (h // 2)) * 2
+        origin, d = pixel_ray(u, v, w, h, view["pos"], view["yaw"], view["pitch"])
+        hit = None
+        try:
+            res = sim.cast_ray(habitat_sim.geo.Ray(np.array(origin), np.array(d)), 200.0)
+            if res.hits:
+                hit = mn.Vector3(res.hits[0].point)
+        except Exception:  # noqa: BLE001
+            hit = None
+        if hit is None and abs(d.y) > 1e-4:  # fall back to the floor plane under the focus
+            t = (focus().y - origin.y) / d.y
+            if t > 0:
+                hit = origin + d * t
+        if hit is None or not pf.is_loaded:
+            return hit
+        snapped = pf.snap_point(np.array(hit))
+        return mn.Vector3(snapped) if finite(snapped) else None
+
+    def plan(start, goal):
+        if not pf.is_loaded:
+            return [start, goal]
+        path = habitat_sim.ShortestPath()
+        path.requested_start = np.array(start)
+        path.requested_end = np.array(goal)
+        if pf.find_path(path) and len(path.points) > 0:
+            return [mn.Vector3(p) for p in path.points]
+        return None
 
     while True:
         t0 = time.time()
@@ -473,8 +616,15 @@ def main():
             if step_i >= len(script):
                 break
             k = script[step_i]
-            special = {"up": 2490368, "left": 2424832, "": -1}
-            key = special[k] if k in special else ord(k)
+            if isinstance(k, tuple):
+                if k[0] == "click":
+                    clicks.append((k[1], int(k[2] * args.width), int(k[3] * args.height)))
+                else:
+                    clicks.append(k)
+                key = -1
+            else:
+                special = {"up": 2490368, "left": 2424832, "": -1}
+                key = special[k] if k in special else ord(k)
         else:
             key = cv2.waitKeyEx(1)
         step_i += 1
@@ -482,24 +632,38 @@ def main():
         if key == 27:
             break
         ch = chr(key).lower() if 0 <= key < 256 else ""
+        free_cam = cam_modes[cam_mode] == "free"
 
         move_r = turn_r = 0
-        if ch == "w":
-            cam_pos += cam_forward() * 0.15
+        if free_cam and ch in ("w", "s", "a", "d", "q", "e", "r", "f"):
+            if ch == "w":
+                cam_pos += cam_forward() * 0.15
+            elif ch == "s":
+                cam_pos -= cam_forward() * 0.15
+            elif ch == "a":
+                cam_yaw += math.radians(5)
+            elif ch == "d":
+                cam_yaw -= math.radians(5)
+            elif ch == "q":
+                cam_pos.y -= 0.1
+            elif ch == "e":
+                cam_pos.y += 0.1
+            elif ch == "r":
+                cam_pitch = min(cam_pitch + math.radians(4), 1.4)
+            elif ch == "f":
+                cam_pitch = max(cam_pitch - math.radians(4), -1.4)
+        elif ch == "w":
+            walk_until = now + 0.15
         elif ch == "s":
-            cam_pos -= cam_forward() * 0.15
+            # turn around once (key repeat keeps it walking, not flipping)
+            if humanoid and now - last_turnaround > 0.5:
+                humanoid.heading = -humanoid.heading
+            last_turnaround = now
+            walk_until = now + 0.15
         elif ch == "a":
-            cam_yaw += math.radians(5)
+            turn_h = 1
         elif ch == "d":
-            cam_yaw -= math.radians(5)
-        elif ch == "q":
-            cam_pos.y -= 0.1
-        elif ch == "e":
-            cam_pos.y += 0.1
-        elif ch == "r":
-            cam_pitch = min(cam_pitch + math.radians(4), 1.4)
-        elif ch == "f":
-            cam_pitch = max(cam_pitch - math.radians(4), -1.4)
+            turn_h = -1
         elif ch == "i":
             move_r = 1
         elif ch == "k":
@@ -508,20 +672,24 @@ def main():
             turn_r = 1
         elif ch == "l":
             turn_r = -1
-        elif ch in "1234" and ch:
+        elif ch in ("1", "2", "3", "4"):
             mode = int(ch)
         elif ch == "c":
-            cam_mode = (cam_mode + 1) % 3
-            if cam_mode == 1 and humanoid is None:
-                cam_mode = 2
-            if cam_mode == 2 and robot is None:
-                cam_mode = 0
+            for _ in range(len(cam_modes)):
+                cam_mode = (cam_mode + 1) % len(cam_modes)
+                name = cam_modes[cam_mode]
+                if (name != "orbit humanoid" or humanoid) and (name != "follow robot" or robot):
+                    break
+            if cam_modes[cam_mode] == "free":
+                cam_pos, cam_yaw, cam_pitch = mn.Vector3(view["pos"]), view["yaw"], max(view["pitch"], -1.4)
         elif ch == "h":
             show_help = not show_help
         elif ch == "t":
             if humanoid:
+                humanoid.path = None
                 humanoid.place(in_front(2.5), heading=-cam_forward())
             if robot:
+                robot.path = None
                 robot.pos = in_front(2.0, side=1.0)
                 robot.apply()
         elif ch == "o":
@@ -529,33 +697,69 @@ def main():
             h = otm.get_template_handles("cubeSolid")
             if h:
                 box = sim.get_rigid_object_manager().add_object_by_template_handle(h[0])
-                box.translation = cam_pos + cam_forward() * 1.2 + mn.Vector3(0, 0.3, 0)
+                fwd = camera_rotation(view["yaw"], 0).transform_vector(mn.Vector3(0, 0, -1))
+                drop = focus() + fwd * 1.0 + mn.Vector3(0, 1.5, 0) if not free_cam else cam_pos + cam_forward() * 1.2
+                box.translation = drop
                 box.motion_type = habitat_sim.physics.MotionType.DYNAMIC
                 boxes.append(box)
 
         if key in KEY_UP:
             walk_until = now + 0.15
+        elif key in KEY_DOWN:
+            walk_until = 0.0
         if key in KEY_LEFT:
             turn_h = 1
         elif key in KEY_RIGHT:
             turn_h = -1
-        elif key in KEY_DOWN:
-            walk_until = 0.0
+
+        # mouse: clicks set goals, drag/wheel move the orbit camera
+        while clicks:
+            kind, a, b = clicks.pop(0)
+            if kind == "drag":
+                if free_cam:
+                    cam_yaw -= a * 0.005
+                    cam_pitch = max(-1.4, min(1.4, cam_pitch - b * 0.005))
+                else:
+                    orbit["yaw"] -= a * 0.005
+                    orbit["pitch"] = max(-1.45, min(-0.05, orbit["pitch"] - b * 0.005))
+            elif kind == "zoom":
+                orbit["dist"] = max(1.2, min(25.0, orbit["dist"] * (0.85 if a > 0 else 1.18)))
+            else:
+                goal = click_to_floor(a, b)
+                agent_obj = humanoid if kind == "human" else robot
+                if goal is not None and agent_obj is not None:
+                    start = agent_obj.feet if kind == "human" else agent_obj.pos
+                    pts = plan(start, goal)
+                    if pts:
+                        (agent_obj.walk_to if kind == "human" else agent_obj.go_to)(pts)
 
         # ---------------- simulate
         if humanoid:
-            humanoid.step(walk=now < walk_until or (args.selftest and key in KEY_UP), turn=turn_h)
+            manual = (now < walk_until) or (args.selftest and ch in ("w", "s") and not free_cam) or turn_h
+            if manual:
+                humanoid.path = None
+                humanoid.step(walk=(now < walk_until) or (args.selftest and ch in ("w", "s")), turn=turn_h)
+            elif not humanoid.follow_path():
+                humanoid.step(walk=False, turn=0)
         turn_h = 0
-        if robot and (move_r or turn_r):
-            robot.step(move_r, turn_r)
+        if robot:
+            if move_r or turn_r:
+                robot.path = None
+                robot.step(move_r, turn_r)
+            else:
+                robot.follow_path()
         sim.step_physics(1.0 / TICK_HZ)
 
         # ---------------- camera
-        if cam_mode == 1 and humanoid:
-            f = humanoid.forward
-            eye = humanoid.feet - f * 2.6 + mn.Vector3(0, 1.7, 0)
-            pos, yaw, pitch = eye, yaw_from_forward(f.x, f.z), -0.25
-        elif cam_mode == 2 and robot:
+        name = cam_modes[cam_mode]
+        tgt = focus()
+        if name == "orbit humanoid":
+            look = tgt + mn.Vector3(0, 1.0, 0)
+            d = camera_rotation(orbit["yaw"], orbit["pitch"]).transform_vector(mn.Vector3(0, 0, -1))
+            pos, yaw, pitch = look - d * orbit["dist"], orbit["yaw"], orbit["pitch"]
+        elif name == "top-down":
+            pos, yaw, pitch = tgt + mn.Vector3(0, max(3.0, orbit["dist"] * 2.5), 0), orbit["yaw"], -math.pi / 2 + 1e-3
+        elif name == "follow robot" and robot:
             f = robot.forward
             pos = robot.pos - f * 2.2 + mn.Vector3(0, 1.4, 0)
             yaw, pitch = yaw_from_forward(f.x, f.z), -0.3
@@ -568,15 +772,28 @@ def main():
         st.rotation = yaw_quat(yaw)
         agent.set_state(st, reset_sensors=False)
         set_sensor_pitch(agent, pitch)
+        view.update(pos=pos, yaw=yaw, pitch=pitch)
 
         obs = sim.get_sensor_observations()
 
         # ---------------- display
         frame = compose(obs, mode)
+        if mode in (1, 2, 3):  # draw planned paths and goals
+            for agent_obj, color in ((humanoid, (60, 220, 60)), (robot, (255, 160, 40))):
+                if agent_obj is None or not agent_obj.path:
+                    continue
+                start = agent_obj.feet if agent_obj is humanoid else agent_obj.pos
+                pts = [project(p + mn.Vector3(0, 0.05, 0), args.width, args.height, pos, yaw, pitch)
+                       for p in [start] + agent_obj.path]
+                pts = [q for q in pts if q is not None]
+                for a, b in zip(pts, pts[1:]):
+                    cv2.line(frame, a, b, color, 2, cv2.LINE_AA)
+                if pts:
+                    cv2.circle(frame, pts[-1], 8, color, 2, cv2.LINE_AA)
         dt = time.time() - t_last
         t_last = time.time()
         fps = 0.9 * fps + 0.1 * (1.0 / max(dt, 1e-6))
-        status = [f"{fps:5.1f} FPS   camera: {cam_modes[cam_mode]}   view: {['', 'RGB', 'depth', 'mask', 'all'][mode]}"]
+        status = [f"{fps:5.1f} FPS   camera: {name}   view: {['', 'RGB', 'depth', 'masks', 'all'][mode]}"]
         if show_help:
             status += HELP
         draw_text(frame, status)
@@ -605,9 +822,9 @@ def main():
     if args.selftest:
         report = []
         if humanoid:
-            report.append(f"humanoid walked {(humanoid.feet - start_h).length():.2f} m")
+            report.append(f"humanoid moved {(humanoid.feet - start_h).length():.2f} m")
         if robot:
-            report.append(f"robot drove {(robot.pos - start_r).length():.2f} m")
+            report.append(f"robot moved {(robot.pos - start_r).length():.2f} m")
         report.append(f"{len(boxes)} box(es), {shots} snapshot(s), last FPS {fps:.0f}")
         print("SELFTEST: " + "; ".join(report))
         ok = (humanoid is None or (humanoid.feet - start_h).length() > 0.3) and (
