@@ -553,8 +553,12 @@ jobs:
           F="^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-\|incompatible light setup"
           python evk4/tools/hrc_generate.py safety --data data --episodes 1 --seconds 4 --binning 8 \
               --out evk4-out/ds --preview --frames-every 15 2>&1 | grep -v "$F" | tail -40 | tee evk4-out/hrc-log.txt
-          python evk4/tools/hrc_generate.py actions --data data --episodes 2 --binning 8 --fall-prob 1 \
+          python evk4/tools/hrc_generate.py actions --data data --episodes 1 --binning 8 --fall-prob 1 \
               --out evk4-out/ds --preview --frames-every 10 2>&1 | grep -v "$F" | tail -40 | tee -a evk4-out/hrc-log.txt
+          python -m habitat_sim.utils.datasets_download --uids hab3_bench_assets --data-path data/ --no-replace 2>&1 | tail -2
+          ds=$(find -L data/hab3_bench_assets -name "*.scene_dataset_config.json" | head -1)
+          python evk4/tools/hrc_generate.py actions --data data --dataset "$ds" --scene 102816009 --episodes 1 --first 1 \
+              --binning 8 --fall-prob 1 --out evk4-out/ds --preview --frames-every 10 2>&1 | grep -v "$F" | tail -40 | tee -a evk4-out/hrc-log.txt
           python evk4/tools/hrc_train.py actions --root evk4-out/ds/actions --epochs 1 --out evk4-out/run_actions \
               --size 80x45 2>&1 | tail -40 | tee -a evk4-out/hrc-log.txt
           python evk4/tools/hrc_generate.py safety --data data --episodes 1 --first 1 --seconds 4 --binning 8 \

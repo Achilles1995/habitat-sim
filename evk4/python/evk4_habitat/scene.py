@@ -64,16 +64,56 @@ def _slerp_quat(a, b, f):
     return q / n if n > 0 else a
 
 
+def _polar(M3):
+    """Rotation and per-axis scale of a 3x3 linear map (handles scaled / slightly sheared frames)."""
+    U, _, Vt = np.linalg.svd(M3)
+    R = U @ Vt
+    if np.linalg.det(R) < 0:
+        U[:, -1] *= -1
+        R = U @ Vt
+    S = R.T @ M3
+    return R, S
+
+
+def _rot2quat(R):
+    """(x, y, z, w) of a rotation matrix."""
+    t = np.trace(R)
+    if t > 0:
+        s = 0.5 / math.sqrt(t + 1.0)
+        q = [(R[2, 1] - R[1, 2]) * s, (R[0, 2] - R[2, 0]) * s, (R[1, 0] - R[0, 1]) * s, 0.25 / s]
+    else:
+        i = int(np.argmax(np.diag(R)))
+        j, k = (i + 1) % 3, (i + 2) % 3
+        s = 2.0 * math.sqrt(max(1e-12, 1.0 + R[i, i] - R[j, j] - R[k, k]))
+        q = [0.0, 0.0, 0.0, (R[k, j] - R[j, k]) / s]
+        q[i] = 0.25 * s
+        q[j] = (R[j, i] + R[i, j]) / s
+        q[k] = (R[k, i] + R[i, k]) / s
+    q = np.array(q)
+    return q / np.linalg.norm(q)
+
+
+def _quat2rot(q):
+    x, y, z, w = q
+    return np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                     [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                     [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]])
+
+
 def _interp_transform(A: mn.Matrix4, B: mn.Matrix4, f: float) -> mn.Matrix4:
+    """Slerp of rotation, lerp of translation and of scale/shear, for possibly scaled transforms."""
     if f <= 0:
         return A
     if f >= 1:
         return B
-    qa = mn.Quaternion.from_matrix(A.rotation_normalized())
-    qb = mn.Quaternion.from_matrix(B.rotation_normalized())
-    q = mn.math.slerp_shortest_path(qa, qb, f)
-    t = A.translation * (1 - f) + B.translation * f
-    return mn.Matrix4.from_(q.to_matrix(), t)
+    a, b = m4(A), m4(B)
+    Ra, Sa = _polar(a[:3, :3])
+    Rb, Sb = _polar(b[:3, :3])
+    R = _quat2rot(_slerp_quat(_rot2quat(Ra), _rot2quat(Rb), f))
+    M = np.eye(4)
+    M[:3, :3] = R @ (Sa + f * (Sb - Sa))
+    M[:3, 3] = a[:3, 3] + f * (b[:3, 3] - a[:3, 3])
+    return to_mn(M)
 
 
 def _urdf_parents(urdf_path):

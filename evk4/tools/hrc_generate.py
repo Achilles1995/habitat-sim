@@ -464,30 +464,41 @@ def run_safety(args, idx, rng):
 def run_actions(args, idx, rng):
     ep = Episode(args, "actions", idx, rng)
     sim = ep.sim
-    # Spot waits facing the open part of the room (the longest free line of sight it can find)
-    rpos, yaw, best = nav_point(sim, rng), 0.0, -1.0
+    # Spot waits facing an open, walled part of the room: free line of sight over a +-25 deg cone
+    # and navigable floor 1.6 m and 2.5 m in front of it (where the person will interact)
     import habitat_sim
-    for _ in range(40):
+    rpos, yaw, best = nav_point(sim, rng), 0.0, -1.0
+
+    def free_dist(p, a):
+        d = mn.Vector3(math.cos(a), 0, -math.sin(a))
+        res = sim.cast_ray(habitat_sim.geo.Ray(np.array(p + mn.Vector3(0, 0.6, 0)), np.array(d)), 20.0)
+        return res.hits[0].ray_distance if res.has_hits() else -1.0   # no hit: gap in the scene mesh
+
+    for _ in range(80):
         p = nav_point(sim, rng)
         a = float(rng.uniform(-math.pi, math.pi))
-        d = mn.Vector3(math.cos(a), 0, -math.sin(a))
-        res = sim.cast_ray(habitat_sim.geo.Ray(np.array(p + mn.Vector3(0, 0.5, 0)), np.array(d)), 20.0)
-        if not res.has_hits():          # looking out through a gap in the scene mesh
+        cone = [free_dist(p, a + math.radians(da)) for da in (-25, 0, 25)]
+        if min(cone) < 0:
             continue
-        free = res.hits[0].ray_distance
-        if free > best:
-            rpos, yaw, best = p, a, free
+        d = mn.Vector3(math.cos(a), 0, -math.sin(a))
+        on_floor = all((evkh.snap(sim, p + d * r) - (p + d * r)).length() < 0.2 for r in (1.6, 2.5))
+        score = min(min(cone), 6.0) + (3.0 if on_floor else 0.0)
+        if score > best:
+            rpos, yaw, best = p, a, score
     ep.robot = evkh.Robot(sim, ep.motion, "spot", rpos, data_dir=args.data, yaw=yaw)
     rf = ep.robot.forward
-    # props: an object to pick (on the floor) and a stool to sit on
-    box_p = nav_point(sim, rng, near=rpos + rf * 2.0, radius=2.5)
-    stool_p = nav_point(sim, rng, near=rpos, radius=4.0)
+    side = mn.math.cross(rf, mn.Vector3(0, 1, 0)).normalized()
+    stage = rpos + rf * 1.8                     # where most of the interaction happens
+    # props in the robot's view: an object on the floor to pick and a stool to sit on
+    sgn = float(rng.choice([-1.0, 1.0]))
+    box_p = evkh.snap(sim, stage + rf * 0.6 + side * sgn * float(rng.uniform(0.6, 1.2)))
+    stool_p = evkh.snap(sim, stage + side * -sgn * float(rng.uniform(0.9, 1.4)))
     box = spawn_box(sim, ep.motion, box_p, (0.22, 0.22, 0.22), "box")
     stool = spawn_box(sim, ep.motion, stool_p, (0.45, 0.45, 0.45), "stool")
-    hp = nav_point(sim, rng, near=rpos + rf * min(3.0, 0.7 * best), radius=1.5)   # starts in view
+    hp = nav_point(sim, rng, near=rpos + rf * 3.5, radius=1.5)          # starts in view
     h = ep.add_human(hp, mn.Vector3(rpos - hp), "human0", float(rng.uniform(0.8, 1.3)))
     actor = ep.actors[0]
-    ep.make_cameras(np.array(rpos))
+    ep.make_cameras(np.array(stage))
     front = lambda: evkh.snap(sim, ep.robot.pos + ep.robot.forward * float(rng.uniform(1.4, 1.9)))
 
     # action program: (label, kind, params)
@@ -556,7 +567,7 @@ def run_actions(args, idx, rng):
             hand_pt = np.array(ep.robot.pos + ep.robot.forward * 0.45) + np.array([0, float(rng.uniform(0.7, 1.0)), 0])
             play("handover", "reach", float(rng.uniform(1.6, 2.4)), target=hand_pt, side=str(rng.choice(["right", "left"])))
         elif label == "point":
-            tgt = np.array(nav_point(sim, rng, near=h.feet, radius=5.0)) + np.array([0, 0.3, 0])
+            tgt = np.array(nav_point(sim, rng, near=h.feet, radius=5.0)) + np.array([0, float(rng.uniform(0.0, 1.5)), 0])
             play("point", "point", float(rng.uniform(1.5, 2.5)), target=tgt, side=str(rng.choice(["right", "left"])))
         elif label == "wave":
             face(ep.robot.pos)
@@ -566,7 +577,7 @@ def run_actions(args, idx, rng):
             walk(evkh.snap(sim, bp + (h.feet - bp).normalized() * 0.45), "walk")
             face(bp)
             play("pick", "pick", 2.0, target=np.array(box.translation), obj=box)
-            dest = nav_point(sim, rng, near=h.feet, radius=3.0)
+            dest = nav_point(sim, rng, near=stage, radius=1.5)
             walk(dest, "walk")
             drop = np.array(h.feet + h.forward * 0.45) + np.array([0, 0.11, 0])
             play("place", "place", 2.0, target=drop)
