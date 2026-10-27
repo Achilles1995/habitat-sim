@@ -534,11 +534,33 @@ jobs:
           set -o pipefail
           python evk4/tests/test_habitat_scene.py --data data --out evk4-out 2>&1 | grep -v "^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-\|incompatible light setup" | tail -80 | tee evk4-out/scene-log.txt
 
+      - name: HRC datasets (1 short episode per application) + 1-epoch training
+        id: hrc
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m pip install torch h5py 2>&1 | tail -1
+          cp data/humanoids/humanoid_data/female_2/female_2.urdf evk4-out/ 2>/dev/null || true
+          ls data/humanoids/humanoid_data | tee evk4-out/humanoids.txt
+          F="^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-\|incompatible light setup"
+          python evk4/tools/hrc_generate.py safety --data data --episodes 1 --seconds 4 --binning 8 \
+              --out evk4-out/ds --preview --frames-every 15 2>&1 | grep -v "$F" | tail -40 | tee evk4-out/hrc-log.txt
+          python evk4/tools/hrc_generate.py actions --data data --episodes 2 --binning 8 --fall-prob 1 \
+              --out evk4-out/ds --preview --frames-every 10 2>&1 | grep -v "$F" | tail -40 | tee -a evk4-out/hrc-log.txt
+          python evk4/tools/hrc_train.py actions --root evk4-out/ds/actions --epochs 1 --out evk4-out/run_actions \
+              --size 80x45 2>&1 | tail -40 | tee -a evk4-out/hrc-log.txt
+          python evk4/tools/hrc_generate.py safety --data data --episodes 1 --first 1 --seconds 4 --binning 8 \
+              --out evk4-out/ds 2>&1 | grep -v "$F" | tail -5 | tee -a evk4-out/hrc-log.txt
+          python evk4/tools/hrc_train.py safety --root evk4-out/ds/safety --epochs 1 --out evk4-out/run_safety \
+              --size 80x45 2>&1 | tail -40 | tee -a evk4-out/hrc-log.txt
+          find evk4-out/ds -name "*.h5" -size +40M -delete
+
       - name: Publish outputs to ci-logs-evk4 branch
         if: always()
         shell: bash
         run: bash tools/windows/publish_ci_logs.sh ci-logs-evk4 evk4-out
 
       - name: Fail if a check failed
-        if: steps.chain.outcome != 'success' || steps.scene.outcome != 'success'
+        if: steps.chain.outcome != 'success' || steps.scene.outcome != 'success' || steps.hrc.outcome != 'success'
         run: exit 1

@@ -120,6 +120,7 @@ class Humanoid:
         self.sim = sim
         n = sum(1 for e in motion.entities if e.kind == 1)
         iid = instance_id if instance_id is not None else 60000 + n
+        self.urdf = urdf
         self.ao = add_articulated(sim, urdf, iid)
         self.instance_id = motion.add_human(self.ao, name=name, urdf_path=urdf, instance_id=iid)
         self.name = name
@@ -207,6 +208,10 @@ class Humanoid:
             off = self.ao.get_link_joint_pos_offset(l)
             q[off:off + 4] = list(quat)
         self.ao.joint_positions = q
+        self.apply_root()
+
+    def apply_root(self):
+        """Base transform from the controller, with the optional world-space root_override."""
         T = (self.ctrl.obj_transform_base @ self.OFFSET_BASE.inverted()) @ self.ctrl.obj_transform_offset
         if self.root_override is not None:
             T = self.root_override @ T

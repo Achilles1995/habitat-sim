@@ -37,7 +37,6 @@ from __future__ import annotations
 import math
 import os
 import time
-import weakref
 
 import magnum as mn
 import numpy as np
@@ -55,7 +54,6 @@ from .scene import SceneMotion
 
 wp.config.quiet = True
 
-_EXPOSURE = weakref.WeakKeyDictionary()      # sim -> lux_per_unit shared by all cameras of a scene
 
 
 # ---------------------------------------------------------------------------------- kernels
@@ -394,15 +392,19 @@ class EVK4Habitat:
         """lux_per_unit: explicit, shared by the scene's cameras, or from the first render."""
         if self.lux_per_unit is not None:
             return self.lux_per_unit
-        if self.sim in _EXPOSURE:
-            self.lux_per_unit = _EXPOSURE[self.sim]
+        shared = getattr(self.sim, "_evk4_lux_per_unit", None)     # one exposure per scene
+        if shared is not None:
+            self.lux_per_unit = shared
             return self.lux_per_unit
         d = obs["depth"]
         geo = (d > 0) & (d < self.hab["far"])
         Y = (obs["rad"][..., :3] @ self.rgbw) / self.rgbw.sum()
         m = float(np.mean(Y[geo])) if np.any(geo) else 0.0
         self.lux_per_unit = 0.18 * self.hab["scene_lux"] / m if m > 1e-9 else float(self.cfg["lux_per_unit"])
-        _EXPOSURE[self.sim] = self.lux_per_unit
+        try:
+            self.sim._evk4_lux_per_unit = self.lux_per_unit
+        except Exception:  # noqa: BLE001
+            pass
         return self.lux_per_unit
 
     def _render(self, t, flow_ctx=None):
