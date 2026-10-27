@@ -84,6 +84,7 @@ jobs:
           path: dist/*.whl
 
       - name: Publish wheel to the windows-wheel-latest release
+        continue-on-error: true   # concurrent uploads from the matrix can race; the artifact is what tests use
         shell: bash
         run: |
           set -e
