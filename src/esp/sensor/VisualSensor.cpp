@@ -56,7 +56,8 @@ void VisualSensorSpec::sanityCheck() const {
 bool VisualSensorSpec::operator==(const VisualSensorSpec& a) const {
   return SensorSpec::operator==(a) && resolution == a.resolution &&
          channels == a.channels && gpu2gpuTransfer == a.gpu2gpuTransfer &&
-         far == a.far && near == a.near && a.clearColor == clearColor;
+         far == a.far && near == a.near && a.clearColor == clearColor &&
+         hdr == a.hdr;
 }
 
 VisualSensor::VisualSensor(scene::SceneNode& node, VisualSensorSpec::ptr spec)
@@ -93,6 +94,9 @@ bool VisualSensor::getObservationSpace(ObservationSpace& space) {
     space.dataType = core::DataType::DT_UINT32;
   } else if (visualSensorSpec_->sensorType == SensorType::Depth) {
     space.dataType = core::DataType::DT_FLOAT;
+  } else if (visualSensorSpec_->sensorType == SensorType::Color &&
+             visualSensorSpec_->hdr) {
+    space.dataType = core::DataType::DT_FLOAT;
   }
   return true;
 }
@@ -116,6 +120,10 @@ void VisualSensor::readObservation(Observation& obs) {
   } else if (visualSensorSpec_->sensorType == SensorType::Depth) {
     renderTarget().readFrameDepth(Magnum::MutableImageView2D{
         Magnum::PixelFormat::R32F, renderTarget().framebufferSize(),
+        obs.buffer->data});
+  } else if (visualSensorSpec_->hdr) {
+    renderTarget().readFrameRgba(Magnum::MutableImageView2D{
+        Magnum::PixelFormat::RGBA32F, renderTarget().framebufferSize(),
         obs.buffer->data});
   } else {
     renderTarget().readFrameRgba(Magnum::MutableImageView2D{

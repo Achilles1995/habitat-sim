@@ -120,7 +120,12 @@ void initSensorBindings(py::module& m) {
           "semantic_target", &VisualSensorSpec::semanticTarget,
           R"(The type of information rendered by the semantic sensor. If this sensor is not semantic,
             this is ignored. Acceptable values : [SEMANTIC_ID(default), OBJECT_ID])")
-      .def_readwrite("clear_color", &VisualSensorSpec::clearColor);
+      .def_readwrite("clear_color", &VisualSensorSpec::clearColor)
+      .def_readwrite(
+          "hdr", &VisualSensorSpec::hdr,
+          R"(Color sensors: render into a half-float target and return float32
+            RGBA observations (unclamped, linear when tonemapping and sRGB output
+            are disabled in the PBR config) instead of uint8.)");
 
   // ====CameraSensorSpec ====
   py::class_<CameraSensorSpec, CameraSensorSpec::ptr, VisualSensorSpec>(

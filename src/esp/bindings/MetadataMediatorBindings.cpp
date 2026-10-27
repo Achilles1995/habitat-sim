@@ -71,6 +71,13 @@ void initMetadataMediatorBindings(py::module& m) {
           R"(The current dataset's StageAttributesManager instance
             for configuring simulation stage templates.)")
       .def_property_readonly(
+          "pbr_template_manager",
+          &MetadataMediator::getPbrShaderAttributesManager,
+          pybind11::return_value_policy::reference,
+          R"(The current PbrShaderAttributesManager instance for configuring PBR/IBL
+            shader settings (tonemapping, sRGB output and texture linearization).
+            Templates edited here before the scene is loaded apply to its drawables.)")
+      .def_property_readonly(
           "urdf_paths", &MetadataMediator::getArticulatedObjectModelFilenames,
           pybind11::return_value_policy::reference,
           R"(Access to the dictionary of URDF paths, keyed by shortened name, value being full path.)")

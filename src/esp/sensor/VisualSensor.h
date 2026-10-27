@@ -60,6 +60,14 @@ struct VisualSensorSpec : public SensorSpec {
   Mn::Color4 clearColor = {0, 0, 0, 1};
 
   /**
+   * @brief Color sensors only: render into a half-float (RGBA16F) target and
+   * return float32 observations instead of uint8. Values are whatever the
+   * shaders output, unclamped; with tonemapping and sRGB output disabled in
+   * the PBR configuration this is linear scene radiance.
+   */
+  bool hdr = false;
+
+  /**
    * @brief the type of semantic information being rendered by the semantic
    * sensor. Ignored by non-semantic sensors
    */

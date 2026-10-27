@@ -475,3 +475,70 @@ jobs:
       - name: Fail if the viewer failed
         if: steps.viewer.outcome != 'success' || steps.hssd.outcome != 'success'
         run: exit 1
+
+  evk4:
+    needs: build_wheel
+    runs-on: windows-2022
+    timeout-minutes: 90
+    env:
+      PYTHONUTF8: "1"
+      GALLIUM_DRIVER: llvmpipe
+      GH_TOKEN: ${{ github.token }}
+      GIT_CLONE_PROTECTION_ACTIVE: "false"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: habitat-sim-windows-wheel-py3.12
+          path: dist
+
+      - name: Install wheel + EVK4 dependencies (Warp runs on the CPU here)
+        shell: pwsh
+        run: |
+          python -m pip install -U pip
+          python -m pip install (Get-ChildItem dist/*.whl).FullName opencv-python mujoco warp-lang scipy imageio imageio-ffmpeg
+
+      - name: Install Mesa software OpenGL (runners have no GPU)
+        shell: pwsh
+        run: |
+          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
+          $pydir = Split-Path (python -c "import sys; print(sys.executable)")
+          Copy-Item mesa/x/x64/*.dll $pydir -Force
+
+      - name: Download scenes, humanoids, Spot
+        shell: bash
+        run: |
+          git lfs install
+          python -m habitat_sim.utils.datasets_download --uids habitat_test_scenes habitat_humanoids hab_spot_arm --data-path data/ --no-replace 2>&1 | tail -5
+
+      - name: EVK4 photon chain (analytic scene)
+        id: chain
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p evk4-out
+          python evk4/tests/test_habitat_chain.py 2>&1 | tee evk4-out/chain-log.txt
+
+      - name: EVK4 in a Habitat scene (humanoid, Spot, wall camera)
+        id: scene
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python evk4/tests/test_habitat_scene.py --data data --out evk4-out 2>&1 | grep -v "^\s*GL_\|^Using\|^\s*mesa-\|^\s*no-\|incompatible light setup" | tail -80 | tee evk4-out/scene-log.txt
+
+      - name: Publish outputs to ci-logs-evk4 branch
+        if: always()
+        shell: bash
+        run: bash tools/windows/publish_ci_logs.sh ci-logs-evk4 evk4-out
+
+      - name: Fail if a check failed
+        if: steps.chain.outcome != 'success' || steps.scene.outcome != 'success'
+        run: exit 1

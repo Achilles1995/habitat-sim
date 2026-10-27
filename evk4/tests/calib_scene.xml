@@ -1,0 +1,19 @@
+<mujoco model="evk4 calibration: static uniform gray target">
+  <option timestep="0.001"/>
+  <extension><plugin plugin="prophesee.sensor.evk4"/></extension>
+  <visual><global bvactive="false"/></visual>
+  <worldbody>
+    <light name="L" type="directional" dir="0 0 -1" diffuse="1 1 1" specular="0 0 0" ambient="0 0 0" castshadow="false"/>
+    <geom type="plane" size="2 2 0.1" rgba="0.5 0.5 0.5 1"/>
+    <body name="cam" pos="0 0 0.5"><camera name="c" fovy="40"/></body>
+  </worldbody>
+  <sensor>
+    <plugin name="evk4" plugin="prophesee.sensor.evk4" objtype="camera" objname="c">
+      <config key="resolution" value="160 90"/>
+      <config key="focal_length_mm" value="4.0"/>
+      <config key="leak_rate_hz" value="0"/>
+      <config key="hot_pixel_fraction" value="0"/>
+      <config key="nthread" value="2"/>
+    </plugin>
+  </sensor>
+</mujoco>

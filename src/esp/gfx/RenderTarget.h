@@ -57,6 +57,15 @@ class RenderTarget {
      * Enable HBAO visual effect that adds soft shadows to corners and crevices.
      */
     HorizonBasedAmbientOcclusion = 1 << 3,
+
+    /**
+     * Store the rgba attachment as half floats (RGBA16F) instead of RGBA8, so
+     * linear (not tonemapped, not sRGB-encoded) radiance above 1.0 and in
+     * dark regions survives without clamping or 8-bit quantization. Used by
+     * color sensors with @ref sensor::VisualSensorSpec::hdr set, e.g. as
+     * the irradiance input of physics-based event-camera simulators.
+     */
+    HdrRgbaAttachment = 1 << 4,
   };
 
   typedef Corrade::Containers::EnumSet<Flag> Flags;

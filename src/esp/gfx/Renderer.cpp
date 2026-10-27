@@ -337,6 +337,9 @@ struct Renderer::Impl {
             "render buffer while the simulator was initialized with "
             "requiresTextures = false", );
         renderTargetFlags |= RenderTarget::Flag::RgbaAttachment;
+        if (sensor.specification()->hdr) {
+          renderTargetFlags |= RenderTarget::Flag::HdrRgbaAttachment;
+        }
         // TODO complete support for other camera types (fisheye,
         // equirectanguular) to use hbao.
         if ((sensor.canUseHBAO()) &&

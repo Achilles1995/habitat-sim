@@ -141,6 +141,19 @@ class Sensor:
                 self.view = mn.MutableImageView2D(
                     mn.PixelFormat.R32F, size, self._buffer
                 )
+            elif self._spec.sensor_type == SensorType.COLOR and getattr(
+                self._spec, "hdr", False
+            ):
+                # linear float radiance (RGBA16F target, read back as float32)
+                self._buffer = np.empty(
+                    (self._spec.resolution[0], self._spec.resolution[1], 4),
+                    dtype=np.float32,
+                )
+                self.view = mn.MutableImageView2D(
+                    mn.PixelFormat.RGBA32F,
+                    size,
+                    self._buffer.reshape(self._spec.resolution[0], -1),
+                )
             else:
                 self._buffer = np.empty(
                     (
