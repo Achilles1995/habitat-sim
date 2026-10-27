@@ -52,7 +52,16 @@ def make_simulator(scene: str, dataset: str | None = None, sensors=(), physics=T
     backend.load_semantic_mesh = True
     backend.gpu_device_id = gpu_device_id
     agent_cfg = habitat_sim.agent.AgentConfiguration()
-    agent_cfg.sensor_specifications = list(sensors)
+    sensors = list(sensors)
+    if not any(sp.sensor_type == habitat_sim.SensorType.COLOR for sp in sensors):
+        # habitat_sim only creates a renderer and loads textures when an agent has a colour
+        # sensor at start-up; a tiny one keeps that true for the EVK4 sensors added later
+        sp = habitat_sim.CameraSensorSpec()
+        sp.uuid = "evk4_keepalive_rgb"
+        sp.sensor_type = habitat_sim.SensorType.COLOR
+        sp.resolution = [16, 16]
+        sensors.append(sp)
+    agent_cfg.sensor_specifications = sensors
     mm = habitat_sim.metadata.MetadataMediator(backend)
     linear_pbr(mm)
     sim = habitat_sim.Simulator(habitat_sim.Configuration(backend, [agent_cfg], metadata_mediator=mm))
