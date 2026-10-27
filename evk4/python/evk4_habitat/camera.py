@@ -671,8 +671,9 @@ class EVK4Habitat:
         lux = self.lux_per_unit or float(self.cfg["lux_per_unit"])
         rgb_lin = np.maximum(obs["rad"][..., :3], 0) * lux / math.pi       # cd/m^2 per channel
         lum = rgb_lin @ self.rgbw / self.rgbw.sum()
-        expo = 0.18 / max(1e-6, float(np.percentile(lum, 50)) if np.any(lum > 0) else 1.0)
-        v = np.clip(rgb_lin * expo, 0, None)
+        # fixed exposure per scene: an 18 % grey surface at the scene illuminance maps to mid-grey
+        key = 0.18 * float(self.hab["scene_lux"]) / math.pi
+        v = np.clip(rgb_lin * (0.5 / key), 0, None)
         v = v / (1.0 + v)                                                    # Reinhard
         srgb = np.where(v <= 0.0031308, 12.92 * v, 1.055 * np.power(v, 1 / 2.4) - 0.055)
         Kr = np.array([[self.fr, 0, self.cxr], [0, self.fr, self.cyr], [0, 0, 1.0]])

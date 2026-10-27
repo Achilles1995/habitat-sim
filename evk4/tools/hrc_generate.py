@@ -133,16 +133,21 @@ def event_rgb(ev, W, H, human_ids=()):
 
 # ------------------------------------------------------------------------------------ scene helpers
 def nav_point(sim, rng, near=None, radius=None):
+    """Random navigable point (within `radius` of `near`, if given; same island as `near`)."""
     pf = sim.pathfinder
-    for _ in range(50):
+    pts = []
+    for _ in range(64):
         pf.seed(int(rng.integers(1 << 30)))
-        if near is not None:
-            p = pf.get_random_navigable_point_near(np.array(near), radius)
-        else:
-            p = pf.get_random_navigable_point()
+        p = pf.get_random_navigable_point()
         if evsim.finite(p):
-            return mn.Vector3(p)
-    return mn.Vector3(near) if near is not None else mn.Vector3(0, 0, 0)
+            pts.append(mn.Vector3(p))
+    if near is None:
+        return pts[0] if pts else mn.Vector3(0, 0, 0)
+    c = evkh.snap(sim, near)
+    ok = [p for p in pts if (p - c).length() <= radius and abs(p.y - c.y) < 0.5 and evkh.plan(sim, c, p)]
+    if ok:
+        return ok[int(rng.integers(len(ok)))]
+    return c
 
 
 def path_len(sim, a, b):
@@ -200,6 +205,7 @@ def spawn_box(sim, motion, pos, size, name):
 class Episode:
     def __init__(self, args, app, idx, rng):
         self.args, self.app, self.idx, self.rng = args, app, idx, rng
+        self.default_cams = ["spot_front", "wall0"] if app == "safety" else ["spot_head", "wall0"]
         self.dir = os.path.join(args.out, app, f"ep{idx:04d}")
         os.makedirs(self.dir, exist_ok=True)
         scene = args.scene or os.path.join(args.data, "scene_datasets/habitat-test-scenes/van-gogh-room.glb")
@@ -233,11 +239,12 @@ class Episode:
         if a.bias:
             cfg.update(json.loads(a.bias))
         cams = {}
-        if "spot_front" in a.cams:
-            cams["spot_front"] = evkh.EVK4Habitat(self.sim, evkh.spot_mount(self.robot.ao, "front"), self.motion,
-                                                  name="evk4_spot_front", config=dict(cfg, hfov_deg=a.hfov_robot),
-                                                  device=a.device)
-        nwall = sum(c.startswith("wall") for c in a.cams)
+        for name in a.cams or self.default_cams:
+            if name.startswith("spot_"):
+                cams[name] = evkh.EVK4Habitat(self.sim, evkh.spot_mount(self.robot.ao, name[5:]), self.motion,
+                                              name=f"evk4_{name}", config=dict(cfg, hfov_deg=a.hfov_robot),
+                                              device=a.device)
+        nwall = sum(c.startswith("wall") for c in (a.cams or self.default_cams))
         for k in range(nwall):
             pose = wall_camera_pose(self.sim, center, self.rng)
             if pose is None:
@@ -465,7 +472,9 @@ def run_actions(args, idx, rng):
         a = float(rng.uniform(-math.pi, math.pi))
         d = mn.Vector3(math.cos(a), 0, -math.sin(a))
         res = sim.cast_ray(habitat_sim.geo.Ray(np.array(p + mn.Vector3(0, 0.5, 0)), np.array(d)), 20.0)
-        free = res.hits[0].ray_distance if res.has_hits() else 20.0
+        if not res.has_hits():          # looking out through a gap in the scene mesh
+            continue
+        free = res.hits[0].ray_distance
         if free > best:
             rpos, yaw, best = p, a, free
     ep.robot = evkh.Robot(sim, ep.motion, "spot", rpos, data_dir=args.data, yaw=yaw)
@@ -479,7 +488,7 @@ def run_actions(args, idx, rng):
     h = ep.add_human(hp, mn.Vector3(rpos - hp), "human0", float(rng.uniform(0.8, 1.3)))
     actor = ep.actors[0]
     ep.make_cameras(np.array(rpos))
-    front = lambda: evkh.snap(sim, ep.robot.pos + ep.robot.forward * float(rng.uniform(1.0, 1.3)))
+    front = lambda: evkh.snap(sim, ep.robot.pos + ep.robot.forward * float(rng.uniform(1.4, 1.9)))
 
     # action program: (label, kind, params)
     prog = [("idle", None)]
@@ -618,7 +627,9 @@ def main():
     ap.add_argument("--binning", type=int, default=2)
     ap.add_argument("--hfov-robot", type=float, default=90.0)
     ap.add_argument("--hfov-wall", type=float, default=80.0)
-    ap.add_argument("--cams", nargs="+", default=["spot_front", "wall0"], help="spot_front wall0 [wall1 ...]")
+    ap.add_argument("--cams", nargs="+", default=None,
+                    help="spot_front | spot_head | spot_top | spot_rear, wall0 [wall1 ...] "
+                         "(default: safety spot_front wall0, actions spot_head wall0)")
     ap.add_argument("--bias", default="", help='JSON dict of EVK4 config overrides, e.g. \'{"bias_diff_on": 10}\'')
     ap.add_argument("--humanoids", nargs="+", default=["female_2", "male_1", "female_0", "male_0"])
     ap.add_argument("--max-humans", type=int, default=2)

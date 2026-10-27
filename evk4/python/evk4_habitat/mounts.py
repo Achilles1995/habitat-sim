@@ -98,6 +98,8 @@ SPOT_MOUNTS = {
     "front": dict(link=-1, pos=(0.47, 0.02, 0.0), look_dir=(1, 0, 0), pitch_deg=12.0),
     # on top of the body, looking forward over the arm: wider view of a shared workspace
     "top": dict(link=-1, pos=(0.20, 0.22, 0.0), look_dir=(1, 0, 0), pitch_deg=8.0),
+    # raised on the body, looking slightly up: whole people at 1-3 m (interaction / gestures)
+    "head": dict(link=-1, pos=(0.30, 0.38, 0.0), look_dir=(1, 0, 0), pitch_deg=-10.0),
     # rear bumper, looking backward
     "rear": dict(link=-1, pos=(-0.47, 0.02, 0.0), look_dir=(-1, 0, 0), pitch_deg=12.0),
 }
