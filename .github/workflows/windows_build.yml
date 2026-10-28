@@ -502,7 +502,7 @@ jobs:
         shell: pwsh
         run: |
           python -m pip install -U pip
-          python -m pip install (Get-ChildItem dist/*.whl).FullName opencv-python mujoco warp-lang scipy imageio imageio-ffmpeg
+          python -m pip install (Get-ChildItem dist/*.whl).FullName opencv-python mujoco "warp-lang<1.18" scipy imageio imageio-ffmpeg
 
       - name: Install Mesa software OpenGL (runners have no GPU)
         shell: pwsh

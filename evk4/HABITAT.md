@@ -135,3 +135,9 @@ Lower `--binning`, the number of cameras or `max_substeps` to trade fidelity for
   - flow direction;
   - ego-motion flow.
 - The original MuJoCo tests are in `evk4/tests/test_*.py` (unchanged).
+
+## Warp and the NVIDIA driver
+
+Warp 1.18+ on PyPI is built with CUDA 13 and needs NVIDIA driver 580 or newer. With an older
+driver (CUDA 12.x, driver 525 or newer), install `pip install "warp-lang<1.18"`, which is built
+with CUDA 12.9. The CI tests run with this version, and so do the original MuJoCo GPU-backend tests.
