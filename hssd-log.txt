@@ -1,0 +1,175 @@
+dataset: data/hab3_bench_assets/hab3-hssd/hab3-hssd.scene_dataset_config.json
+102816009
+103997919_171031233
+108736635_177263256
+3 scenes
+scene: 102816009
+== dataset configs:
+data/hab3_bench_assets/hab3-hssd/hab3-hssd.scene_dataset_config.json
+== data/hab3_bench_assets/hab3-hssd/hab3-hssd.scene_dataset_config.json:
+{
+    "stages": {
+        "paths": {
+            ".json": [
+                "stages"
+            ]
+        }
+    },
+    "objects": {
+        "paths": {
+            ".json": [
+                "objects/*", "objects/decomposed/*"
+            ]
+        }
+    },
+    "scene_instances": {
+        "default_attributes": {
+            "default_lighting": "",
+            "semantic_scene_instance": "%%CONFIG_NAME_AS_ASSET_FILENAME%%.semantic_config.json"
+        },
+        "paths": {
+            ".json": [
+                "scenes"
+            ]
+        }
+    },
+    "semantic_scene_descriptor_instances": {
+        "default_attributes": {
+          "semantic_descriptor_filename": "../hssd-hab_semantic_lexicon.json"
+        },
+        "paths": {
+          ".json": [
+            "semantics/scenes/*"
+          ]
+        }
+      }
+}
+== hab3-hssd top level:
+total 16
+drwxr-xr-x 1 runneradmin 197121   0 Oct 28 12:42 .
+drwxr-xr-x 1 runneradmin 197121   0 Oct 28 12:42 ..
+-rw-r--r-- 1 runneradmin 197121 864 Oct 28 12:42 hab3-hssd.scene_dataset_config.json
+drwxr-xr-x 1 runneradmin 197121   0 Oct 28 12:42 objects
+drwxr-xr-x 1 runneradmin 197121   0 Oct 28 12:42 scene_filter_files
+drwxr-xr-x 1 runneradmin 197121   0 Oct 28 12:42 scenes
+drwxr-xr-x 1 runneradmin 197121   0 Oct 28 12:42 semantics
+drwxr-xr-x 1 runneradmin 197121   0 Oct 28 12:42 stages
+== semantic files:
+data/hab3_bench_assets/hab3-hssd/../hab3-hssd
+data/hab3_bench_assets/hab3-hssd/../hab3-hssd/hab3-hssd.scene_dataset_config.json
+data/hab3_bench_assets/hab3-hssd/../hab3-hssd/semantics
+== scene instance file:
+data/hab3_bench_assets/hab3-hssd/scenes/102816009.scene_instance.json
+{
+    "translation_origin": "asset_local",
+    "default_lighting": "",
+    "navmesh_instance": "",
+    "semantic_scene_instance": "hssd_ssd_map",
+    "object_instances": [
+        {
+            "template_name": "cb47ce31bd4309c8b3c99a1d53db43f7046cb489",
+            "translation": [
+                3.7058899,
+                4.76837158203125e-7,
+                -7.8203897
+            ],
+            "motion_type": "static"
+        },
+        {
+            "template_name": "ff58c8c8355fe29fbe0284bef176aa9476e57622",
+            "translation": [
+                -16.6628494,
+                -2.0349398255348206e-7,
+                3.41627
+            ],
+            "motion_type": "static",
+            "non_uniform_scale": [
+                1.9730273,
+                0.9999998,
+                1.4777078
+            ]
+        },
+        {
+            "template_name": "49793cec056d084592ad23345e466c9ba0077b55",
+            "translation": [
+                2.2885799,
+                -3.5762786865234377e-7,
+                6.0286388
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+            ],
+            "motion_type": "static"
+        },
+        {
+            "template_name": "49793cec056d084592ad23345e466c9ba0077b55",
+            "translation": [
+                -6.05198,
+                -1.4901161193847657e-7,
+                2.5693295
+            ],
+     
+== semantics folder:
+data/hab3_bench_assets/hab3-hssd/semantics
+data/hab3_bench_assets/hab3-hssd/semantics/scenes
+data/hab3_bench_assets/hab3-hssd/semantics/scenes/103997919_171031233.semantic_config.json
+== a semantic config:
+data/hab3_bench_assets/hab3-hssd/semantics/scenes/103997919_171031233.semantic_config.json
+{
+  "region_annotations": [
+    {
+      "name": "living room",
+      "label": "living room",
+      "poly_loop": [
+        [
+          -7.698999881744385,
+          0.0,
+          -2.635000228881836
+        ],
+        [
+          -7.698999881744385,
+          0.0,
+          -8.425999641418457
+        ],
+        [
+          -0.07899999618530273,
+          0.0,
+          -8.425999641418457
+        ],
+        [
+          -0.07899999618530273,
+          0.0,
+          -2.634999990463257
+        ],
+        [
+          -3.127000093460083,
+          0.0,
+          -2.634999990463257
+        ]
+      ],
+      "floor_height": 0.0,
+      "extrusion_height": 2.799999952316284,
+      "min_bounds": [
+        -7.698999881744385,
+        0.0,
+        -8.425999641418457
+== registered semantic attributes:
+manager: None
+no python access
+== episodes reference:
+data/hab3_bench_assets/episode_datasets\large_large.json.gz data/hab3_bench_assets/hab3-hssd/hab3-hssd.scene_dataset_config.json data/hab3_bench_assets/hab3-hssd/scenes/102816009.scene_instance.json
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+scene: D:\a\habitat-sim\habitat-sim\data\hab3_bench_assets\hab3-hssd\scenes\102816009.scene_instance.json
+No navmesh in this scene; computing one ...
+navmesh ready
+saved hssd-out\shot_000_*
+saved hssd-out\shot_001_*
+saved hssd-out\shot_002_*
+saved hssd-out\shot_003_*
+SELFTEST: humanoid walked 1.29 m (click-walk 1.07 m); robot drove 5.83 m (click-drive 4.63 m); 1 box(es), 4 snapshot(s), last FPS 1
