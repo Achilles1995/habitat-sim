@@ -1,0 +1,730 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261028124111
+Username: runnervmnjgfq\runneradmin
+RunAs User: runnervmnjgfq\runneradmin
+Configuration Name: 
+Machine: runnervmnjgfq (Microsoft Windows NT 10.0.20348.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\windows\gpu_test.ps1 -Dir C:\ht -Branch windows-port -WithHabitatLab
+Process ID: 2980
+PSVersion: 5.1.20348.5756
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.20348.5756
+BuildVersion: 10.0.20348.5756
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+==== 1/5 Checking prerequisites ====
+Python: 3.10.11 64
+Git: git version 2.56.0.windows.3
+git-lfs/3.8.1 (GitHub; windows amd64; go 1.27.3; git a662a6db)
+WARNING: nvidia-smi not found - is the NVIDIA driver installed?
+
+==== 2/5 Creating virtual environment and installing habitat-sim ====
+Set 'High performance' GPU preference for: C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+Downloading habitat_sim-0.3.3-cp310-cp310-win_amd64.whl (106.6 MB)
+habitat-sim Windows wheel
+branch: windows-port
+commit: 58caf78c2d30f9716f6cb89b8780cae8d3bd7adc
+run: https://github.com/Achilles1995/habitat-sim/actions/runs/40688051924
+habitat_sim 0.3.3 bullet: True
+
+==== 3/5 Downloading test scenes and humanoids ====
+Cloning into 'C:\ht\data/versioned_data/habitat_test_scenes'...
+Filtering content:  25% (1/4)
+Filtering content:  50% (2/4)
+Filtering content:  75% (3/4), 21.33 MiB | 36.02 MiB/s
+Filtering content: 100% (4/4), 21.33 MiB | 36.02 MiB/s
+Filtering content: 100% (4/4), 105.54 MiB | 43.67 MiB/s, done.
+4 local objects, 0 retained, done.
+Deleting objects: 100% (4/4), done.
+Cloning into 'C:\ht\data/versioned_data/habitat_humanoids'...
+Filtering content:  22% (9/40)
+Filtering content:  25% (10/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  27% (11/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  30% (12/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  32% (13/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  35% (14/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  37% (15/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  40% (16/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  42% (17/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  45% (18/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  47% (19/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  50% (20/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  52% (21/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  55% (22/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  57% (23/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  60% (24/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  62% (25/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  65% (26/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  67% (27/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  70% (28/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  72% (29/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  75% (30/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  77% (31/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  80% (32/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  82% (33/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  85% (34/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  87% (35/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  90% (36/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  92% (37/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  95% (38/40), 36.86 MiB | 68.46 MiB/s
+Filtering content:  97% (39/40), 36.86 MiB | 68.46 MiB/s
+Filtering content: 100% (40/40), 36.86 MiB | 68.46 MiB/s
+Filtering content: 100% (40/40), 56.58 MiB | 44.74 MiB/s, done.
+31 local objects, 0 retained, done.
+Deleting objects: 100% (31/31), done.
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/habitat_test_scenes.git C:\ht\data/versioned_data/habitat_test_scenes
+=======================================================
+Dataset (habitat_test_scenes) successfully downloaded.
+Source: 'C:\ht\data/versioned_data/habitat_test_scenes'
+Symlink: 'C:\ht\data\scene_datasets\habitat-test-scenes'
+=======================================================
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/habitat_humanoids.git C:\ht\data/versioned_data/habitat_humanoids
+=======================================================
+Dataset (habitat_humanoids) successfully downloaded.
+Source: 'C:\ht\data/versioned_data/habitat_humanoids'
+Symlink: 'C:\ht\data\humanoids\humanoid_data'
+=======================================================
+
+==== 4/5 Running habitat-sim tests on the GPU ====
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:05:48:640605]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:05:48:641060]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:05:48:641107]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `C:/ht/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:05:48:641128]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:05:56:093847]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:05:56:473462]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:05:56:473754]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:05:56:473815]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `C:/ht/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:05:56:473843]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:06:03:934970]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:06:04:117345]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:06:04:117671]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:06:04:117752]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `C:/ht/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:06:04:117778]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:06:11:533841]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+Render scene: C:\ht\data\scene_datasets\habitat-test-scenes\van-gogh-room.glb
+[PASS] import and build info (0.0s) version=0.3.3 python=3.10.11 Windows-10-10.0.20348-SP0 built_with_bullet=True cuda_enabled=False audio_enabled=False
+[SKIP] dataset config + glob patterns: repo test assets not present (only in a habitat-sim checkout)
+[PASS] offscreen render RGB/depth/semantic (7.9s) van-gogh-room.glb: 100% non-black pixels, depth max 0.34 m (agent via navmesh)
+[PASS] bullet physics: falling cube (7.6s) cube fell 4.52 m in 1 s
+[PASS] render throughput (8.7s) 106.5 FPS at 640x640 (RGB+depth+semantic) in van-gogh-room.glb
+
+4/4 checks passed
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:06:13:701706]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:06:13:702066]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:06:13:702127]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `C:/ht/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:06:13:702155]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:06:21:143253]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+[00:06:26:481674]:[Error]:[Physics] D:\a\habitat-sim\habitat-sim\src\esp\physics\objectWrappers\ManagedPhysicsObjectBase.h(409)::esp::physics::AbstractManagedPhysicsObject<class esp::physics::ArticulatedObject>::getObjectReference : This object no longer exists.  Please delete any variable references.
+[00:06:26:481724]:[Error]:[Physics] D:\a\habitat-sim\habitat-sim\src\esp\physics\objectWrappers\ManagedPhysicsObjectBase.h(409)::esp::physics::AbstractManagedPhysicsObject<class esp::physics::ArticulatedObject>::getObjectReference : This object no longer exists.  Please delete any variable references.
+viewpoint: floor=[4.13 0.18 0.63] yaw=90 deg, open depth ahead 4.11 m
+[PASS] avatar=female_0 links=-1 joint_dofs=216 load=0.25s | pixels changed by humanoid: 2.7%, semantic mask: 3.1%, pixels changed by posing: 0.8% | 29.1 FPS at 512px
+
+==== 5/5 Habitat-Lab + Habitat 3.0 humanoid task ====
+Cloning into 'C:\ht\habitat-lab\data/versioned_data/hab3_bench_assets'...
+Updating files:  20% (217/1037)
+Updating files:  21% (218/1037)
+Updating files:  22% (229/1037)
+Updating files:  23% (239/1037)
+Updating files:  24% (249/1037)
+Updating files:  25% (260/1037)
+Updating files:  26% (270/1037)
+Updating files:  27% (280/1037)
+Updating files:  28% (291/1037)
+Updating files:  29% (301/1037)
+Updating files:  30% (312/1037)
+Updating files:  31% (322/1037)
+Updating files:  32% (332/1037)
+Updating files:  33% (343/1037)
+Updating files:  34% (353/1037)
+Updating files:  35% (363/1037)
+Updating files:  36% (374/1037)
+Updating files:  37% (384/1037)
+Updating files:  38% (395/1037)
+Updating files:  39% (405/1037)
+Updating files:  40% (415/1037)
+Updating files:  41% (426/1037)
+Updating files:  42% (436/1037)
+Updating files:  43% (446/1037)
+Updating files:  44% (457/1037)
+Updating files:  45% (467/1037)
+Updating files:  46% (478/1037)
+Updating files:  47% (488/1037)
+Updating files:  48% (498/1037)
+Updating files:  49% (509/1037)
+Updating files:  50% (519/1037)
+Updating files:  51% (529/1037)
+Updating files:  51% (536/1037)
+Updating files:  52% (540/1037)
+Updating files:  53% (550/1037)
+Updating files:  54% (560/1037)
+Updating files:  55% (571/1037)
+Updating files:  56% (581/1037)
+Updating files:  57% (592/1037)
+Updating files:  58% (602/1037)
+Updating files:  59% (612/1037)
+Updating files:  60% (623/1037)
+Updating files:  61% (633/1037)
+Updating files:  62% (643/1037)
+Updating files:  63% (654/1037)
+Updating files:  64% (664/1037)
+Updating files:  65% (675/1037)
+Updating files:  66% (685/1037)
+Updating files:  67% (695/1037)
+Updating files:  68% (706/1037)
+Updating files:  69% (716/1037)
+Updating files:  70% (726/1037)
+Updating files:  70% (736/1037)
+Updating files:  71% (737/1037)
+Updating files:  72% (747/1037)
+Updating files:  73% (758/1037)
+Updating files:  74% (768/1037)
+Updating files:  75% (778/1037)
+Updating files:  76% (789/1037)
+Updating files:  77% (799/1037)
+Updating files:  78% (809/1037)
+Updating files:  79% (820/1037)
+Updating files:  80% (830/1037)
+Updating files:  81% (840/1037)
+Updating files:  82% (851/1037)
+Updating files:  83% (861/1037)
+Updating files:  84% (872/1037)
+Updating files:  85% (882/1037)
+Updating files:  86% (892/1037)
+Updating files:  87% (903/1037)
+Updating files:  88% (913/1037)
+Updating files:  89% (923/1037)
+Updating files:  90% (934/1037)
+Updating files:  91% (944/1037)
+Updating files:  92% (955/1037)
+Updating files:  93% (965/1037)
+Updating files:  94% (975/1037)
+Updating files:  95% (986/1037)
+Updating files:  96% (996/1037)
+Updating files:  97% (1006/1037)
+Updating files:  98% (1017/1037)
+Updating files:  99% (1027/1037)
+Updating files: 100% (1037/1037)
+Updating files: 100% (1037/1037), done.
+Filtering content:  26% (196/736), 41.42 MiB | 24.66 MiB/s
+Filtering content:  27% (199/736), 41.42 MiB | 24.66 MiB/s
+Filtering content:  28% (207/736), 41.42 MiB | 24.66 MiB/s
+Filtering content:  28% (212/736), 69.03 MiB | 27.13 MiB/s
+Filtering content:  29% (214/736), 69.03 MiB | 27.13 MiB/s
+Filtering content:  30% (221/736), 69.03 MiB | 27.13 MiB/s
+Filtering content:  31% (229/736), 69.03 MiB | 27.13 MiB/s
+Filtering content:  31% (229/736), 73.77 MiB | 21.16 MiB/s
+Filtering content:  32% (236/736), 73.77 MiB | 21.16 MiB/s
+Filtering content:  33% (243/736), 73.77 MiB | 21.16 MiB/s
+Filtering content:  34% (251/736), 73.77 MiB | 21.16 MiB/s
+Filtering content:  35% (258/736), 73.77 MiB | 21.16 MiB/s
+Filtering content:  36% (265/736), 73.77 MiB | 21.16 MiB/s
+Filtering content:  36% (267/736), 76.17 MiB | 18.43 MiB/s
+Filtering content:  37% (273/736), 76.17 MiB | 18.43 MiB/s
+Filtering content:  38% (280/736), 76.17 MiB | 18.43 MiB/s
+Filtering content:  39% (288/736), 76.17 MiB | 18.43 MiB/s
+Filtering content:  40% (295/736), 76.17 MiB | 18.43 MiB/s
+Filtering content:  41% (302/736), 76.43 MiB | 15.33 MiB/s
+Filtering content:  42% (310/736), 76.43 MiB | 15.33 MiB/s
+Filtering content:  43% (317/736), 76.43 MiB | 15.33 MiB/s
+Filtering content:  43% (321/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  44% (324/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  45% (332/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  46% (339/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  47% (346/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  48% (354/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  49% (361/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  50% (368/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  51% (376/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  52% (383/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  53% (391/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  54% (398/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  55% (405/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  56% (413/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  57% (420/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  58% (427/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  59% (435/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  60% (442/736), 90.09 MiB | 16.00 MiB/s
+Filtering content:  60% (445/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  61% (449/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  62% (457/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  63% (464/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  64% (472/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  65% (479/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  66% (486/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  67% (494/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  68% (501/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  69% (508/736), 136.33 MiB | 22.21 MiB/s
+Filtering content:  70% (516/736), 157.35 MiB | 22.74 MiB/s
+Filtering content:  71% (523/736), 157.35 MiB | 22.74 MiB/s
+Filtering content:  72% (530/736), 157.35 MiB | 22.74 MiB/s
+Filtering content:  72% (537/736), 157.35 MiB | 22.74 MiB/s
+Filtering content:  73% (538/736), 157.35 MiB | 22.74 MiB/s
+Filtering content:  74% (545/736), 157.35 MiB | 22.74 MiB/s
+Filtering content:  75% (552/736), 164.61 MiB | 18.13 MiB/s
+Filtering content:  76% (560/736), 164.61 MiB | 18.13 MiB/s
+Filtering content:  77% (567/736), 164.61 MiB | 18.13 MiB/s
+Filtering content:  78% (575/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  79% (582/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  80% (589/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  80% (590/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  81% (597/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  82% (604/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  83% (611/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  84% (619/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  85% (626/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  86% (633/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  87% (641/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  88% (648/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  89% (656/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  90% (663/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  91% (670/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  92% (678/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  93% (685/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  94% (692/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  95% (700/736), 165.12 MiB | 19.61 MiB/s
+Filtering content:  96% (707/736), 166.75 MiB | 16.20 MiB/s
+Filtering content:  97% (714/736), 166.75 MiB | 16.20 MiB/s
+Filtering content:  98% (722/736), 166.75 MiB | 16.20 MiB/s
+Filtering content:  99% (729/736), 166.75 MiB | 16.20 MiB/s
+Filtering content: 100% (736/736), 166.75 MiB | 16.20 MiB/s
+Filtering content: 100% (736/736), 173.25 MiB | 19.46 MiB/s, done.
+730 local objects, 0 retained, done.
+Deleting objects: 100% (730/730), done.
+Cloning into 'C:\ht\habitat-lab\data/versioned_data/ycb'...
+Filtering content:   3% (8/236)
+Filtering content:   4% (10/236)
+Filtering content:   5% (12/236)
+Filtering content:   6% (15/236)
+Filtering content:   7% (17/236)
+Filtering content:   8% (19/236)
+Filtering content:   9% (22/236)
+Filtering content:  10% (24/236)
+Filtering content:  11% (26/236)
+Filtering content:  12% (29/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  13% (31/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  14% (34/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  15% (36/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  16% (38/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  17% (41/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  18% (43/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  19% (45/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  20% (48/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  21% (50/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  22% (52/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  23% (55/236), 97.85 MiB | 176.76 MiB/s
+Filtering content:  23% (56/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  24% (57/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  25% (59/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  26% (62/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  27% (64/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  28% (67/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  29% (69/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  30% (71/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  31% (74/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  32% (76/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  33% (78/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  34% (81/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  35% (83/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  36% (85/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  37% (88/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  38% (90/236), 99.67 MiB | 73.77 MiB/s
+Filtering content:  39% (93/236), 99.97 MiB | 51.75 MiB/s
+Filtering content:  40% (95/236), 99.97 MiB | 51.75 MiB/s
+Filtering content:  41% (97/236), 99.97 MiB | 51.75 MiB/s
+Filtering content:  42% (100/236), 99.97 MiB | 51.75 MiB/s
+Filtering content:  43% (102/236), 100.01 MiB | 40.04 MiB/s
+Filtering content:  44% (104/236), 100.01 MiB | 40.04 MiB/s
+Filtering content:  45% (107/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  46% (109/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  47% (111/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  48% (114/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  49% (116/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  50% (118/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  51% (121/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  51% (122/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  52% (123/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  53% (126/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  54% (128/236), 146.41 MiB | 49.01 MiB/s
+Filtering content:  55% (130/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  56% (133/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  57% (135/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  58% (137/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  59% (140/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  60% (142/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  61% (144/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  62% (147/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  63% (149/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  64% (152/236), 269.70 MiB | 78.32 MiB/s
+Filtering content:  65% (154/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  66% (156/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  67% (159/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  68% (161/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  69% (163/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  70% (166/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  71% (168/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  72% (170/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  73% (173/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  74% (175/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  75% (177/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  76% (180/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  77% (182/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  78% (185/236), 341.88 MiB | 85.28 MiB/s
+Filtering content:  79% (187/236), 365.53 MiB | 80.54 MiB/s
+Filtering content:  80% (189/236), 365.53 MiB | 80.54 MiB/s
+Filtering content:  81% (192/236), 365.53 MiB | 80.54 MiB/s
+Filtering content:  82% (194/236), 365.53 MiB | 80.54 MiB/s
+Filtering content:  83% (196/236), 365.53 MiB | 80.54 MiB/s
+Filtering content:  84% (199/236), 365.53 MiB | 80.54 MiB/s
+Filtering content:  85% (201/236), 365.53 MiB | 80.54 MiB/s
+Filtering content:  86% (203/236), 377.13 MiB | 74.06 MiB/s
+Filtering content:  87% (206/236), 377.13 MiB | 74.06 MiB/s
+Filtering content:  87% (207/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  88% (208/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  89% (211/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  90% (213/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  91% (215/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  92% (218/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  93% (220/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  94% (222/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  95% (225/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  96% (227/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  97% (229/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  98% (232/236), 414.80 MiB | 61.80 MiB/s
+Filtering content:  99% (234/236), 414.80 MiB | 61.80 MiB/s
+Filtering content: 100% (236/236), 414.80 MiB | 61.80 MiB/s
+Filtering content: 100% (236/236), 475.30 MiB | 68.45 MiB/s, done.
+236 local objects, 0 retained, done.
+Deleting objects: 100% (236/236), done.
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/hab3_bench_assets.git C:\ht\habitat-lab\data/versioned_data/hab3_bench_assets
+=======================================================
+Dataset (hab3_bench_assets) successfully downloaded.
+Source: 'C:\ht\habitat-lab\data/versioned_data/hab3_bench_assets'
+Symlink: 'C:\ht\habitat-lab\data\hab3_bench_assets'
+=======================================================
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/ycb.git C:\ht\habitat-lab\data/versioned_data/ycb
+=======================================================
+Dataset (ycb) successfully downloaded.
+Source: 'C:\ht\habitat-lab\data/versioned_data/ycb'
+Symlink: 'C:\ht\habitat-lab\data\objects\ycb'
+=======================================================
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-10-28 12:44:50,832 Initializing dataset RearrangeDataset-v0
+2026-10-28 12:44:51,004 initializing sim RearrangeSim-v0
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:08:22:049127]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:08:22:049609]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:08:22:049669]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:08:22:049694]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:08:28:685111]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+2026-10-28 12:44:58,216 Initializing task RearrangePddlTask-v0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+observation keys: ['ee_pos', 'has_finished_oracle_nav', 'humanoid_joint_sensor', 'is_holding', 'joint', 'localization_sensor', 'obj_goal_gps_compass', 'obj_goal_sensor', 'obj_start_gps_compass', 'obj_start_sensor', 'relative_resting_position', 'third_rgb']
+[PASS] Habitat 3.0 humanoid episode: type=KinematicHumanoid walked 4.88 m over 120 steps, 31.6 steps/s single process, last frame 65% non-black
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-10-28 12:45:12,097 Initializing dataset RearrangeDataset-v0
+2026-10-28 12:45:12,112 initializing sim RearrangeSim-v0
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:08:43:150963]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:08:43:151332]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:08:43:151384]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:08:43:151402]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:08:49:647572]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+2026-10-28 12:45:19,167 Initializing task RearrangePddlTask-v0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+[PASS] spawned worker process: spawned child built and stepped the env (exitcode=0)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-10-28 12:45:29,629 Initializing dataset RearrangeDataset-v0
+2026-10-28 12:45:29,629 initializing sim RearrangeSim-v0
+2026-10-28 12:45:29,692 Initializing dataset RearrangeDataset-v0
+2026-10-28 12:45:29,692 initializing sim RearrangeSim-v0
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:09:00:718707]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:09:00:719099]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:09:00:719145]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:09:00:719171]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:09:00:795659]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:09:00:796156]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:09:00:796225]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:09:00:796246]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:09:12:875943]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+[00:09:13:209455]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+2026-10-28 12:45:42,566 Initializing task RearrangePddlTask-v0
+C:\ht\venv\lib\site-packages\gym\spaces\box.py:84: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+2026-10-28 12:45:42,753 Initializing task RearrangePddlTask-v0
+C:\ht\venv\lib\site-packages\gym\spaces\box.py:84: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+[PASS] VectorEnv multiprocessing: 2 worker processes (spawn): 19.0 total steps/s
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-10-28 12:45:58,879 Initializing dataset RearrangeDataset-v0
+2026-10-28 12:45:58,882 initializing sim RearrangeSim-v0
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:09:29:925340]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:09:29:925709]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:09:29:925757]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:09:29:925777]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:09:36:377021]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+2026-10-28 12:46:05,897 Initializing task RearrangePddlTask-v0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+assigning 0 gpu 0
+hab3: 1 processes, 300 steps with resets every -1 steps
+FPS: 24.83737979959072
+Average time per function call (in seconds):
+  - time: 0.040261895903225604s
+
+Wrote result to  data/profile/hab3/1_300_-1_human_oracle_win.txt
+================================================================
+Ran 1 trial(s) with average FPS of 24.83737979959072 from [24.83737979959072].
+================================================================
+
+==== Summary ====
+GPU (nvidia-smi)         nvidia-smi not found
+Smoke test               PASS
+Humanoid test            PASS
+OpenGL renderer          Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+Habitat 3.0 episode      PASS
+Habitat 3.0 benchmark    Ran 1 trial(s) with average FPS of 24.83737979959072 from [24.83737979959072].
+
+PASS  import and build info  version=0.3.3 python=3.10.11 Windows-10-10.0.20348-SP0 built_with_bullet=True cuda_enabled=False audio_enabled=False
+SKIP  dataset config + glob patterns  repo test assets not present (only in a habitat-sim checkout)
+PASS  offscreen render RGB/depth/semantic  van-gogh-room.glb: 100% non-black pixels, depth max 0.34 m (agent via navmesh)
+PASS  bullet physics: falling cube  cube fell 4.52 m in 1 s
+PASS  render throughput  106.5 FPS at 640x640 (RGB+depth+semantic) in van-gogh-room.glb
+
+PASS  avatar=female_0 links=-1 joint_dofs=216 load=0.25s | pixels changed by humanoid: 2.7%, semantic mask: 3.1%, pixels changed by posing: 0.8% | 29.1 FPS at 512px
+
+PASS  Habitat 3.0 humanoid episode  type=KinematicHumanoid walked 4.88 m over 120 steps, 31.6 steps/s single process, last frame 65% non-black
+PASS  spawned worker process  spawned child built and stepped the env (exitcode=0)
+PASS  VectorEnv multiprocessing  2 worker processes (spawn): 19.0 total steps/s
+**********************
+Windows PowerShell transcript end
+End time: 20261028124625
+**********************

@@ -1,0 +1,5 @@
+PASS  import and build info  version=0.3.3 python=3.10.11 Windows-10-10.0.20348-SP0 built_with_bullet=True cuda_enabled=False audio_enabled=False
+SKIP  dataset config + glob patterns  repo test assets not present (only in a habitat-sim checkout)
+PASS  offscreen render RGB/depth/semantic  van-gogh-room.glb: 100% non-black pixels, depth max 0.34 m (agent via navmesh)
+PASS  bullet physics: falling cube  cube fell 4.52 m in 1 s
+PASS  render throughput  106.5 FPS at 640x640 (RGB+depth+semantic) in van-gogh-room.glb
