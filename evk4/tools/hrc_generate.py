@@ -419,6 +419,43 @@ def robot_points(robot):
     return np.array(pts)
 
 
+HUMAN_R = 0.25          # body radius of a person seen from above [m]
+CONTACT_MARGIN = 0.10   # minimum free gap kept between bodies (nobody walks through anybody)
+
+
+def install_guards(robot, humans):
+    """Non-penetration for everybody: the robot never moves or turns into a person, a person
+    never walks into the robot or into another person.  Moving *away* is always allowed."""
+    gap = HUMAN_R + CONTACT_MARGIN
+
+    def robot_guard(pos, yaw):
+        for h in humans:
+            d_new = robot.rect_dist(h.feet, pos, yaw)
+            if d_new < gap and d_new < robot.rect_dist(h.feet) - 1e-6:
+                return False
+        return True
+
+    def human_guard(me):
+        def g(nxt):
+            d_now = robot.rect_dist(me.feet)
+            d_new = robot.rect_dist(nxt)
+            if d_new < gap and d_new < d_now:
+                return False
+            for o in humans:
+                if o is me:
+                    continue
+                n_now = (me.feet - o.feet).length()
+                n_new = (nxt - o.feet).length()
+                if n_new < 2 * HUMAN_R + CONTACT_MARGIN and n_new < n_now:
+                    return False
+            return True
+        return g
+
+    robot.guard = robot_guard
+    for h in humans:
+        h.guard = human_guard(h)
+
+
 def run_safety(args, idx, rng):
     ep = Episode(args, "safety", idx, rng)
     sim = ep.sim
@@ -427,14 +464,22 @@ def run_safety(args, idx, rng):
     ep.robot = evkh.Robot(sim, ep.motion, "spot", start, data_dir=args.data, yaw=float(rng.uniform(-math.pi, math.pi)))
     ep.robot.go_to(goal)
     robot_speed = float(rng.uniform(0.5, 1.0))
-    policy = str(rng.choice(["oblivious", "stop_if_close"]))
+    # ssm: speed & separation monitoring (slows down in proportion to the distance to people ahead)
+    # stop: full speed, stops when a person is within 1 m ahead
+    # late: reacts only at contact distance (near misses -> the dangerous cases of the dataset)
+    policy = str(rng.choice(["ssm", "stop", "late"]))
     nh = int(rng.integers(1, args.max_humans + 1))
     behaviours = ["cross", "approach", "alongside", "wander", "stand"]
     brains = []
     for i in range(nh):
         p = nav_point(sim, rng, near=start, radius=6.0)
+        for _ in range(20):          # start clear of the robot and of the other people
+            if ep.robot.rect_dist(p) > 1.0 and all((p - o.feet).length() > 1.0 for o in ep.humans):
+                break
+            p = nav_point(sim, rng, near=start, radius=6.0)
         h = ep.add_human(p, mn.Vector3(start - p), f"human{i}", float(rng.uniform(0.7, 1.4)))
         brains.append(dict(beh=None, until=0.0))
+    install_guards(ep.robot, ep.humans)
     ep.make_cameras(np.array(start))
 
     def new_behaviour(i):
@@ -452,8 +497,15 @@ def run_safety(args, idx, rng):
             b_ = evkh.snap(sim, ahead - side * s * float(rng.uniform(2.0, 3.5)))
             # walk to whichever side of the robot's path is farther away, crossing it
             h.walk_to(b_ if (b_ - h.feet).length() > (a_ - h.feet).length() else a_)
-        elif b == "approach":
-            h.walk_to(evkh.snap(sim, rp + (h.feet - rp).normalized() * float(rng.uniform(0.3, 1.5))))
+        elif b == "approach":       # walks up to the robot and stops 0.5-1.5 m from its body
+            d = h.feet - rp
+            d = mn.Vector3(d.x, 0, d.z).normalized()
+            stop = float(rng.uniform(0.5, 1.5)) + HUMAN_R
+            # distance from the centre along d at which the body footprint ends
+            reach = 0.0
+            while ep.robot.rect_dist(rp + d * reach) < 1e-3 and reach < 2.0:
+                reach += 0.02
+            h.walk_to(evkh.snap(sim, rp + d * (reach + stop)))
         elif b == "alongside":
             h.walk_to(evkh.snap(sim, rp + ep.robot.forward * float(rng.uniform(3.0, 6.0))
                                 + mn.math.cross(ep.robot.forward, mn.Vector3(0, 1, 0)) * float(rng.uniform(-1.2, 1.2))))
@@ -469,24 +521,39 @@ def run_safety(args, idx, rng):
     n_ticks = int(args.seconds / TICK)
     ep.tick = 0
     beh_log, terms = [], []
+    min_gap = math.inf
     ep.record()
     for ep.tick in range(1, n_ticks + 1):
         ep.t = ep.tick * TICK
         for i, h in enumerate(ep.humans):
             if h.path:
                 h.follow_path()
+                if h.blocked > 45:                 # waited 1.5 s for the way to clear: do something else
+                    h.blocked = 0
+                    new_behaviour(i)
             else:
                 h.step(walk=False)
                 if ep.t > brains[i]["until"]:
                     new_behaviour(i)
             ep.actors[i].update(TICK)
-        # robot: drive, optionally stop for close humans
-        close = min((np.linalg.norm(np.array(h.feet - ep.robot.pos)[[0, 2]]) for h in ep.humans), default=9)
-        if policy == "stop_if_close" and close < 1.0:
-            ep.robot.speed = 0.0
-        elif not ep.robot.follow_path(max_speed=robot_speed, dt=TICK):
-            ep.robot.go_to(nav_point(sim, rng, near=ep.robot.pos, radius=8.0))
+        # robot: speed from its safety policy (people ahead), never into anybody (guards)
+        rob = ep.robot
+        f = rob.forward
+        ahead = [rob.rect_dist(h.feet) for h in ep.humans
+                 if (h.feet - rob.pos).dot(f) > -0.2 and rob.rect_dist(h.feet) < 4.0]
+        d_front = min(ahead, default=math.inf) - HUMAN_R
+        if policy == "ssm":
+            v = robot_speed * min(1.0, max(0.0, (d_front - 0.4) / 1.5))
+        elif policy == "stop":
+            v = 0.0 if d_front < 1.0 else robot_speed
+        else:
+            v = robot_speed
+        if not rob.follow_path(max_speed=v, dt=TICK) or rob.blocked > 90:
+            rob.blocked = 0
+            rob.go_to(nav_point(sim, rng, near=rob.pos, radius=8.0))
         ep.record()
+        for h in ep.humans:
+            min_gap = min(min_gap, rob.rect_dist(h.feet) - HUMAN_R)
         rp = robot_points(ep.robot)
         rxz = np.array(ep.robot.pos)[[0, 2]]
         rv = np.array(ep.robot.forward)[[0, 2]] * ep.robot.speed
@@ -508,7 +575,8 @@ def run_safety(args, idx, rng):
     ep.finish(extra, dict(risk_names=RISK_NAMES, risk_rule="danger: clearance<0.5 m or TTC<1 s; caution: "
                           "clearance<1.2 m or TTC<3 s (TTC: constant-velocity time until centre distance < 0.9 m)",
                           robot_policy=policy, robot_speed=robot_speed, behaviours=behaviours))
-    return f"{nh} human(s), robot {policy}, risk safe/caution/danger ticks {counts.tolist()}"
+    return (f"{nh} human(s), robot policy {policy}, risk safe/caution/danger ticks {counts.tolist()}, "
+            f"closest body gap person-robot {min_gap:.2f} m")
 
 
 # ------------------------------------------------------------------------------------ app 2: actions
@@ -525,8 +593,9 @@ def run_actions(args, idx, rng):
         res = sim.cast_ray(habitat_sim.geo.Ray(np.array(p + mn.Vector3(0, 0.6, 0)), np.array(d)), 20.0)
         return res.hits[0].ray_distance if res.has_hits() else -1.0   # no hit: gap in the scene mesh
 
+    rpf = evsim.robot_pathfinder(sim, evsim.FOOTPRINT["spot"][1] + 0.22)
     for _ in range(80):
-        p = nav_point(sim, rng)
+        p = evkh.snap(sim, nav_point(sim, rng), pf=rpf)       # where Spot's body fits
         a = float(rng.uniform(-math.pi, math.pi))
         cone = [free_dist(p, a + math.radians(da)) for da in (-25, 0, 25)]
         if min(cone) < 0:
@@ -546,8 +615,13 @@ def run_actions(args, idx, rng):
     stool_p = evkh.snap(sim, stage + side * -sgn * float(rng.uniform(0.9, 1.4)))
     box = spawn_box(sim, ep.motion, box_p, (0.22, 0.22, 0.22), "box")
     stool = spawn_box(sim, ep.motion, stool_p, (0.45, 0.45, 0.45), "stool")
+    rob = ep.robot
+    robot_rect = (np.array(rob.pos), (rob.half[0] + 0.05, rob.half[1] + 0.05), rob.yaw)
+    stool_rect = (np.array(stool_p), (0.25, 0.25), 0.0)
+    evsim.bake_obstacles(sim, [robot_rect, stool_rect])       # people walk around Spot and the stool
     hp = nav_point(sim, rng, near=rpos + rf * 3.5, radius=1.5)          # starts in view
     h = ep.add_human(hp, mn.Vector3(rpos - hp), "human0", float(rng.uniform(0.8, 1.3)))
+    install_guards(rob, ep.humans)
     actor = ep.actors[0]
     ep.make_cameras(np.array(stage))
     front = lambda: evkh.snap(sim, ep.robot.pos + ep.robot.forward * float(rng.uniform(1.4, 1.9)))
@@ -627,12 +701,13 @@ def run_actions(args, idx, rng):
             bp = box.translation
             walk(evkh.snap(sim, bp + (h.feet - bp).normalized() * 0.45), "walk")
             face(bp)
-            play("pick", "pick", 2.0, target=np.array(box.translation), obj=box)
+            play("pick", "pick", 2.2, target=np.array(box.translation), obj=box, half=0.11)
             dest = nav_point(sim, rng, near=stage, radius=1.5)
             walk(dest, "walk")
             drop = np.array(h.feet + h.forward * 0.45) + np.array([0, 0.11, 0])
             play("place", "place", 2.0, target=drop)
-            box.translation = mn.Vector3(*drop)
+            # the box now lies where it was put down: people walk around it from now on
+            evsim.bake_obstacles(sim, [robot_rect, stool_rect, (np.array(box.translation), (0.14, 0.14), 0.0)])
         elif label == "sit":
             sp = stool.translation
             stand = evkh.snap(sim, sp + (h.feet - sp).normalized() * 0.5)

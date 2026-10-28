@@ -17,7 +17,7 @@ import math
 import magnum as mn
 import numpy as np
 
-from .scene import _urdf_parents, m4, to_mn
+from .scene import _polar, _rot2quat, _urdf_parents, m4, to_mn
 
 
 def _quat_from_two(a, b):
@@ -53,9 +53,9 @@ def _qmat(q):
 
 
 def _mat2q(R):
-    q = mn.Quaternion.from_matrix(mn.Matrix3x3(*[mn.Vector3(*R[:, c]) for c in range(3)]))
-    v = q.vector
-    return np.array([v[0], v[1], v[2], q.scalar])
+    """(x, y, z, w) of a (nearly) rotation matrix; robust to scale / round-off."""
+    Rp, _ = _polar(np.asarray(R, np.float64))
+    return _rot2quat(Rp)
 
 
 def _slerp(a, b, f):
@@ -80,7 +80,8 @@ class Skeleton:
 
     NAMES = ["pelvis", "left_hip", "right_hip", "spine1", "left_knee", "right_knee", "spine2", "left_ankle",
              "right_ankle", "spine3", "left_foot", "right_foot", "neck", "left_collar", "right_collar", "head",
-             "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist"]
+             "left_shoulder", "right_shoulder", "left_elbow", "right_elbow", "left_wrist", "right_wrist",
+             "left_middle1", "right_middle1"]
 
     def __init__(self, ao, urdf_path):
         self.ao = ao
@@ -223,12 +224,16 @@ class Actor:
                 q = sk.aim(q, el, wr, fore / np.linalg.norm(fore), w)
             else:   # reach / pick / place: the body crouches for low targets, the arm aims at it
                 tgt = np.asarray(self.params["target"], np.float64)
+                obj = self.params.get("obj")
+                if a == "pick" and obj is not None and self.carry is None:
+                    # grasp the top of the object: the hand goes to its top face
+                    tgt = np.array(obj.translation) + np.array([0, self.params.get("half", 0.11) + 0.02, 0])
                 low = max(0.0, min(1.0, (0.9 - (tgt[1] - np.array(h.feet)[1])) / 0.7))  # 0 above 0.9 m, 1 at 0.2 m
                 bend = w * low
                 if bend > 0:
-                    q, shift = self._legs(q, 70.0, 45.0, bend)
+                    q, shift = self._legs(q, 80.0, 50.0, bend)
                     if "spine1" in sk.joint and "spine2" in sk.joint:
-                        trunk = math.cos(math.radians(35 * bend)) * up + math.sin(math.radians(35 * bend)) * fwd
+                        trunk = math.cos(math.radians(50 * bend)) * up + math.sin(math.radians(50 * bend)) * fwd
                         q = sk.aim(q, "spine1", "spine2", trunk, 1.0)
                     if np.any(shift):
                         h.root_override = to_mn(np.array([[1, 0, 0, shift[0]], [0, 1, 0, shift[1]],
@@ -240,10 +245,10 @@ class Actor:
                 d2 = tgt - sk.origin(el)
                 d2 /= np.linalg.norm(d2)
                 q = sk.aim(q, el, wr, d2, w)
-                if a == "pick" and s > 0.5 and self.params.get("obj") is not None:
-                    self.carry = self.params["obj"]
+                if a == "pick" and s > 0.5 and obj is not None and self.carry is None:
+                    self._grasp(obj, side, self.params.get("half", 0.11))
                 if a == "place" and s > 0.5 and self.carry is not None:
-                    self.carry = None
+                    self._release(np.array(h.feet)[1])
         elif a == "sit":            # params: up=False sits down (and stays), up=True stands up
             w = self._env(hold_end=True)
             if self.params.get("up", False):
@@ -266,9 +271,55 @@ class Actor:
             h.ao.joint_positions = q
         self._carry_update()
 
+    # ------------------------------------------------------------------ holding objects
+    def _hand(self, side):
+        """Wrist frame and pointing direction of the hand (wrist -> middle finger)."""
+        sk = self.sk
+        T = sk.world(sk.joint[f"{side}_wrist"])
+        tip = f"{side}_middle1"
+        if tip in sk.joint:
+            d = sk.origin(tip) - T[:3, 3]
+        else:
+            d = T[:3, 3] - sk.origin(f"{side}_elbow")
+        return T, d / (np.linalg.norm(d) + 1e-9)
+
+    def _grasp(self, obj, side, half):
+        """Start holding `obj`: from now on it moves rigidly with the hand, held at the fingertips
+        (its centre one half-size beyond the fingers); it glides there over 0.2 s instead of jumping."""
+        T, d = self._hand(side)
+        self.carry, self.carry_side, self.carry_half = obj, side, half
+        self.carry_from = np.array(obj.translation)
+        self.carry_t0 = self.t
+        R_box = _qmat(_mat2q_from_mn(obj.rotation))
+        self.carry_Rrel = T[:3, :3].T @ R_box
+
+    def _release(self, floor_y):
+        """Put the held object down: upright, resting on the floor under its current position."""
+        o = self.carry
+        p = np.array(o.translation)
+        o.rotation = mn.Quaternion()
+        o.translation = mn.Vector3(p[0], floor_y + self.carry_half, p[2])
+        self.carry = None
+
     def _carry_update(self):
-        if self.carry is None or "right_wrist" not in self.sk.joint:
+        if self.carry is None:
             return
-        T = self.sk.world(self.sk.joint["right_wrist"])
-        p = T[:3, 3] + T[:3, :3] @ np.array([0.0, -0.08, 0.0])
+        side = getattr(self, "carry_side", "right")
+        if f"{side}_wrist" not in self.sk.joint:
+            return
+        T, d = self._hand(side)
+        p = T[:3, 3] + d * (0.09 + self.carry_half)
+        f = smooth((self.t - self.carry_t0) / 0.2)
+        p = (1 - f) * self.carry_from + f * p
+        R = T[:3, :3] @ self.carry_Rrel
+        self.carry.rotation = _mn_quat(_mat2q(R))
         self.carry.translation = mn.Vector3(*p)
+
+
+def _mat2q_from_mn(q):
+    v = q.vector
+    return np.array([v[0], v[1], v[2], q.scalar])
+
+
+def _mn_quat(q):
+    return mn.Quaternion(mn.Vector3(q[0], q[1], q[2]), q[3])

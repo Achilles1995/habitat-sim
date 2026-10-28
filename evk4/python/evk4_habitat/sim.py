@@ -83,9 +83,9 @@ def finite(v):
     return v is not None and bool(np.all(np.isfinite(np.array(v))))
 
 
-def snap(sim, p, radius=3.0):
+def snap(sim, p, radius=3.0, pf=None):
     """Nearest navigable floor point to p (or p itself without a navmesh)."""
-    pf = sim.pathfinder
+    pf = pf or sim.pathfinder
     if not pf.is_loaded:
         return mn.Vector3(p)
     s = pf.snap_point(np.array(p))
@@ -95,9 +95,9 @@ def snap(sim, p, radius=3.0):
     return mn.Vector3(s) if finite(s) else mn.Vector3(p)
 
 
-def plan(sim, start, goal):
+def plan(sim, start, goal, pf=None):
     """Navmesh shortest path start -> goal as a list of points (None if unreachable)."""
-    pf = sim.pathfinder
+    pf = pf or sim.pathfinder
     if not pf.is_loaded:
         return [mn.Vector3(start), mn.Vector3(goal)]
     path = habitat_sim.ShortestPath()
@@ -106,6 +106,63 @@ def plan(sim, start, goal):
     if pf.find_path(path) and len(path.points) > 0:
         return [mn.Vector3(p) for p in path.points]
     return None
+
+
+def navmesh_settings(radius, height=1.8, static_objects=True):
+    s = habitat_sim.NavMeshSettings()
+    s.set_defaults()
+    s.agent_radius = radius
+    s.agent_height = height
+    try:
+        s.include_static_objects = static_objects
+    except Exception:  # noqa: BLE001
+        pass
+    return s
+
+
+def robot_pathfinder(sim, radius):
+    """A separate navmesh for a robot body of the given radius (kept in clearance of walls and
+    furniture); cached per radius on the simulator.  Falls back to the scene's navmesh."""
+    cache = getattr(sim, "_evk4_robot_pf", None)
+    if cache is None:
+        cache = {}
+        try:
+            sim._evk4_robot_pf = cache
+        except Exception:  # noqa: BLE001
+            pass
+    key = round(radius, 3)
+    if key not in cache:
+        pf = habitat_sim.nav.PathFinder()
+        try:
+            sim.recompute_navmesh(pf, navmesh_settings(radius))
+        except Exception:  # noqa: BLE001
+            pf = None
+        cache[key] = pf if (pf is not None and pf.is_loaded and pf.navigable_area > 0.5) else sim.pathfinder
+    return cache[key]
+
+
+def bake_obstacles(sim, rects, radius=0.25):
+    """Rebuild the people's navmesh (sim.pathfinder) with box obstacles, e.g. a parked robot or a
+    stool, so that paths go around them.  rects: (centre xyz, (half x, half z), yaw)."""
+    import habitat_sim as hs
+    otm = sim.get_object_template_manager()
+    rom = sim.get_rigid_object_manager()
+    base = otm.get_template_handles("cubeSolid")[0]
+    tmp = []
+    for k, (c, (hx, hz), yaw) in enumerate(rects):
+        t = otm.get_template_by_handle(base)
+        t.scale = mn.Vector3(2 * hx, 1.0, 2 * hz)
+        h = f"evk4_navobstacle_{k}_{hx:.2f}_{hz:.2f}"
+        otm.register_template(t, h)
+        o = rom.add_object_by_template_handle(h)
+        o.motion_type = hs.physics.MotionType.STATIC
+        o.rotation = mn.Quaternion.rotation(mn.Rad(yaw), mn.Vector3(0, 1, 0))
+        o.translation = mn.Vector3(c[0], c[1] + 0.5, c[2])
+        tmp.append(o)
+    ok = sim.recompute_navmesh(sim.pathfinder, navmesh_settings(radius))
+    for o in tmp:
+        rom.remove_object_by_handle(o.handle)
+    return ok
 
 
 # ----------------------------------------------------------------------------- humans
@@ -139,6 +196,9 @@ class Humanoid:
         self.pose_override = {}
         self.root_override = None          # optional (4,4) extra transform applied to the base (falls)
         self.links = {self.ao.get_link_name(l): l for l in self.ao.get_link_ids()}
+        self.step_len = lin_speed / ctrl_hz
+        self.guard = None          # optional callable(next feet position) -> bool (False: wait)
+        self.blocked = 0           # control ticks spent waiting for the way to clear
         self.place(feet_pos)
 
     def place(self, feet_pos, heading=None):
@@ -175,6 +235,12 @@ class Humanoid:
             d = mn.Vector3(d.x, 0, d.z)
             if d.length() > 0.25:
                 self.heading = d.normalized()
+                nxt = self.feet + self.heading * (2.0 * self.step_len)
+                if self.guard is not None and not self.guard(nxt):
+                    self.blocked += 1          # someone / something is in the way: wait
+                    self.turn_to(self.heading)
+                    return True
+                self.blocked = 0
                 self.step(walk=True, target=d)
                 return True
             self.path.pop(0)
@@ -238,6 +304,9 @@ ROBOTS = {
 }
 
 
+FOOTPRINT = {"spot": (0.55, 0.27), "fetch": (0.32, 0.32)}    # half length, half width [m]
+
+
 def set_link_joints(ao, values_by_link):
     pos = list(ao.joint_positions)
     for link_id, vals in values_by_link.items():
@@ -267,34 +336,69 @@ class Robot:
         self.ids = motion.add_robot(self.ao, name=self.name, urdf_path=urdf)
         self.rest = rest
         set_link_joints(self.ao, rest)
+        # body footprint (half length, half width) and a navmesh that keeps it off walls/furniture
+        self.half = FOOTPRINT[kind]
+        self.pf = robot_pathfinder(sim, self.half[1] + 0.22)
         self.yaw = yaw
-        self.pos = mn.Vector3(floor_pos)
+        self.pos = snap(sim, floor_pos, pf=self.pf)
         self.speed = 0.0
+        self.guard = None          # optional callable(pos, yaw) -> bool: False = pose not allowed
+        self.blocked = 0
         self.apply()
 
     @property
     def forward(self):
         return mn.Vector3(math.cos(self.yaw), 0, -math.sin(self.yaw))
 
+    def rect_dist(self, p, pos=None, yaw=None):
+        """Planar distance from point p to the robot's body footprint (0 inside)."""
+        pos = self.pos if pos is None else pos
+        yaw = self.yaw if yaw is None else yaw
+        dx, dz = p[0] - pos[0], p[2] - pos[2]
+        c, s_ = math.cos(yaw), math.sin(yaw)
+        lx = dx * c - dz * s_            # along forward = (cos, 0, -sin)
+        lz = dx * s_ + dz * c            # along the right side
+        ex = max(0.0, abs(lx) - self.half[0])
+        ez = max(0.0, abs(lz) - self.half[1])
+        return math.hypot(ex, ez)
+
+    def _pose_ok(self, pos, yaw):
+        """Body clear of walls (nose and tail on the robot navmesh) and of the guard's objects."""
+        f = mn.Vector3(math.cos(yaw), 0, -math.sin(yaw))
+        if self.pf.is_loaded:
+            for e in (0.0, 1.0, -1.0):
+                q = pos + f * (e * max(0.0, self.half[0] - self.half[1] - 0.05))
+                if not self.pf.is_navigable(np.array(q), 0.5):
+                    return False
+        return self.guard is None or self.guard(pos, yaw)
+
     path = None
 
     def go_to(self, goal):
-        pts = plan(self.sim, self.pos, goal)
+        pts = plan(self.sim, self.pos, snap(self.sim, goal, pf=self.pf), pf=self.pf)
         self.path = [mn.Vector3(p) for p in pts[1:]] if pts else None
         return self.path is not None
 
     def follow_path(self, max_speed=0.8, dt=1 / 30.0, turn_rate=math.radians(120)):
+        """One control step along the path; returns False when the path is finished.  The robot
+        never moves into a pose that collides with walls or with the guard's objects (people)."""
         while self.path:
             d = self.path[0] - self.pos
             d = mn.Vector3(d.x, 0, d.z)
             if d.length() > 0.12:
                 want = math.atan2(-d.z, d.x)
                 diff = (want - self.yaw + math.pi) % (2 * math.pi) - math.pi
-                self.yaw += max(-turn_rate * dt, min(turn_rate * dt, diff))
+                yaw = self.yaw + max(-turn_rate * dt, min(turn_rate * dt, diff))
+                if self._pose_ok(self.pos, yaw):
+                    self.yaw = yaw
                 self.speed = 0.0
-                if abs(diff) < math.radians(25):
-                    self.speed = min(max_speed, d.length() / dt)
-                    self.drive(self.speed * dt)
+                if abs(diff) < math.radians(25) and max_speed > 0:
+                    v = min(max_speed, d.length() / dt)
+                    if self.drive(v * dt):
+                        self.speed = v
+                        self.blocked = 0
+                    else:
+                        self.blocked += 1
                 self.apply()
                 return True
             self.path.pop(0)
@@ -303,11 +407,17 @@ class Robot:
         return False
 
     def drive(self, dist):
+        """Move forward by dist if the new pose is free; returns whether it moved."""
         target = self.pos + self.forward * dist
-        pf = self.sim.pathfinder
+        pf = self.pf
         new = pf.try_step(np.array(self.pos), np.array(target)) if pf.is_loaded else target
-        if finite(new):
-            self.pos = mn.Vector3(new)
+        if not finite(new):
+            return False
+        new = mn.Vector3(new)
+        if (new - self.pos).length() < 1e-4 or not self._pose_ok(new, self.yaw):
+            return False
+        self.pos = new
+        return True
 
     def apply(self):
         self.ao.rotation = mn.Quaternion.rotation(mn.Rad(self.yaw), mn.Vector3(0, 1, 0))
