@@ -1,0 +1,344 @@
++ python -m pip install -U pip
+Requirement already satisfied: pip in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (26.2.2)
++ echo numpy==1.26.4
++ python -m pip install -c constraints.txt numpy attrs gitpython imageio imageio-ffmpeg matplotlib numba numpy-quaternion pillow==10.4.0 scipy tqdm psutil
+Collecting numpy
+  Downloading numpy-1.26.4-cp310-cp310-win_amd64.whl.metadata (61 kB)
+Collecting attrs
+  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Collecting gitpython
+  Downloading gitpython-3.2.1-py3-none-any.whl.metadata (13 kB)
+Collecting imageio
+  Downloading imageio-2.38.0-py3-none-any.whl.metadata (9.7 kB)
+Collecting imageio-ffmpeg
+  Downloading imageio_ffmpeg-0.7.0-py3-none-win_amd64.whl.metadata (1.5 kB)
+Collecting matplotlib
+  Downloading matplotlib-3.10.9-cp310-cp310-win_amd64.whl.metadata (52 kB)
+Collecting numba
+  Downloading numba-0.68.1-cp310-cp310-win_amd64.whl.metadata (2.9 kB)
+Collecting numpy-quaternion
+  Downloading numpy_quaternion-2024.0.13-cp310-cp310-win_amd64.whl.metadata (15 kB)
+Collecting pillow==10.4.0
+  Downloading pillow-10.4.0-cp310-cp310-win_amd64.whl.metadata (9.3 kB)
+Collecting scipy
+  Downloading scipy-1.15.3-cp310-cp310-win_amd64.whl.metadata (60 kB)
+Collecting tqdm
+  Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+Collecting psutil
+  Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl.metadata (22 kB)
+Collecting gitdb<5,>=4.0.1 (from gitpython)
+  Downloading gitdb-4.0.12-py3-none-any.whl.metadata (1.2 kB)
+Collecting smmap<6,>=3.0.1 (from gitdb<5,>=4.0.1->gitpython)
+  Downloading smmap-5.0.3-py3-none-any.whl.metadata (4.6 kB)
+Collecting contourpy>=1.0.1 (from matplotlib)
+  Downloading contourpy-1.3.2-cp310-cp310-win_amd64.whl.metadata (5.5 kB)
+Collecting cycler>=0.10 (from matplotlib)
+  Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting fonttools>=4.22.0 (from matplotlib)
+  Downloading fonttools-4.65.0-cp310-cp310-win_amd64.whl.metadata (127 kB)
+Collecting kiwisolver>=1.3.1 (from matplotlib)
+  Downloading kiwisolver-1.5.1-cp310-cp310-win_amd64.whl.metadata (5.2 kB)
+Collecting packaging>=20.0 (from matplotlib)
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting pyparsing>=3 (from matplotlib)
+  Downloading pyparsing-3.3.3-py3-none-any.whl.metadata (5.9 kB)
+Collecting python-dateutil>=2.7 (from matplotlib)
+  Downloading python_dateutil-3.0.0-py2.py3-none-any.whl.metadata (8.2 kB)
+Collecting llvmlite<0.51,>=0.50.0dev0 (from numba)
+  Downloading llvmlite-0.50.0-cp310-cp310-win_amd64.whl.metadata (5.0 kB)
+Collecting colorama (from tqdm)
+  Downloading colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+Collecting six>=1.6 (from python-dateutil>=2.7->matplotlib)
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting tzdata (from python-dateutil>=2.7->matplotlib)
+  Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)
+Downloading pillow-10.4.0-cp310-cp310-win_amd64.whl (2.6 MB)
+   ---------------------------------------- 2.6/2.6 MB 37.0 MB/s  0:00:00
+Downloading numpy-1.26.4-cp310-cp310-win_amd64.whl (15.8 MB)
+   ---------------------------------------- 15.8/15.8 MB 142.6 MB/s  0:00:00
+Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+Downloading gitpython-3.2.1-py3-none-any.whl (231 kB)
+Downloading gitdb-4.0.12-py3-none-any.whl (62 kB)
+Downloading smmap-5.0.3-py3-none-any.whl (24 kB)
+Downloading imageio-2.38.0-py3-none-any.whl (328 kB)
+Downloading imageio_ffmpeg-0.7.0-py3-none-win_amd64.whl (31.2 MB)
+   ---------------------------------------- 31.2/31.2 MB 94.5 MB/s  0:00:00
+Downloading matplotlib-3.10.9-cp310-cp310-win_amd64.whl (8.2 MB)
+   ---------------------------------------- 8.2/8.2 MB 101.8 MB/s  0:00:00
+Downloading numba-0.68.1-cp310-cp310-win_amd64.whl (2.8 MB)
+   ---------------------------------------- 2.8/2.8 MB 54.7 MB/s  0:00:00
+Downloading llvmlite-0.50.0-cp310-cp310-win_amd64.whl (41.9 MB)
+   ---------------------------------------- 41.9/41.9 MB 91.8 MB/s  0:00:00
+Downloading numpy_quaternion-2024.0.13-cp310-cp310-win_amd64.whl (70 kB)
+Downloading scipy-1.15.3-cp310-cp310-win_amd64.whl (41.3 MB)
+   ---------------------------------------- 41.3/41.3 MB 84.5 MB/s  0:00:00
+Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl (137 kB)
+Downloading contourpy-1.3.2-cp310-cp310-win_amd64.whl (221 kB)
+Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)
+Downloading fonttools-4.65.0-cp310-cp310-win_amd64.whl (1.6 MB)
+   ---------------------------------------- 1.6/1.6 MB 44.2 MB/s  0:00:00
+Downloading kiwisolver-1.5.1-cp310-cp310-win_amd64.whl (70 kB)
+Downloading packaging-26.3-py3-none-any.whl (129 kB)
+Downloading pyparsing-3.3.3-py3-none-any.whl (126 kB)
+Downloading python_dateutil-3.0.0-py2.py3-none-any.whl (94 kB)
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)
+Installing collected packages: tzdata, smmap, six, pyparsing, psutil, pillow, packaging, numpy, llvmlite, kiwisolver, imageio-ffmpeg, fonttools, cycler, colorama, attrs, tqdm, scipy, python-dateutil, numba, imageio, gitdb, contourpy, numpy-quaternion, matplotlib, gitpython
+
+Successfully installed attrs-26.1.0 colorama-0.4.6 contourpy-1.3.2 cycler-0.12.1 fonttools-4.65.0 gitdb-4.0.12 gitpython-3.2.1 imageio-2.38.0 imageio-ffmpeg-0.7.0 kiwisolver-1.5.1 llvmlite-0.50.0 matplotlib-3.10.9 numba-0.68.1 numpy-1.26.4 numpy-quaternion-2024.0.13 packaging-26.3 pillow-10.4.0 psutil-7.2.2 pyparsing-3.3.3 python-dateutil-3.0.0 scipy-1.15.3 six-1.17.0 smmap-5.0.3 tqdm-4.70.1 tzdata-2026.6
++ python -m pip install --no-deps dist/habitat_sim-0.3.3-cp310-cp310-win_amd64.whl
+Processing .\dist\habitat_sim-0.3.3-cp310-cp310-win_amd64.whl
+Installing collected packages: habitat-sim
+Successfully installed habitat-sim-0.3.3
++ git clone -q https://github.com/facebookresearch/habitat-lab.git habitat-lab
++ cd habitat-lab
++ git checkout -q 0fb6f43ffe806a8088a171b036336c093bcf604e
++ git apply --verbose ../habitat-sim/tools/windows/habitat-lab-windows.patch
+Checking patch habitat-baselines/habitat_baselines/rl/ddppo/ddp_utils.py...
+Checking patch habitat-baselines/habitat_baselines/rl/ver/queue.py...
+Checking patch habitat-baselines/habitat_baselines/rl/ver/requirements.txt...
+Checking patch habitat-baselines/habitat_baselines/rl/ver/ver_trainer.py...
+Checking patch habitat-baselines/habitat_baselines/rl/ver/worker_common.py...
+Checking patch habitat-hitl/habitat_hitl/_internal/networking/networking_process.py...
+Checking patch habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml...
+Checking patch habitat-lab/habitat/core/vector_env.py...
+Checking patch scripts/hab3_bench/hab3_benchmark.py...
+Applied patch habitat-baselines/habitat_baselines/rl/ddppo/ddp_utils.py cleanly.
+Applied patch habitat-baselines/habitat_baselines/rl/ver/queue.py cleanly.
+Applied patch habitat-baselines/habitat_baselines/rl/ver/requirements.txt cleanly.
+Applied patch habitat-baselines/habitat_baselines/rl/ver/ver_trainer.py cleanly.
+Applied patch habitat-baselines/habitat_baselines/rl/ver/worker_common.py cleanly.
+Applied patch habitat-hitl/habitat_hitl/_internal/networking/networking_process.py cleanly.
+Applied patch habitat-lab/habitat/config/benchmark/rearrange/hab3_bench/single_agent_bench.yaml cleanly.
+Applied patch habitat-lab/habitat/core/vector_env.py cleanly.
+Applied patch scripts/hab3_bench/hab3_benchmark.py cleanly.
++ python -m pip install -c ../constraints.txt -e habitat-lab -e habitat-baselines
+Obtaining file:///D:/a/habitat-sim/habitat-sim/habitat-lab/habitat-lab
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Obtaining file:///D:/a/habitat-sim/habitat-sim/habitat-lab/habitat-baselines
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Collecting gym<0.23.1,>=0.22.0 (from habitat-lab==0.3.3)
+  Downloading gym-0.23.0.tar.gz (624 kB)
+     ---------------------------------------- 624.4/624.4 kB 11.3 MB/s  0:00:00
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: numpy==1.26.4 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from habitat-lab==0.3.3) (1.26.4)
+Requirement already satisfied: numpy-quaternion>=2019.3.18.14.33.20 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from habitat-lab==0.3.3) (2024.0.13)
+Requirement already satisfied: attrs>=19.1.0 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from habitat-lab==0.3.3) (26.1.0)
+Collecting opencv-python>=3.3.0 (from habitat-lab==0.3.3)
+  Downloading opencv_python-5.0.0.93-cp37-abi3-win_amd64.whl.metadata (20 kB)
+Collecting hydra-core>=1.2.0 (from habitat-lab==0.3.3)
+  Downloading hydra_core-1.3.8-py3-none-any.whl.metadata (5.7 kB)
+Collecting omegaconf>=2.2.3 (from habitat-lab==0.3.3)
+  Downloading omegaconf-2.4.0-py3-none-any.whl.metadata (4.9 kB)
+Requirement already satisfied: numba>=0.44.0 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from habitat-lab==0.3.3) (0.68.1)
+Requirement already satisfied: imageio>=2.2.0 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from habitat-lab==0.3.3) (2.38.0)
+Requirement already satisfied: imageio-ffmpeg>=0.2.0 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from habitat-lab==0.3.3) (0.7.0)
+Requirement already satisfied: scipy>=1.10.1 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from habitat-lab==0.3.3) (1.15.3)
+Requirement already satisfied: tqdm>=4.0.0 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from habitat-lab==0.3.3) (4.70.1)
+Collecting lmdb>=0.98 (from habitat-baselines==0.3.3)
+  Downloading lmdb-3.0.0-cp310-cp310-win_amd64.whl.metadata (1.2 kB)
+Collecting ifcfg (from habitat-baselines==0.3.3)
+  Downloading ifcfg-0.24-py2.py3-none-any.whl.metadata (7.9 kB)
+Collecting threadpoolctl>=3.1.0 (from habitat-baselines==0.3.3)
+  Downloading threadpoolctl-3.7.0-py3-none-any.whl.metadata (24 kB)
+Collecting moviepy>=1.0.1 (from habitat-baselines==0.3.3)
+  Downloading moviepy-2.2.1-py3-none-any.whl.metadata (6.9 kB)
+Collecting tensorboard>=2.8.0 (from habitat-baselines==0.3.3)
+  Downloading tensorboard-2.21.0-py3-none-any.whl.metadata (1.8 kB)
+Collecting torch>=1.3.1 (from habitat-baselines==0.3.3)
+  Downloading torch-2.14.1-cp310-cp310-win_amd64.whl.metadata (38 kB)
+Collecting torchvision (from habitat-baselines==0.3.3)
+  Downloading torchvision-0.29.1-cp310-cp310-win_amd64.whl.metadata (5.7 kB)
+Collecting webdataset==0.1.40 (from habitat-baselines==0.3.3)
+  Downloading webdataset-0.1.40-py3-none-any.whl.metadata (21 kB)
+Requirement already satisfied: Pillow in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from webdataset==0.1.40->habitat-baselines==0.3.3) (10.4.0)
+Collecting simplejson (from webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading simplejson-4.2.0-cp310-cp310-win_amd64.whl.metadata (3.9 kB)
+Collecting braceexpand (from webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading braceexpand-0.1.7-py2.py3-none-any.whl.metadata (3.0 kB)
+Collecting msgpack (from webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading msgpack-1.2.4-cp310-cp310-win_amd64.whl.metadata (8.5 kB)
+Collecting pyyaml (from webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading pyyaml-6.0.3-cp310-cp310-win_amd64.whl.metadata (2.4 kB)
+Collecting objectio (from webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading objectio-0.2.29-py3-none-any.whl.metadata (2.8 kB)
+Collecting cloudpickle>=1.2.0 (from gym<0.23.1,>=0.22.0->habitat-lab==0.3.3)
+  Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+Collecting gym_notices>=0.0.4 (from gym<0.23.1,>=0.22.0->habitat-lab==0.3.3)
+  Downloading gym_notices-0.1.0-py3-none-any.whl.metadata (1.2 kB)
+Collecting omegaconf>=2.2.3 (from habitat-lab==0.3.3)
+  Downloading omegaconf-2.3.1-py3-none-any.whl.metadata (4.5 kB)
+Collecting antlr4-python3-runtime==4.9.* (from hydra-core>=1.2.0->habitat-lab==0.3.3)
+  Downloading antlr4-python3-runtime-4.9.3.tar.gz (117 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: packaging in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from hydra-core>=1.2.0->habitat-lab==0.3.3) (26.3)
+Collecting decorator<6.0,>=4.0.2 (from moviepy>=1.0.1->habitat-baselines==0.3.3)
+  Downloading decorator-5.3.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting proglog<=1.0.0 (from moviepy>=1.0.1->habitat-baselines==0.3.3)
+  Downloading proglog-0.1.12-py3-none-any.whl.metadata (794 bytes)
+Collecting python-dotenv>=0.10 (from moviepy>=1.0.1->habitat-baselines==0.3.3)
+  Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+Requirement already satisfied: llvmlite<0.51,>=0.50.0dev0 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from numba>=0.44.0->habitat-lab==0.3.3) (0.50.0)
+INFO: pip is looking at multiple versions of opencv-python to determine which version is compatible with other requirements. This could take a while.
+Collecting opencv-python>=3.3.0 (from habitat-lab==0.3.3)
+  Downloading opencv_python-4.14.0.94-cp37-abi3-win_amd64.whl.metadata (20 kB)
+  Downloading opencv_python-4.13.0.92-cp37-abi3-win_amd64.whl.metadata (20 kB)
+  Downloading opencv_python-4.13.0.90-cp37-abi3-win_amd64.whl.metadata (20 kB)
+  Downloading opencv_python-4.12.0.88-cp37-abi3-win_amd64.whl.metadata (19 kB)
+  Downloading opencv_python-4.11.0.86-cp37-abi3-win_amd64.whl.metadata (20 kB)
+Collecting absl-py>=0.4 (from tensorboard>=2.8.0->habitat-baselines==0.3.3)
+  Downloading absl_py-2.5.1-py3-none-any.whl.metadata (3.3 kB)
+Collecting grpcio<2.0,>=1.74.0 (from tensorboard>=2.8.0->habitat-baselines==0.3.3)
+  Downloading grpcio-1.85.0-cp310-cp310-win_amd64.whl.metadata (3.9 kB)
+Collecting markdown>=2.6.8 (from tensorboard>=2.8.0->habitat-baselines==0.3.3)
+  Downloading markdown-3.10.3-py3-none-any.whl.metadata (5.1 kB)
+Collecting protobuf<8.0.0,>=6.31.1 (from tensorboard>=2.8.0->habitat-baselines==0.3.3)
+  Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl.metadata (595 bytes)
+Requirement already satisfied: setuptools>=41.0.0 in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from tensorboard>=2.8.0->habitat-baselines==0.3.3) (65.5.0)
+Collecting tensorboard-data-server<0.8.0,>=0.7.0 (from tensorboard>=2.8.0->habitat-baselines==0.3.3)
+  Downloading tensorboard_data_server-0.7.2-py3-none-any.whl.metadata (1.1 kB)
+Collecting werkzeug>=1.0.1 (from tensorboard>=2.8.0->habitat-baselines==0.3.3)
+  Downloading werkzeug-3.1.9-py3-none-any.whl.metadata (4.1 kB)
+Collecting typing-extensions~=4.12 (from grpcio<2.0,>=1.74.0->tensorboard>=2.8.0->habitat-baselines==0.3.3)
+  Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting filelock (from torch>=1.3.1->habitat-baselines==0.3.3)
+  Downloading filelock-4.1.0-py3-none-any.whl.metadata (2.0 kB)
+Collecting setuptools>=41.0.0 (from tensorboard>=2.8.0->habitat-baselines==0.3.3)
+  Using cached setuptools-84.2.1-py3-none-any.whl.metadata (6.6 kB)
+Collecting sympy>=1.13.3 (from torch>=1.3.1->habitat-baselines==0.3.3)
+  Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Collecting networkx>=2.5.1 (from torch>=1.3.1->habitat-baselines==0.3.3)
+  Downloading networkx-3.4.2-py3-none-any.whl.metadata (6.3 kB)
+Collecting jinja2 (from torch>=1.3.1->habitat-baselines==0.3.3)
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting fsspec>=0.8.5 (from torch>=1.3.1->habitat-baselines==0.3.3)
+  Downloading fsspec-2026.9.0-py3-none-any.whl.metadata (10 kB)
+Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch>=1.3.1->habitat-baselines==0.3.3)
+  Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Requirement already satisfied: colorama in c:\hostedtoolcache\windows\python\3.10.11\x64\lib\site-packages (from tqdm>=4.0.0->habitat-lab==0.3.3) (0.4.6)
+Collecting markupsafe>=2.1.1 (from werkzeug>=1.0.1->tensorboard>=2.8.0->habitat-baselines==0.3.3)
+  Downloading markupsafe-3.0.4-cp310-cp310-win_amd64.whl.metadata (2.8 kB)
+Collecting typer (from objectio->webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading typer-0.27.3-py3-none-any.whl.metadata (16 kB)
+Collecting shellingham>=1.3.0 (from typer->objectio->webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+Collecting rich>=13.8.0 (from typer->objectio->webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting annotated-doc>=0.0.2 (from typer->objectio->webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=13.8.0->typer->objectio->webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich>=13.8.0->typer->objectio->webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.8.0->typer->objectio->webdataset==0.1.40->habitat-baselines==0.3.3)
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Downloading webdataset-0.1.40-py3-none-any.whl (32 kB)
+Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+Downloading gym_notices-0.1.0-py3-none-any.whl (3.3 kB)
+Downloading hydra_core-1.3.8-py3-none-any.whl (168 kB)
+Downloading omegaconf-2.3.1-py3-none-any.whl (79 kB)
+Downloading lmdb-3.0.0-cp310-cp310-win_amd64.whl (188 kB)
+Downloading moviepy-2.2.1-py3-none-any.whl (129 kB)
+Downloading decorator-5.3.1-py3-none-any.whl (10 kB)
+Downloading proglog-0.1.12-py3-none-any.whl (6.3 kB)
+Downloading opencv_python-4.11.0.86-cp37-abi3-win_amd64.whl (39.5 MB)
+   ---------------------------------------- 39.5/39.5 MB 64.3 MB/s  0:00:00
+Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+Downloading pyyaml-6.0.3-cp310-cp310-win_amd64.whl (158 kB)
+Downloading tensorboard-2.21.0-py3-none-any.whl (5.5 MB)
+   ---------------------------------------- 5.5/5.5 MB 169.5 MB/s  0:00:00
+Downloading grpcio-1.85.0-cp310-cp310-win_amd64.whl (5.6 MB)
+   ---------------------------------------- 5.6/5.6 MB 84.9 MB/s  0:00:00
+Downloading protobuf-7.36.2-cp310-abi3-win_amd64.whl (456 kB)
+Downloading tensorboard_data_server-0.7.2-py3-none-any.whl (2.4 kB)
+Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Downloading absl_py-2.5.1-py3-none-any.whl (137 kB)
+Downloading markdown-3.10.3-py3-none-any.whl (110 kB)
+Downloading threadpoolctl-3.7.0-py3-none-any.whl (26 kB)
+Downloading torch-2.14.1-cp310-cp310-win_amd64.whl (124.1 MB)
+   ---------------------------------------- 124.1/124.1 MB 56.2 MB/s  0:00:02
+Downloading fsspec-2026.9.0-py3-none-any.whl (221 kB)
+Downloading networkx-3.4.2-py3-none-any.whl (1.7 MB)
+   ---------------------------------------- 1.7/1.7 MB 97.4 MB/s  0:00:00
+Using cached setuptools-84.2.1-py3-none-any.whl (876 kB)
+Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+   ---------------------------------------- 6.3/6.3 MB 194.7 MB/s  0:00:00
+Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+   ---------------------------------------- 536.2/536.2 kB 1.9 MB/s  0:00:00
+Downloading werkzeug-3.1.9-py3-none-any.whl (228 kB)
+Downloading markupsafe-3.0.4-cp310-cp310-win_amd64.whl (14 kB)
+Downloading braceexpand-0.1.7-py2.py3-none-any.whl (5.9 kB)
+Downloading filelock-4.1.0-py3-none-any.whl (133 kB)
+Downloading ifcfg-0.24-py2.py3-none-any.whl (10 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading msgpack-1.2.4-cp310-cp310-win_amd64.whl (75 kB)
+Downloading objectio-0.2.29-py3-none-any.whl (7.8 kB)
+Downloading simplejson-4.2.0-cp310-cp310-win_amd64.whl (93 kB)
+Downloading torchvision-0.29.1-cp310-cp310-win_amd64.whl (1.4 MB)
+   ---------------------------------------- 1.4/1.4 MB 36.0 MB/s  0:00:00
+Downloading typer-0.27.3-py3-none-any.whl (123 kB)
+Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+   ---------------------------------------- 1.3/1.3 MB 31.9 MB/s  0:00:00
+Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Building wheels for collected packages: habitat-lab, habitat-baselines, gym, antlr4-python3-runtime
+  Building editable for habitat-lab (pyproject.toml): started
+  Building editable for habitat-lab (pyproject.toml): finished with status 'done'
+  Created wheel for habitat-lab: filename=habitat_lab-0.3.3-0.editable-py3-none-any.whl size=4132 sha256=ac0d40191148c6ea51b8b988efba838b62106a78692c76fbe6ad8ce8f7a522be
+  Stored in directory: C:\Users\runneradmin\AppData\Local\Temp\pip-ephem-wheel-cache-222lwfm_\wheels\9a\25\a1\44c9c5428a461ad0f3ba745eaafaf557e6ff366ce3c5132914
+  Building editable for habitat-baselines (pyproject.toml): started
+  Building editable for habitat-baselines (pyproject.toml): finished with status 'done'
+  Created wheel for habitat-baselines: filename=habitat_baselines-0.3.3-0.editable-py3-none-any.whl size=8112 sha256=7ee1518d8c8468f48ca2bd76086b4503b81d44d54dc284adff6ea3f259fe354b
+  Stored in directory: C:\Users\runneradmin\AppData\Local\Temp\pip-ephem-wheel-cache-222lwfm_\wheels\8b\04\ce\004ca532a48e203c1564623ca81aa153a6e8c0f59111cb7574
+  Building wheel for gym (pyproject.toml): started
+  Building wheel for gym (pyproject.toml): finished with status 'done'
+  Created wheel for gym: filename=gym-0.23.0-py3-none-any.whl size=697753 sha256=1f4f129ae272985da59732fc131f8cc73027cbad962bc48d42dc6dd32ff509ce
+  Stored in directory: c:\users\runneradmin\appdata\local\pip\cache\wheels\3d\6f\b4\3991d4fae11d0ecb0754c11cc1b4e7745012850da4efaaf0b1
+  Building wheel for antlr4-python3-runtime (pyproject.toml): started
+  Building wheel for antlr4-python3-runtime (pyproject.toml): finished with status 'done'
+  Created wheel for antlr4-python3-runtime: filename=antlr4_python3_runtime-4.9.3-py3-none-any.whl size=144615 sha256=e504577c6a0cf6421750ff35f3558ecd285dd6675eb7c87d9ada3a71f0ada5f9
+  Stored in directory: c:\users\runneradmin\appdata\local\pip\cache\wheels\12\93\dd\1f6a127edc45659556564c5730f6d4e300888f4bca2d4c5a88
+Successfully built habitat-lab habitat-baselines gym antlr4-python3-runtime
+Installing collected packages: mpmath, ifcfg, gym_notices, braceexpand, antlr4-python3-runtime, typing-extensions, threadpoolctl, tensorboard-data-server, sympy, simplejson, shellingham, setuptools, pyyaml, python-dotenv, pygments, protobuf, opencv-python, networkx, msgpack, mdurl, markupsafe, markdown, lmdb, fsspec, filelock, decorator, cloudpickle, annotated-doc, absl-py, werkzeug, proglog, omegaconf, markdown-it-py, jinja2, gym, grpcio, torch, tensorboard, rich, moviepy, hydra-core, typer, torchvision, habitat-lab, objectio, webdataset, habitat-baselines
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 65.5.0
+    Uninstalling setuptools-65.5.0:
+      Successfully uninstalled setuptools-65.5.0
+
+Successfully installed absl-py-2.5.1 annotated-doc-0.0.5 antlr4-python3-runtime-4.9.3 braceexpand-0.1.7 cloudpickle-3.1.2 decorator-5.3.1 filelock-4.1.0 fsspec-2026.9.0 grpcio-1.85.0 gym-0.23.0 gym_notices-0.1.0 habitat-baselines-0.3.3 habitat-lab-0.3.3 hydra-core-1.3.8 ifcfg-0.24 jinja2-3.1.6 lmdb-3.0.0 markdown-3.10.3 markdown-it-py-4.2.0 markupsafe-3.0.4 mdurl-0.1.2 moviepy-2.2.1 mpmath-1.3.0 msgpack-1.2.4 networkx-3.4.2 objectio-0.2.29 omegaconf-2.3.1 opencv-python-4.11.0.86 proglog-0.1.12 protobuf-7.36.2 pygments-2.21.0 python-dotenv-1.2.4 pyyaml-6.0.3 rich-15.0.0 setuptools-84.2.1 shellingham-1.5.4 simplejson-4.2.0 sympy-1.14.0 tensorboard-2.21.0 tensorboard-data-server-0.7.2 threadpoolctl-3.7.0 torch-2.14.1 torchvision-0.29.1 typer-0.27.3 typing-extensions-4.16.0 webdataset-0.1.40 werkzeug-3.1.9
++ python -c 'import habitat, habitat_baselines, habitat_sim, numpy; print('\''habitat-lab OK'\'', habitat.__version__, '\''numpy'\'', numpy.__version__)'
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+D:\a\habitat-sim\habitat-sim\habitat-lab\habitat-baselines\habitat_baselines\rl\ver\queue.py:32: UserWarning: Unable to import faster_fifo. Using the fallback. This may reduce performance.
+  warnings.warn(
+habitat-lab OK 0.3.3 numpy 1.26.4
