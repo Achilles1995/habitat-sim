@@ -187,9 +187,11 @@ def nav_point(sim, rng, near=None, radius=None):
     if near is None:
         return pts[0] if pts else mn.Vector3(0, 0, 0)
     c = evkh.snap(sim, near)
-    ok = [p for p in pts if (p - c).length() <= radius and abs(p.y - c.y) < 0.5 and evkh.plan(sim, c, p)]
-    if ok:
-        return ok[int(rng.integers(len(ok)))]
+    cand = [p for p in pts if (p - c).length() <= radius and abs(p.y - c.y) < 0.5]
+    rng.shuffle(cand)
+    for p in cand[:8]:                      # same connected floor as `near`
+        if evkh.plan(sim, c, p):
+            return p
     return c
 
 
@@ -200,30 +202,39 @@ def path_len(sim, a, b):
     return sum((pts[i + 1] - pts[i]).length() for i in range(len(pts) - 1))
 
 
-def wall_camera_pose(sim, center, rng, height=2.2, dmin=2.5, dmax=6.0, tries=200):
-    """A ceiling-height viewpoint near a wall with a clear line of sight to `center`."""
+def wall_camera_pose(sim, center, rng, height=2.2, dmin=2.5, dmax=6.0, tries=300):
+    """A ceiling-height viewpoint near a wall with a clear line of sight to `center` (the
+    minimum distance is relaxed in small rooms; the best occluded view is the last resort)."""
     import habitat_sim
     pf = sim.pathfinder
     floor_y = float(center[1])
-    best = None
+    pool = []
     for _ in range(tries):
-        p = nav_point(sim, rng, near=center, radius=dmax)
-        d = math.hypot(p.x - center[0], p.z - center[2])
-        if d < dmin:
-            continue
-        # push the camera to the wall behind the sampled point (cameras hang on walls)
-        away = mn.Vector3(p.x - center[0], 0, p.z - center[2]).normalized()
-        eye = mn.Vector3(p.x, floor_y + height, p.z)
-        res = sim.cast_ray(habitat_sim.geo.Ray(np.array(eye), np.array(away)), 3.0)
-        if res.has_hits():
-            eye = eye + away * max(0.0, res.hits[0].ray_distance - 0.15)
-        tgt = mn.Vector3(center[0], floor_y + 0.9, center[2])
-        dirv = tgt - eye
-        res = sim.cast_ray(habitat_sim.geo.Ray(np.array(eye), np.array(dirv.normalized())), dirv.length())
-        clear = (not res.has_hits()) or res.hits[0].ray_distance > dirv.length() - 0.3
-        if clear:
-            return [eye.x, eye.y, eye.z], [tgt.x, tgt.y, tgt.z]
-        best = best or ([eye.x, eye.y, eye.z], [tgt.x, tgt.y, tgt.z])
+        pf.seed(int(rng.integers(1 << 30)))
+        p = pf.get_random_navigable_point()
+        if evsim.finite(p) and abs(p[1] - floor_y) < 0.5:
+            pool.append(mn.Vector3(p))
+    best = None
+    for lo in (dmin, 0.6 * dmin, 0.35 * dmin):
+        for p in pool:
+            d = math.hypot(p.x - center[0], p.z - center[2])
+            if d < lo or d > dmax:
+                continue
+            # push the camera to the wall behind the sampled point (cameras hang on walls)
+            away = mn.Vector3(p.x - center[0], 0, p.z - center[2]).normalized()
+            eye = mn.Vector3(p.x, floor_y + height, p.z)
+            res = sim.cast_ray(habitat_sim.geo.Ray(np.array(eye), np.array(away)), 3.0)
+            if res.has_hits():
+                eye = eye + away * max(0.0, res.hits[0].ray_distance - 0.15)
+            tgt = mn.Vector3(center[0], floor_y + 0.9, center[2])
+            dirv = tgt - eye
+            res = sim.cast_ray(habitat_sim.geo.Ray(np.array(eye), np.array(dirv.normalized())), dirv.length())
+            clear = (not res.has_hits()) or res.hits[0].ray_distance > dirv.length() - 0.3
+            if clear:
+                return [eye.x, eye.y, eye.z], [tgt.x, tgt.y, tgt.z]
+            best = best or ([eye.x, eye.y, eye.z], [tgt.x, tgt.y, tgt.z])
+    if best is None:               # tiny scene: look from above the centre's surroundings
+        best = ([center[0] + 1.0, floor_y + height, center[2] + 1.0], [center[0], floor_y + 0.9, center[2]])
     return best
 
 

@@ -28,6 +28,9 @@ def main():
 
     meta = json.load(open(os.path.join(args.episode, "meta.json")))
     cam = args.cam or sorted(meta["cameras"])[0]
+    if cam not in meta["cameras"]:
+        print(f"{cam}: not recorded in this episode (cameras: {sorted(meta['cameras'])})")
+        return float("nan")
     human_ids = [h["instance_id"] for h in meta["humans"]]
     with h5py.File(os.path.join(args.episode, f"events_{cam}.h5"), "r") as f:
         e = {k: f["events"][k][:] for k in ("x", "y", "p", "t", "instance")}
