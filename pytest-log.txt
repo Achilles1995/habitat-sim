@@ -1,0 +1,626 @@
+============================= test session starts =============================
+platform win32 -- Python 3.10.11, pytest-9.2.0, pluggy-1.7.0
+benchmark: 5.3.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+C++ Build Info:
+--audio_enabled: False
+--built_with_bullet: True
+--cuda_enabled: False
+rootdir: D:\a\habitat-sim\habitat-sim
+configfile: pyproject.toml (WARNING: ignoring pytest config in setup.cfg!)
+plugins: hypothesis-6.168.5, benchmark-5.3.0, timeout-2.4.0, xdist-3.8.0
+timeout: 900.0s
+timeout method: thread
+timeout func_only: False
+created: 4/4 workers
+4 workers [780 items]
+
+..............s...s...s.............................................s... [  9%]
+...............................................................ss....... [ 18%]
+........................................................................ [ 27%]
+.........sssssssssssssssssssssssssssssssssssssssssssss.....EEEEEEEEsss.. [ 36%]
+....sssssssssssssssssssssssssssssssssssssss..........ssssss......ssssss. [ 46%]
+.............................sss........sssssssssssssssssssssss.ssssss.. [ 55%]
+...sssssssssssssssssssss..........ssssss..sss.....ssssssssssssssssssssss [ 64%]
+sssssss.............ssssss........ssssssssssssss......sss.......s....... [ 73%]
+ssss.s.......s.s......ss.s.....s........s............................... [ 83%]
+....................................................C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\logger.py:44: PytestBenchmarkWarning: Benchmarks are automatically disabled because xdist plugin is active. Benchmarks cannot be performed reliably in a parallelized environment.
+  warner(PytestBenchmarkWarning(text))
+.................... [ 92%]
+........ssssssssssssssssssssssssssssssss....................             [100%]
+=================================== ERRORS ====================================
+__________ ERROR at setup of test_benchmark_urdf_add_remove[False-1] __________
+[gw3] win32 -- Python 3.10.11 C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+
+request = <SubRequest 'benchmark' for <Function test_benchmark_urdf_add_remove[False-1]>>
+
+    @pytest.fixture
+    def benchmark(request):
+        bs: BenchmarkSession = request.config._benchmarksession
+    
+        if bs.skip:
+            pytest.skip('Benchmarks are skipped (--benchmark-skip was used).')
+        else:
+            node = request.node
+            marker = node.get_closest_marker('benchmark')
+            options: dict[str, object] = dict(marker.kwargs) if marker else {}
+            if 'timer' in options:
+                options['timer'] = NameWrapper(options['timer'])
+>           fixture = BenchmarkFixture(
+                node,
+                add_stats=bs.benchmarks.append,
+                logger=bs.logger,
+                warner=request.node.warn,
+                disabled=bs.disabled,
+                **dict(bs.options, **options),
+            )
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\plugin.py:494: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pytest_benchmark.fixture.BenchmarkFixture object at 0x000001D6808EF910>
+node = <Function test_benchmark_urdf_add_remove[False-1]>, disable_gc = False
+timer = NameWrapper(<built-in function perf_counter>), min_rounds = 5
+min_time = Decimal('0.000005'), max_time = Decimal('1.0'), precision = None
+confidence = 0.99, warmup = False, warmup_iterations = 100000
+calibration_precision = 10
+add_stats = <built-in method append of list object at 0x000001D6EC6DCA00>
+logger = <pytest_benchmark.logger.Logger object at 0x000001D6F4619870>
+warner = <bound method Node.warn of <Function test_benchmark_urdf_add_remove[False-1]>>
+disabled = True, cprofile = False, cprofile_loops = 1, cprofile_dump = False
+group = 'URDF load->remove iterations|force_reload'
+
+    def __init__(
+        self,
+        node,
+        disable_gc,
+        timer,
+        min_rounds,
+        min_time,
+        max_time,
+        precision,
+        confidence,
+        warmup,
+        warmup_iterations,
+        calibration_precision,
+        add_stats,
+        logger,
+        warner,
+        disabled,
+        cprofile,
+        cprofile_loops,
+        cprofile_dump,
+        group=None,
+    ):
+        self.name = node.name
+>       self.fullname = node._nodeid
+E       AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\fixture.py:88: AttributeError
+_________ ERROR at setup of test_benchmark_urdf_add_remove[False-10] __________
+[gw3] win32 -- Python 3.10.11 C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+
+request = <SubRequest 'benchmark' for <Function test_benchmark_urdf_add_remove[False-10]>>
+
+    @pytest.fixture
+    def benchmark(request):
+        bs: BenchmarkSession = request.config._benchmarksession
+    
+        if bs.skip:
+            pytest.skip('Benchmarks are skipped (--benchmark-skip was used).')
+        else:
+            node = request.node
+            marker = node.get_closest_marker('benchmark')
+            options: dict[str, object] = dict(marker.kwargs) if marker else {}
+            if 'timer' in options:
+                options['timer'] = NameWrapper(options['timer'])
+>           fixture = BenchmarkFixture(
+                node,
+                add_stats=bs.benchmarks.append,
+                logger=bs.logger,
+                warner=request.node.warn,
+                disabled=bs.disabled,
+                **dict(bs.options, **options),
+            )
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\plugin.py:494: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pytest_benchmark.fixture.BenchmarkFixture object at 0x000001D68094B880>
+node = <Function test_benchmark_urdf_add_remove[False-10]>, disable_gc = False
+timer = NameWrapper(<built-in function perf_counter>), min_rounds = 5
+min_time = Decimal('0.000005'), max_time = Decimal('1.0'), precision = None
+confidence = 0.99, warmup = False, warmup_iterations = 100000
+calibration_precision = 10
+add_stats = <built-in method append of list object at 0x000001D6EC6DCA00>
+logger = <pytest_benchmark.logger.Logger object at 0x000001D6F4619870>
+warner = <bound method Node.warn of <Function test_benchmark_urdf_add_remove[False-10]>>
+disabled = True, cprofile = False, cprofile_loops = 1, cprofile_dump = False
+group = 'URDF load->remove iterations|force_reload'
+
+    def __init__(
+        self,
+        node,
+        disable_gc,
+        timer,
+        min_rounds,
+        min_time,
+        max_time,
+        precision,
+        confidence,
+        warmup,
+        warmup_iterations,
+        calibration_precision,
+        add_stats,
+        logger,
+        warner,
+        disabled,
+        cprofile,
+        cprofile_loops,
+        cprofile_dump,
+        group=None,
+    ):
+        self.name = node.name
+>       self.fullname = node._nodeid
+E       AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\fixture.py:88: AttributeError
+_________ ERROR at setup of test_benchmark_urdf_add_remove[False-100] _________
+[gw3] win32 -- Python 3.10.11 C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+
+request = <SubRequest 'benchmark' for <Function test_benchmark_urdf_add_remove[False-100]>>
+
+    @pytest.fixture
+    def benchmark(request):
+        bs: BenchmarkSession = request.config._benchmarksession
+    
+        if bs.skip:
+            pytest.skip('Benchmarks are skipped (--benchmark-skip was used).')
+        else:
+            node = request.node
+            marker = node.get_closest_marker('benchmark')
+            options: dict[str, object] = dict(marker.kwargs) if marker else {}
+            if 'timer' in options:
+                options['timer'] = NameWrapper(options['timer'])
+>           fixture = BenchmarkFixture(
+                node,
+                add_stats=bs.benchmarks.append,
+                logger=bs.logger,
+                warner=request.node.warn,
+                disabled=bs.disabled,
+                **dict(bs.options, **options),
+            )
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\plugin.py:494: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pytest_benchmark.fixture.BenchmarkFixture object at 0x000001D68092B5E0>
+node = <Function test_benchmark_urdf_add_remove[False-100]>, disable_gc = False
+timer = NameWrapper(<built-in function perf_counter>), min_rounds = 5
+min_time = Decimal('0.000005'), max_time = Decimal('1.0'), precision = None
+confidence = 0.99, warmup = False, warmup_iterations = 100000
+calibration_precision = 10
+add_stats = <built-in method append of list object at 0x000001D6EC6DCA00>
+logger = <pytest_benchmark.logger.Logger object at 0x000001D6F4619870>
+warner = <bound method Node.warn of <Function test_benchmark_urdf_add_remove[False-100]>>
+disabled = True, cprofile = False, cprofile_loops = 1, cprofile_dump = False
+group = 'URDF load->remove iterations|force_reload'
+
+    def __init__(
+        self,
+        node,
+        disable_gc,
+        timer,
+        min_rounds,
+        min_time,
+        max_time,
+        precision,
+        confidence,
+        warmup,
+        warmup_iterations,
+        calibration_precision,
+        add_stats,
+        logger,
+        warner,
+        disabled,
+        cprofile,
+        cprofile_loops,
+        cprofile_dump,
+        group=None,
+    ):
+        self.name = node.name
+>       self.fullname = node._nodeid
+E       AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\fixture.py:88: AttributeError
+_________ ERROR at setup of test_benchmark_urdf_add_remove[False-200] _________
+[gw3] win32 -- Python 3.10.11 C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+
+request = <SubRequest 'benchmark' for <Function test_benchmark_urdf_add_remove[False-200]>>
+
+    @pytest.fixture
+    def benchmark(request):
+        bs: BenchmarkSession = request.config._benchmarksession
+    
+        if bs.skip:
+            pytest.skip('Benchmarks are skipped (--benchmark-skip was used).')
+        else:
+            node = request.node
+            marker = node.get_closest_marker('benchmark')
+            options: dict[str, object] = dict(marker.kwargs) if marker else {}
+            if 'timer' in options:
+                options['timer'] = NameWrapper(options['timer'])
+>           fixture = BenchmarkFixture(
+                node,
+                add_stats=bs.benchmarks.append,
+                logger=bs.logger,
+                warner=request.node.warn,
+                disabled=bs.disabled,
+                **dict(bs.options, **options),
+            )
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\plugin.py:494: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pytest_benchmark.fixture.BenchmarkFixture object at 0x000001D680928700>
+node = <Function test_benchmark_urdf_add_remove[False-200]>, disable_gc = False
+timer = NameWrapper(<built-in function perf_counter>), min_rounds = 5
+min_time = Decimal('0.000005'), max_time = Decimal('1.0'), precision = None
+confidence = 0.99, warmup = False, warmup_iterations = 100000
+calibration_precision = 10
+add_stats = <built-in method append of list object at 0x000001D6EC6DCA00>
+logger = <pytest_benchmark.logger.Logger object at 0x000001D6F4619870>
+warner = <bound method Node.warn of <Function test_benchmark_urdf_add_remove[False-200]>>
+disabled = True, cprofile = False, cprofile_loops = 1, cprofile_dump = False
+group = 'URDF load->remove iterations|force_reload'
+
+    def __init__(
+        self,
+        node,
+        disable_gc,
+        timer,
+        min_rounds,
+        min_time,
+        max_time,
+        precision,
+        confidence,
+        warmup,
+        warmup_iterations,
+        calibration_precision,
+        add_stats,
+        logger,
+        warner,
+        disabled,
+        cprofile,
+        cprofile_loops,
+        cprofile_dump,
+        group=None,
+    ):
+        self.name = node.name
+>       self.fullname = node._nodeid
+E       AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\fixture.py:88: AttributeError
+__________ ERROR at setup of test_benchmark_urdf_add_remove[True-1] ___________
+[gw3] win32 -- Python 3.10.11 C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+
+request = <SubRequest 'benchmark' for <Function test_benchmark_urdf_add_remove[True-1]>>
+
+    @pytest.fixture
+    def benchmark(request):
+        bs: BenchmarkSession = request.config._benchmarksession
+    
+        if bs.skip:
+            pytest.skip('Benchmarks are skipped (--benchmark-skip was used).')
+        else:
+            node = request.node
+            marker = node.get_closest_marker('benchmark')
+            options: dict[str, object] = dict(marker.kwargs) if marker else {}
+            if 'timer' in options:
+                options['timer'] = NameWrapper(options['timer'])
+>           fixture = BenchmarkFixture(
+                node,
+                add_stats=bs.benchmarks.append,
+                logger=bs.logger,
+                warner=request.node.warn,
+                disabled=bs.disabled,
+                **dict(bs.options, **options),
+            )
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\plugin.py:494: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pytest_benchmark.fixture.BenchmarkFixture object at 0x000001D68092BE80>
+node = <Function test_benchmark_urdf_add_remove[True-1]>, disable_gc = False
+timer = NameWrapper(<built-in function perf_counter>), min_rounds = 5
+min_time = Decimal('0.000005'), max_time = Decimal('1.0'), precision = None
+confidence = 0.99, warmup = False, warmup_iterations = 100000
+calibration_precision = 10
+add_stats = <built-in method append of list object at 0x000001D6EC6DCA00>
+logger = <pytest_benchmark.logger.Logger object at 0x000001D6F4619870>
+warner = <bound method Node.warn of <Function test_benchmark_urdf_add_remove[True-1]>>
+disabled = True, cprofile = False, cprofile_loops = 1, cprofile_dump = False
+group = 'URDF load->remove iterations|force_reload'
+
+    def __init__(
+        self,
+        node,
+        disable_gc,
+        timer,
+        min_rounds,
+        min_time,
+        max_time,
+        precision,
+        confidence,
+        warmup,
+        warmup_iterations,
+        calibration_precision,
+        add_stats,
+        logger,
+        warner,
+        disabled,
+        cprofile,
+        cprofile_loops,
+        cprofile_dump,
+        group=None,
+    ):
+        self.name = node.name
+>       self.fullname = node._nodeid
+E       AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\fixture.py:88: AttributeError
+__________ ERROR at setup of test_benchmark_urdf_add_remove[True-10] __________
+[gw3] win32 -- Python 3.10.11 C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+
+request = <SubRequest 'benchmark' for <Function test_benchmark_urdf_add_remove[True-10]>>
+
+    @pytest.fixture
+    def benchmark(request):
+        bs: BenchmarkSession = request.config._benchmarksession
+    
+        if bs.skip:
+            pytest.skip('Benchmarks are skipped (--benchmark-skip was used).')
+        else:
+            node = request.node
+            marker = node.get_closest_marker('benchmark')
+            options: dict[str, object] = dict(marker.kwargs) if marker else {}
+            if 'timer' in options:
+                options['timer'] = NameWrapper(options['timer'])
+>           fixture = BenchmarkFixture(
+                node,
+                add_stats=bs.benchmarks.append,
+                logger=bs.logger,
+                warner=request.node.warn,
+                disabled=bs.disabled,
+                **dict(bs.options, **options),
+            )
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\plugin.py:494: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pytest_benchmark.fixture.BenchmarkFixture object at 0x000001D680929F90>
+node = <Function test_benchmark_urdf_add_remove[True-10]>, disable_gc = False
+timer = NameWrapper(<built-in function perf_counter>), min_rounds = 5
+min_time = Decimal('0.000005'), max_time = Decimal('1.0'), precision = None
+confidence = 0.99, warmup = False, warmup_iterations = 100000
+calibration_precision = 10
+add_stats = <built-in method append of list object at 0x000001D6EC6DCA00>
+logger = <pytest_benchmark.logger.Logger object at 0x000001D6F4619870>
+warner = <bound method Node.warn of <Function test_benchmark_urdf_add_remove[True-10]>>
+disabled = True, cprofile = False, cprofile_loops = 1, cprofile_dump = False
+group = 'URDF load->remove iterations|force_reload'
+
+    def __init__(
+        self,
+        node,
+        disable_gc,
+        timer,
+        min_rounds,
+        min_time,
+        max_time,
+        precision,
+        confidence,
+        warmup,
+        warmup_iterations,
+        calibration_precision,
+        add_stats,
+        logger,
+        warner,
+        disabled,
+        cprofile,
+        cprofile_loops,
+        cprofile_dump,
+        group=None,
+    ):
+        self.name = node.name
+>       self.fullname = node._nodeid
+E       AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\fixture.py:88: AttributeError
+_________ ERROR at setup of test_benchmark_urdf_add_remove[True-100] __________
+[gw3] win32 -- Python 3.10.11 C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+
+request = <SubRequest 'benchmark' for <Function test_benchmark_urdf_add_remove[True-100]>>
+
+    @pytest.fixture
+    def benchmark(request):
+        bs: BenchmarkSession = request.config._benchmarksession
+    
+        if bs.skip:
+            pytest.skip('Benchmarks are skipped (--benchmark-skip was used).')
+        else:
+            node = request.node
+            marker = node.get_closest_marker('benchmark')
+            options: dict[str, object] = dict(marker.kwargs) if marker else {}
+            if 'timer' in options:
+                options['timer'] = NameWrapper(options['timer'])
+>           fixture = BenchmarkFixture(
+                node,
+                add_stats=bs.benchmarks.append,
+                logger=bs.logger,
+                warner=request.node.warn,
+                disabled=bs.disabled,
+                **dict(bs.options, **options),
+            )
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\plugin.py:494: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pytest_benchmark.fixture.BenchmarkFixture object at 0x000001D680929C00>
+node = <Function test_benchmark_urdf_add_remove[True-100]>, disable_gc = False
+timer = NameWrapper(<built-in function perf_counter>), min_rounds = 5
+min_time = Decimal('0.000005'), max_time = Decimal('1.0'), precision = None
+confidence = 0.99, warmup = False, warmup_iterations = 100000
+calibration_precision = 10
+add_stats = <built-in method append of list object at 0x000001D6EC6DCA00>
+logger = <pytest_benchmark.logger.Logger object at 0x000001D6F4619870>
+warner = <bound method Node.warn of <Function test_benchmark_urdf_add_remove[True-100]>>
+disabled = True, cprofile = False, cprofile_loops = 1, cprofile_dump = False
+group = 'URDF load->remove iterations|force_reload'
+
+    def __init__(
+        self,
+        node,
+        disable_gc,
+        timer,
+        min_rounds,
+        min_time,
+        max_time,
+        precision,
+        confidence,
+        warmup,
+        warmup_iterations,
+        calibration_precision,
+        add_stats,
+        logger,
+        warner,
+        disabled,
+        cprofile,
+        cprofile_loops,
+        cprofile_dump,
+        group=None,
+    ):
+        self.name = node.name
+>       self.fullname = node._nodeid
+E       AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\fixture.py:88: AttributeError
+_________ ERROR at setup of test_benchmark_urdf_add_remove[True-200] __________
+[gw3] win32 -- Python 3.10.11 C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+
+request = <SubRequest 'benchmark' for <Function test_benchmark_urdf_add_remove[True-200]>>
+
+    @pytest.fixture
+    def benchmark(request):
+        bs: BenchmarkSession = request.config._benchmarksession
+    
+        if bs.skip:
+            pytest.skip('Benchmarks are skipped (--benchmark-skip was used).')
+        else:
+            node = request.node
+            marker = node.get_closest_marker('benchmark')
+            options: dict[str, object] = dict(marker.kwargs) if marker else {}
+            if 'timer' in options:
+                options['timer'] = NameWrapper(options['timer'])
+>           fixture = BenchmarkFixture(
+                node,
+                add_stats=bs.benchmarks.append,
+                logger=bs.logger,
+                warner=request.node.warn,
+                disabled=bs.disabled,
+                **dict(bs.options, **options),
+            )
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\plugin.py:494: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pytest_benchmark.fixture.BenchmarkFixture object at 0x000001D68090D690>
+node = <Function test_benchmark_urdf_add_remove[True-200]>, disable_gc = False
+timer = NameWrapper(<built-in function perf_counter>), min_rounds = 5
+min_time = Decimal('0.000005'), max_time = Decimal('1.0'), precision = None
+confidence = 0.99, warmup = False, warmup_iterations = 100000
+calibration_precision = 10
+add_stats = <built-in method append of list object at 0x000001D6EC6DCA00>
+logger = <pytest_benchmark.logger.Logger object at 0x000001D6F4619870>
+warner = <bound method Node.warn of <Function test_benchmark_urdf_add_remove[True-200]>>
+disabled = True, cprofile = False, cprofile_loops = 1, cprofile_dump = False
+group = 'URDF load->remove iterations|force_reload'
+
+    def __init__(
+        self,
+        node,
+        disable_gc,
+        timer,
+        min_rounds,
+        min_time,
+        max_time,
+        precision,
+        confidence,
+        warmup,
+        warmup_iterations,
+        calibration_precision,
+        add_stats,
+        logger,
+        warner,
+        disabled,
+        cprofile,
+        cprofile_loops,
+        cprofile_dump,
+        group=None,
+    ):
+        self.name = node.name
+>       self.fullname = node._nodeid
+E       AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\pytest_benchmark\fixture.py:88: AttributeError
+============================== warnings summary ===============================
+tests\test_physics_benchmarking.py:18
+tests\test_physics_benchmarking.py:18
+tests\test_physics_benchmarking.py:18
+tests\test_physics_benchmarking.py:18
+  D:\a\habitat-sim\habitat-sim\tests\test_physics_benchmarking.py:18: PytestUnknownMarkWarning: Unknown pytest.mark.sim_benchmarks - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.sim_benchmarks
+
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:431
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:431
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:431
+C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:431
+  C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\mark\structures.py:431: PytestCollectionWarning: cannot collect 'test_requires_torch_cuda' because it is not a function.
+    def __call__(self, *args: object, **kwargs: object):
+
+tests/test_greedy_follower.py: 11892 warnings
+tests/test_pyrobot_noisy_controls.py: 14400 warnings
+  C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\habitat_sim\agent\controls\pyrobot_noisy_controls.py:249: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+    scene_node.rotate_y_local(mn.Deg(rotate_amount) + mn.Rad(float(rot_noise)))
+
+tests/test_snap_point.py::test_data_func
+  C:\hostedtoolcache\windows\Python\3.10.11\x64\lib\site-packages\_pytest\python.py:191: PytestReturnNotNoneWarning: Test functions should return None, but tests/test_snap_point.py::test_data_func returned <class 'tuple'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+----- generated xml file: D:\a\habitat-sim\habitat-sim\pytest-results.xml -----
+=========================== short test summary info ===========================
+ERROR tests/test_physics_benchmarking.py::test_benchmark_urdf_add_remove[False-1] - AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+ERROR tests/test_physics_benchmarking.py::test_benchmark_urdf_add_remove[False-10] - AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+ERROR tests/test_physics_benchmarking.py::test_benchmark_urdf_add_remove[False-100] - AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+ERROR tests/test_physics_benchmarking.py::test_benchmark_urdf_add_remove[False-200] - AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+ERROR tests/test_physics_benchmarking.py::test_benchmark_urdf_add_remove[True-1] - AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+ERROR tests/test_physics_benchmarking.py::test_benchmark_urdf_add_remove[True-10] - AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+ERROR tests/test_physics_benchmarking.py::test_benchmark_urdf_add_remove[True-100] - AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+ERROR tests/test_physics_benchmarking.py::test_benchmark_urdf_add_remove[True-200] - AttributeError: 'Function' object has no attribute '_nodeid'. Did you mean: 'nodeid'?
+SKIPPED [4] tests\test_greedy_follower.py:75: D:\a\habitat-sim\habitat-sim\data/scene_datasets/mp3d/17DRP5sb8fy/17DRP5sb8fy.navmesh not found
+SKIPPED [2] tests\test_noise_models.py:24: Test requires cuda
+SKIPPED [2] tests\test_semantic_scene.py:152: Disabled
+SKIPPED [96] tests\test_sensors.py:184: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [112] tests\test_sensors.py:186: Skipping GPU->GPU test
+SKIPPED [1] tests\test_profiling_utils.py:35: Torch not installed with CUDA support so skipping test
+SKIPPED [1] tests\test_profiling_utils.py:65: Torch not installed with CUDA support so skipping test
+SKIPPED [1] tests\test_profiling_utils.py:82: Torch not installed with CUDA support so skipping test
+SKIPPED [2] tests\test_sensors.py:243: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [3] tests\test_sensors.py:300: Skipping GPU->GPU test
+SKIPPED [2] tests\test_sensors.py:298: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [2] tests\test_sensors.py:328: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [4] tests\test_sensors.py:350: Skipping D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d\1LXtFkjw3qL\1LXtFkjw3qL.glb
+SKIPPED [32] tests\test_examples.py:148: Skipped
+=== 508 passed, 264 skipped, 26301 warnings, 8 errors in 7575.63s (2:06:15) ===
