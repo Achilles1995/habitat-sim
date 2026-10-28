@@ -540,7 +540,7 @@ def run_safety(args, idx, rng):
         rob = ep.robot
         f = rob.forward
         ahead = [rob.rect_dist(h.feet) for h in ep.humans
-                 if (h.feet - rob.pos).dot(f) > -0.2 and rob.rect_dist(h.feet) < 4.0]
+                 if mn.math.dot(h.feet - rob.pos, f) > -0.2 and rob.rect_dist(h.feet) < 4.0]
         d_front = min(ahead, default=math.inf) - HUMAN_R
         if policy == "ssm":
             v = robot_speed * min(1.0, max(0.0, (d_front - 0.4) / 1.5))
