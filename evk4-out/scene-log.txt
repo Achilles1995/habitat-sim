@@ -1,0 +1,25 @@
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+[00:12:52:097273]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:12:52:097571]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:12:52:097609]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:12:52:097623]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:12:59:543152]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+Warp CUDA warning: Could not find or load the NVIDIA CUDA driver. GPU execution will not be available.
+navmesh: True
+human at Vector(1.02413, 0.176699, 0.0973501) -> Vector(4.22413, 0.176699, 0.09735) spot at Vector(2.60882, 0.176699, -0.96342)
+[PASS] 1 HDR radiance: dtype float32, radiance quantiles 1/50/99% 0.0093 0.2822 0.9956, 2552 distinct levels at 1/64 of an 8-bit step; lux_per_unit 145.2
+human walked 2.29 m in 75 steps; 99 updates in 70.7 s
+[PASS] 2 static scene (wall): 0.268 events/px/s with nothing moving
+[PASS] 2 static scene (spot_front): 0.301 events/px/s with nothing moving
+[PASS] 3 human events (wall): 184414 events while walking, 139208 (75%) on the human; median range 3.00 m vs camera-human 3.38 m
+[PASS] 4 human flow direction (wall): image displacement of the pelvis [-70.1 -37.4] px, median event flow [-36.4 -16.3] px/s, cos 1.00
+spot_front while walking: 1979008 events, 75% on the human
+[PASS] 5 Spot turning left (spot_front): 1694138 events, median scene flow_x 275 px/s (rotation alone: 168); sub-steps 12..12
+IMAGEIO FFMPEG_WRITER WARNING: input image is not divisible by macro_block_size=16, resizing from (320, 180) to (320, 192) to ensure video compatibility with most codecs and players. To prevent resizing, make your input image divisible by the macro_block_size or set the macro_block_size to 1 (risking incompatibility).
+IMAGEIO FFMPEG_WRITER WARNING: input image is not divisible by macro_block_size=16, resizing from (320, 180) to (320, 192) to ensure video compatibility with most codecs and players. To prevent resizing, make your input image divisible by the macro_block_size or set the macro_block_size to 1 (risking incompatibility).
+wall: 320x180, intrinsics [190.7 190.7 159.5  89.5], timing ms/update {'render': 135.94592626263116, 'readback': 9.049599999993594, 'pixel': 50.37121919191361, 'readout': 0.6257717171659563}
+spot_front: 320x180, intrinsics [160.  160.  159.5  89.5], timing ms/update {'render': 161.55173535352415, 'readback': 20.04877474749292, 'pixel': 178.48451919191825, 'readout': 4.14934444443524}
+ALL PASSED

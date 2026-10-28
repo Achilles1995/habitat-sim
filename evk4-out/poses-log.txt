@@ -1,0 +1,6 @@
+Renderer: llvmpipe (LLVM 23.1.2, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.4 (git-9a0169f2a7)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+skeleton joints found: ['head', 'left_ankle', 'left_collar', 'left_elbow', 'left_foot', 'left_hip', 'left_knee', 'left_middle1', 'left_shoulder', 'left_wrist', 'neck', 'right_ankle', 'right_collar', 'right_elbow', 'right_foot', 'right_hip', 'right_knee', 'right_middle1', 'right_shoulder', 'right_wrist', 'spine1', 'spine2', 'spine3']
+wrote evk4-out\poses.jpg

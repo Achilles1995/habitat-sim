@@ -1,0 +1,34 @@
+{
+ "app": "safety",
+ "modality": "events",
+ "n_test": 212,
+ "accuracy": 0.0,
+ "macro_f1": 0.0,
+ "confusion": [
+  [
+   0,
+   0,
+   0
+  ],
+  [
+   190,
+   0,
+   0
+  ],
+  [
+   22,
+   0,
+   0
+  ]
+ ],
+ "classes": [
+  "safe",
+  "caution",
+  "danger"
+ ],
+ "clearance_mae_m": 0.9903759360313416,
+ "ADE_m": 1.2980868816375732,
+ "FDE_1.5s_m": 1.3214101791381836,
+ "accuracy_spot_front": 0.0,
+ "accuracy_wall0": 0.0
+}
