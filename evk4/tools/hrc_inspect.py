@@ -32,9 +32,26 @@ def main():
         print(f"{cam}: not recorded in this episode (cameras: {sorted(meta['cameras'])})")
         return float("nan")
     human_ids = [h["instance_id"] for h in meta["humans"]]
-    with h5py.File(os.path.join(args.episode, f"events_{cam}.h5"), "r") as f:
-        e = {k: f["events"][k][:] for k in ("x", "y", "p", "t", "instance")}
-        W, H = int(f.attrs["width"]), int(f.attrs["height"])
+    fe = h5py.File(os.path.join(args.episode, f"events_{cam}.h5"), "r")
+    W, H = int(fe.attrs["width"]), int(fe.attrs["height"])
+    ev_t = fe["events"]["t"]
+    n_events = ev_t.shape[0]
+
+    def find(tq):
+        """First event index with t > tq (binary search on the file, events are time-ordered)."""
+        lo, hi = 0, n_events
+        while hi - lo > 4096:
+            mid = (lo + hi) // 2
+            if ev_t[mid] <= tq:
+                lo = mid
+            else:
+                hi = mid
+        return lo + int(np.searchsorted(ev_t[lo:hi], tq, side="right"))
+
+    def events_between(t0, t1):
+        a, b = find(t0), find(t1)
+        return {k: fe["events"][k][a:b] for k in ("x", "y", "p", "t", "instance")}
+
     with h5py.File(os.path.join(args.episode, f"frames_{cam}.h5"), "r") as f:
         tf = f["t_us"][:]
         aligned = bool(f.attrs["pixel_aligned_with_events"])
@@ -45,8 +62,9 @@ def main():
             rgb = f["rgb"][i]
             inst = f["instance"][i] if "instance" in f else None
             t1 = tf[i]
-            sel = (e["t"] > t1 - args.window_ms * 1e3) & (e["t"] <= t1)
-            x, y, p, g = e["x"][sel], e["y"][sel], e["p"][sel], e["instance"][sel]
+            e = events_between(t1 - args.window_ms * 1e3, t1)
+            x, y, p, g = e["x"].astype(np.int64), e["y"].astype(np.int64), e["p"], e["instance"]
+            n_sel = len(x)
             if (Wr, Hr) != (W, H):            # different grids: scale event pixels for the overlay
                 x = (x * Wr // W).astype(np.int64)
                 y = (y * Hr // H).astype(np.int64)
@@ -61,13 +79,13 @@ def main():
                 m = cv2.dilate(m.astype(np.uint8), np.ones((5, 5), np.uint8)) > 0
                 hits += int(m[y[hum], x[hum]].sum())
                 tot += int(hum.sum())
-            cv2.putText(img, f"t={t1 / 1e6:.3f}s  {int(sel.sum())} ev", (4, 14), cv2.FONT_HERSHEY_SIMPLEX, 0.4,
+            cv2.putText(img, f"t={t1 / 1e6:.3f}s  {n_sel} ev", (4, 14), cv2.FONT_HERSHEY_SIMPLEX, 0.4,
                         (255, 255, 0), 1, cv2.LINE_AA)
             tiles.append(img)
     frac = hits / tot if tot else float("nan")
     dt = np.diff(tf) / 1e3
     print(f"{cam}: {len(tf)} RGB frames {Wr}x{Hr} every {np.median(dt):.1f} ms, events {W}x{H} "
-          f"({len(e['t'])} events), pixel-aligned {aligned}; human events on the human mask (2 px): {frac:.1%}")
+          f"({n_events} events), pixel-aligned {aligned}; human events on the human mask (2 px): {frac:.1%}")
     if args.out:
         strip = np.concatenate(tiles, 1)
         cv2.imwrite(args.out, cv2.cvtColor(strip, cv2.COLOR_RGB2BGR))

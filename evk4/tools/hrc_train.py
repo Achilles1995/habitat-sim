@@ -35,28 +35,35 @@ TICK = 1.0 / 30.0
 
 
 # ------------------------------------------------------------------------------------ data
-def tick_frames(ep_dir, cam, size):
-    """(T, 2, h, w) uint8 event counts per control tick (ON, OFF), cached."""
+def tick_frames(ep_dir, cam, size, chunk=1 << 22):
+    """(T, 2, h, w) uint8 event counts per control tick (ON, OFF), cached.
+
+    Events are read from the HDF5 file in chunks (4 M events at a time), so episodes with
+    hundreds of millions of events need only ~100 MB of RAM."""
     w, h = size
     cache = os.path.join(ep_dir, f"cache_{cam}_{w}x{h}.npy")
     if os.path.exists(cache):
         return np.load(cache)
     import h5py
-    gt = np.load(os.path.join(ep_dir, "gt.npz"))
-    T = len(gt["t"])
-    t_ticks = gt["t"]
+    t_ticks = np.load(os.path.join(ep_dir, "gt.npz"))["t"]
+    T = len(t_ticks)
+    counts = np.zeros(T * 2 * h * w, np.int64)
     with h5py.File(os.path.join(ep_dir, f"events_{cam}.h5"), "r") as f:
         W, H = int(f.attrs["width"]), int(f.attrs["height"])
         e = f["events"]
-        x = e["x"][:].astype(np.int64) * w // W
-        y = e["y"][:].astype(np.int64) * h // H
-        p = e["p"][:].astype(np.int64)
-        t = e["t"][:] * 1e-6
-    k = np.searchsorted(t_ticks, t, side="left")          # event in (t_{k-1}, t_k] -> tick k
-    ok = (k >= 0) & (k < T)
-    out = np.zeros((T, 2, h, w), np.int32)
-    np.add.at(out, (k[ok], 1 - p[ok], y[ok], x[ok]), 1)
-    out = np.minimum(out, 255).astype(np.uint8)
+        n = e["t"].shape[0]
+        for a in range(0, n, chunk):
+            b = min(n, a + chunk)
+            t = e["t"][a:b] * 1e-6
+            k = np.searchsorted(t_ticks, t, side="left")      # event in (t_{k-1}, t_k] -> tick k
+            ok = k < T
+            x = e["x"][a:b][ok].astype(np.int64) * w // W
+            y = e["y"][a:b][ok].astype(np.int64) * h // H
+            ch = 1 - e["p"][a:b][ok].astype(np.int64)            # channel 0 = ON, 1 = OFF
+            flat = ((k[ok] * 2 + ch) * h + y) * w + x
+            counts += np.bincount(flat, minlength=counts.size)
+            del t, k, ok, x, y, ch, flat
+    out = np.minimum(counts.reshape(T, 2, h, w), 255).astype(np.uint8)
     np.save(cache, out)
     return out
 
