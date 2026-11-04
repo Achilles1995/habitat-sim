@@ -67,8 +67,9 @@ beam splitter or a DAVIS-style APS:
 - `--rgb-every 0`: events only.
 
 `hrc_inspect.py <episode> --cam <cam> --out sync.png` overlays the events on the RGB frames and
-measures the alignment. `hrc_train.py --modality events|rgb|both` trains on events, on the
-synchronised RGB frames, or on both fused.
+measures the alignment. `hrc_train.py --modality events|rgb|both|all` trains on events, on the
+synchronised RGB frames of the same ticks, on both fused, or on all three in a row (fair
+comparison, see below).
 
 ## Quick start
 
@@ -106,11 +107,42 @@ python evk4/tools/hrc_generate.py safety  --data data --episodes 50 --seconds 12
 python evk4/tools/hrc_generate.py actions --data data --episodes 50 --out datasets
 #    in an HSSD house:  --dataset data/hab3_bench_assets/hab3-hssd/hab3-hssd.scene_dataset_config.json --scene 102816009
 
-python evk4/tools/hrc_train.py safety  --root datasets/safety  --epochs 15 --out runs/safety
-python evk4/tools/hrc_train.py actions --root datasets/actions --epochs 25 --out runs/actions --augment
-python evk4/tools/hrc_train.py actions --root datasets/actions --epochs 25 --out runs/actions_rgb --modality rgb
-python evk4/tools/hrc_train.py actions --root datasets/actions --epochs 25 --out runs/actions_both --modality both
+python evk4/tools/hrc_train.py safety  --root datasets/safety  --epochs 30 --modality all --out runs/safety
+python evk4/tools/hrc_train.py actions --root datasets/actions --epochs 30 --modality all --augment --out runs/actions
 ```
+
+### Fair events-vs-RGB comparison
+
+`--modality all` trains and tests events, RGB and fusion one after the other and writes
+`comparison.md` / `comparison.json` (and `<modality>/results.json`, `<modality>/model.pt`).
+The only thing that differs between the three is the input:
+
+| | events | rgb | both |
+|---|---|---|---|
+| input | ON/OFF counts of the last `--window` ticks, log1p | the RGB frames of the **same** ticks, /255 | stacked |
+| channels | 2 × window | 3 × window | 5 × window |
+
+Shared by all three:
+
+- **Samples:** the same episodes, cameras, ticks and splits. An episode/camera pair is used only when
+  both its events and its frames exist. The train/val/test split is at the episode level, from `--seed`.
+- **Network:** an input BatchNorm (so counts and intensities are on one scale), then the same conv
+  blocks, camera embedding and heads.
+- **Training:** the same loss, class weights from the training labels, label smoothing, mirror
+  augmentation (actions), AdamW + OneCycle, and seed.
+- **Model selection:** the epoch with the best validation macro-F1 (`--val-frac` 0.15 of the
+  training episodes, early stopping `--patience`) is the one that is tested.
+
+Reported for each modality:
+
+- accuracy, macro-F1, balanced accuracy, per-class recall;
+- the majority-class baseline;
+- per-camera scores;
+- safety: clearance MAE (and the mean-clearance baseline). Trajectory ADE/FDE are computed on
+  robot-mounted cameras only, since the targets are in the robot frame and are not trained on wall
+  cameras. Two references are given: constant velocity from the *true* positions, and the mean
+  position;
+- actions: segmentation (frame accuracy, edit, F1@10/25/50) and early recognition.
 
 `hrc_generate.py --help` describes the episode format: per camera `events_<cam>.h5` and the
 synchronised `frames_<cam>.h5`, plus `gt.npz` and `meta.json`.
