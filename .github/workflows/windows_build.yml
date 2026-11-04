@@ -570,11 +570,24 @@ jobs:
               --size 80x45 2>&1 | tail -40 | tee -a evk4-out/hrc-log.txt
           find evk4-out/ds -name "*.h5" -size +40M -delete
 
+      - name: Physics-based EVK4 vs v2e on the same episode
+        id: v2e
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m pip install matplotlib 2>&1 | tail -1
+          git clone -q --depth 1 https://github.com/SensorsINI/v2e v2e-src
+          for cam in wall0 spot_head; do
+            python evk4/tools/compare_v2e.py evk4-out/ds/actions/ep0000 --cam $cam --v2e-root v2e-src \
+                --out evk4-out/v2e_$cam --t0 1 --t1 9 2>&1 | grep -v "Warning\|WARNING" | tail -25 | tee -a evk4-out/v2e-log.txt
+          done
+
       - name: Publish outputs to ci-logs-evk4 branch
         if: always()
         shell: bash
         run: bash tools/windows/publish_ci_logs.sh ci-logs-evk4 evk4-out
 
       - name: Fail if a check failed
-        if: steps.chain.outcome != 'success' || steps.scene.outcome != 'success' || steps.hrc.outcome != 'success'
+        if: steps.chain.outcome != 'success' || steps.scene.outcome != 'success' || steps.hrc.outcome != 'success' || steps.v2e.outcome != 'success'
         run: exit 1

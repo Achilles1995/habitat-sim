@@ -674,7 +674,9 @@ class EVK4Habitat:
         splitter / DAVIS-style APS) records with an exposure of `exposure_s` ending at `t`
         (default `self.rgb_exposure_s`): the linear radiance of the sub-step renders inside the
         exposure window is averaged (true motion blur), then exposed for the scene illuminance
-        and tonemapped to 8-bit sRGB.  Depth and instance ids are those of the end of the exposure.
+        and tonemapped to 8-bit sRGB.  Photon shot noise and read noise of an RGB pixel are added
+        (`rgb_noise`), so frames get noisy in dim light like a real camera's.  Depth and instance ids
+        are those of the end of the exposure.
 
         Returned on the render grid (Hr, Wr), which is the event pixel grid when `direct`
         (no lens distortion, spp 1 - the default); K is the matching intrinsic matrix."""
@@ -689,7 +691,19 @@ class EVK4Habitat:
         lum = rgb_lin @ self.rgbw / self.rgbw.sum()
         # fixed exposure per scene: an 18 % grey surface at the scene illuminance maps to mid-grey
         key = 0.18 * float(self.hab["scene_lux"]) / math.pi
-        v = np.clip(rgb_lin * (0.5 / key), 0, None)
+        sig = rgb_lin
+        if int(self.hab.get("rgb_noise", 1)):
+            # photo-electrons collected in the exposure (same radiometry as the EVK4, RGB pixel
+            # pitch / QE), Poisson shot noise (Gaussian approximation) + read noise
+            pitch = float(self.hab["rgb_pixel_um"]) * 1e-6
+            k_rgb = math.pi / (4 * self.cfg["f_number"] ** 2) * 4.09e15 * pitch * pitch * float(self.hab["rgb_qe"])
+            t_exp = max(exp, 1e-3)
+            e_mean = rgb_lin * (k_rgb * t_exp)
+            rng = np.random.default_rng([int(self.cfg["seed"]), int(round(t_end * 1e6))])
+            rd = float(self.hab["rgb_read_noise_e"])
+            e = e_mean + rng.standard_normal(e_mean.shape).astype(np.float32) * np.sqrt(e_mean + rd * rd)
+            sig = np.maximum(e, 0) / (k_rgb * t_exp)                         # back to cd/m^2 units
+        v = np.clip(sig * (0.5 / key), 0, None)
         v = v / (1.0 + v)                                                    # Reinhard
         srgb = np.where(v <= 0.0031308, 12.92 * v, 1.055 * np.power(v, 1 / 2.4) - 0.055)
         Kr = np.array([[self.fr, 0, self.cxr], [0, self.fr, self.cyr], [0, 0, 1.0]])

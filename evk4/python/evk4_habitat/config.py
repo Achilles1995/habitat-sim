@@ -24,6 +24,12 @@ HABITAT_DEFAULTS = dict(
     scene_lux=300.0,     # auto exposure: mean illuminance [lux] of the scene, assuming 18 % grey
                          # reflectance; used only when lux_per_unit is not given explicitly
     flow_labels=1,       # per-event optical-flow ground truth
+    # paired RGB camera (same optics / f-number as the EVK4): photon shot noise + read noise, so
+    # RGB frames get realistically noisy in dim light (set rgb_noise=0 for noise-free frames)
+    rgb_noise=1,
+    rgb_pixel_um=3.45,   # e.g. a Sony IMX-class global-shutter colour sensor
+    rgb_qe=0.6,
+    rgb_read_noise_e=2.5,
 )
 
 
