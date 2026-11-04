@@ -1,0 +1,139 @@
+{
+ "0": {
+  "kind": "stage",
+  "name": "stage",
+  "link": -1
+ },
+ "60000": {
+  "kind": "human",
+  "name": "human",
+  "link": -1,
+  "link_name": ""
+ },
+ "61000": {
+  "kind": "robot",
+  "name": "spot",
+  "link": -1,
+  "link_name": ""
+ },
+ "61001": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 0,
+  "link_name": "fl.hip"
+ },
+ "61002": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 1,
+  "link_name": "fl.uleg"
+ },
+ "61003": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 2,
+  "link_name": "fl.lleg"
+ },
+ "61004": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 3,
+  "link_name": "fr.hip"
+ },
+ "61005": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 4,
+  "link_name": "fr.uleg"
+ },
+ "61006": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 5,
+  "link_name": "fr.lleg"
+ },
+ "61007": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 6,
+  "link_name": "hl.hip"
+ },
+ "61008": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 7,
+  "link_name": "hl.uleg"
+ },
+ "61009": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 8,
+  "link_name": "hl.lleg"
+ },
+ "61010": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 9,
+  "link_name": "hr.hip"
+ },
+ "61011": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 10,
+  "link_name": "hr.uleg"
+ },
+ "61012": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 11,
+  "link_name": "hr.lleg"
+ },
+ "61013": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 12,
+  "link_name": "arm0.link_sh0"
+ },
+ "61014": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 13,
+  "link_name": "arm0.link_sh1"
+ },
+ "61015": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 14,
+  "link_name": "arm0.link_hr0"
+ },
+ "61016": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 15,
+  "link_name": "arm0.link_el0"
+ },
+ "61017": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 16,
+  "link_name": "arm0.link_el1"
+ },
+ "61018": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 17,
+  "link_name": "arm0.link_wr0"
+ },
+ "61019": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 18,
+  "link_name": "arm0.link_wr1"
+ },
+ "61020": {
+  "kind": "robot",
+  "name": "spot",
+  "link": 19,
+  "link_name": "arm0.link_fngr"
+ }
+}

@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "D:\a\habitat-sim\habitat-sim\evk4\tools\compare_v2e.py", line 503, in <module>
+    main()
+  File "D:\a\habitat-sim\habitat-sim\evk4\tools\compare_v2e.py", line 399, in main
+    frames_t, rgb, inst, aligned, exposure = load_frames(os.path.join(ep, f"frames_{cam}.h5"), t0, t1)
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\a\habitat-sim\habitat-sim\evk4\tools\compare_v2e.py", line 83, in load_frames
+    with h5py.File(path, "r") as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\site-packages\h5py\_hl\files.py", line 555, in __init__
+    fid = make_fid(name, mode, userblock_size, fapl, fcpl, swmr=swmr)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\site-packages\h5py\_hl\files.py", line 232, in make_fid
+    fid = h5f.open(name, flags, fapl=fapl)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 106, in h5py.h5f.open
+FileNotFoundError: [Errno 2] Unable to synchronously open file (unable to open file: name = 'evk4-out/ds/actions/ep0000\frames_wall0.h5', errno = 2, error message = 'No such file or directory', flags = 0, o_flags = 0)

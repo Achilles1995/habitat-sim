@@ -1,0 +1,17 @@
+README.md
+assets
+female_0
+female_1
+female_2
+female_3
+male_0
+male_1
+male_2
+male_3
+neutral_0
+neutral_1
+neutral_2
+neutral_3
+standing_pose_smplx.pkl
+walk_motion
+walking_motion_processed_smplx.pkl

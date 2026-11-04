@@ -1,0 +1,169 @@
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+[00:07:20:567423]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:07:20:567762]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:07:20:567811]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:07:20:567830]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:07:27:066943]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+Warp CUDA warning: Could not find or load the NVIDIA CUDA driver. GPU execution will not be available.
+[00:07:27:843691]:[Error]:[Nav] D:\a\habitat-sim\habitat-sim\src\esp\nav\PathFinder.cpp(1327)::esp::nav::PathFinder::Impl::getRandomNavigablePointInCircle : Failed to getRandomNavigablePoint.  Try increasing max tries if the navmesh is fine but just hard to sample from
+[00:07:58:644690]:[Error]:[Nav] D:\a\habitat-sim\habitat-sim\src\esp\nav\PathFinder.cpp(1327)::esp::nav::PathFinder::Impl::getRandomNavigablePointInCircle : Failed to getRandomNavigablePoint.  Try increasing max tries if the navmesh is fine but just hard to sample from
+[safety ep0000] 2 human(s), robot policy late, risk safe/caution/danger ticks [126, 105, 11], closest body gap person-robot 0.79 m  (40 s)
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+[00:08:05:567521]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:08:05:567849]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:08:05:567900]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:08:05:567917]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:08:12:033182]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+Warp CUDA warning: Could not find or load the NVIDIA CUDA driver. GPU execution will not be available.
+[actions ep0000] 11 segments: idle walk sit stand_up walk pick place handover wave idle fall  (182 s)
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+[00:11:26:157221]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'D:/a/habitat-sim/habitat-sim/data/hab3_bench_assets/hab3-hssd/scenes/102816009.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:11:26:157483]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(328)::esp::sim::Simulator::createSceneInstance : Semantic tag `hssd_ssd_map` specified in scene instance `D:/a/habitat-sim/habitat-sim/data/hab3_bench_assets/hab3-hssd/scenes/102816009.scene_instance.json` was not found in the SemanticAttributesManager; continuing without semantic scene annotations.
+[00:11:31:594973]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+[00:11:33:249324]:[Error]:[Nav] D:\a\habitat-sim\habitat-sim\src\esp\nav\PathFinder.cpp(1327)::esp::nav::PathFinder::Impl::getRandomNavigablePointInCircle : Failed to getRandomNavigablePoint.  Try increasing max tries if the navmesh is fine but just hard to sample from
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+Warp CUDA warning: Could not find or load the NVIDIA CUDA driver. GPU execution will not be available.
+[actions ep0001] 8 segments: idle approach wave walk walk_past idle point fall  (1781 s)
+spot_head: 709 RGB frames 160x90 every 33.3 ms, events 160x90 (642288 events), pixel-aligned True; human events on the human mask (2 px): 99.5%
+wrote evk4-out/ds/actions/ep0000/sync_spot_head.png
+wall0: 709 RGB frames 160x90 every 33.3 ms, events 160x90 (448680 events), pixel-aligned True; human events on the human mask (2 px): 100.0%
+wrote evk4-out/ds/actions/ep0000/sync_wall0.png
+spot_head: 712 RGB frames 160x90 every 33.3 ms, events 160x90 (415734 events), pixel-aligned True; human events on the human mask (2 px): 100.0%
+wrote evk4-out/ds/actions/ep0001/sync_spot_head.png
+wall0: 712 RGB frames 160x90 every 33.3 ms, events 160x90 (135922 events), pixel-aligned True; human events on the human mask (2 px): 100.0%
+wrote evk4-out/ds/actions/ep0001/sync_wall0.png
+  }
+ }
+}
+confusion (rows = truth):
+        idle    115      0      0     13      0      0      0      0      0      0      0    108
+        walk     96      0      0     39      0      0      0      0      0      0      0     57
+    approach      0      0      0      0      0      0      0      0      0      0      0      0
+   walk_past      0      0      0      0      0      0      0      0      0      0      0      0
+    handover     57      0      0     10      0      0      0      0      0      0      0     65
+       point      0      0      0      0      0      0      0      0      0      0      0      0
+        wave     50      0      0      1      0      0      0      0      0      0      0     51
+        pick     61      0      0     19      0      0      0      0      0      0      0     52
+       place     56      0      0      5      0      0      0      0      0      0      0     59
+         sit     64      0      0     26      0      0      0      0      0      0      0     60
+    stand_up     42      0      0      0      0      0      0      0      0      0      0     42
+        fall    105      0      0      0      0      0      0      0      0      0      0    105
+
+# actions: events vs RGB vs fusion (same samples, model, window, schedule, seed)
+
+| metric | events | rgb | both |
+|---|---|---|---|
+| input channels | 60 | 90 | 150 |
+| window [s] | 1.00 | 1.00 | 1.00 |
+| best epoch | - | - | - |
+| accuracy [%] | 13.1 | 15.5 | 16.2 |
+| macro-F1 [%] | 3.5 | 3.0 | 5.8 |
+| balanced accuracy [%] | 9.4 | 11.1 | 11.0 |
+| recall idle [%] | 3.0 | 0.0 | 48.7 |
+| recall walk [%] | 0.0 | 0.0 | 0.0 |
+| recall approach [%] | - | - | - |
+| recall walk_past [%] | - | - | - |
+| recall handover [%] | 0.0 | 0.0 | 0.0 |
+| recall point [%] | - | - | - |
+| recall wave [%] | 0.0 | 0.0 | 0.0 |
+| recall pick [%] | 0.0 | 0.0 | 0.0 |
+| recall place [%] | 0.0 | 0.0 | 0.0 |
+| recall sit [%] | 0.0 | 0.0 | 0.0 |
+| recall stand_up [%] | 0.0 | 0.0 | 0.0 |
+| recall fall [%] | 81.4 | 100.0 | 50.0 |
+| frame acc (smoothed) [%] | 13.2 | 15.5 | 16.3 |
+| edit | 17.3 | 6.7 | 20.0 |
+| F1@10 / 25 / 50 | 7.4 / 7.4 / 7.4 | 12.5 / 0.0 / 0.0 | 15.8 / 7.5 / 0.0 |
+| early 10% | 6.7 | 6.7 | 23.3 |
+| early 20% | 0.0 | 6.7 | 23.3 |
+| early 30% | 0.0 | 6.7 | 23.3 |
+| early 50% | 10.0 | 6.7 | 23.3 |
+| early 75% | 10.0 | 6.7 | 23.3 |
+| early 100% | 10.0 | 6.7 | 20.0 |
+
+Majority-class baseline (walk_past): accuracy 0.0 %, macro-F1 0.0 %.
+
+Test episodes: ep0000 (1358 samples per modality); 682 train / 0 val samples.
+
+Per camera (accuracy / macro-F1 %):
+
+| camera | events | rgb | both |
+|---|---|---|---|
+| spot_head | 14.6 / 4.3 | 15.5 / 3.0 | 15.5 / 3.3 |
+| wall0 | 11.6 / 2.6 | 15.5 / 3.0 | 16.9 / 3.3 |
+
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+Warp CUDA warning: Could not find or load the NVIDIA CUDA driver. GPU execution will not be available.
+[00:42:29:195733]:[Error]:[Nav] D:\a\habitat-sim\habitat-sim\src\esp\nav\PathFinder.cpp(1327)::esp::nav::PathFinder::Impl::getRandomNavigablePointInCircle : Failed to getRandomNavigablePoint.  Try increasing max tries if the navmesh is fine but just hard to sample from
+[safety ep0001] 2 human(s), robot policy late, risk safe/caution/danger ticks [239, 3, 0], closest body gap person-robot 1.29 m  (38 s)
+ "trajectory_robot_cams": {
+  "ADE_m": 2.524296283721924,
+  "FDE_1p5s_m": 2.5197393894195557,
+  "const_velocity_from_true_state": {
+   "ADE_m": 0.2492656707763672,
+   "FDE_1p5s_m": 0.4818546175956726
+  },
+  "mean_position_baseline": {
+   "ADE_m": 2.5341989994049072,
+   "FDE_1p5s_m": 2.5723819732666016
+  }
+ },
+ "per_camera": {
+  "spot_front": {
+   "accuracy": 0.0,
+   "macro_f1": 0.0,
+   "clearance_mae_m": 0.3530145585536957
+  },
+  "wall0": {
+   "accuracy": 0.0,
+   "macro_f1": 0.0,
+   "clearance_mae_m": 0.3538537323474884
+  }
+ }
+}
+confusion (rows = truth):
+        safe      0      0      0
+     caution    190      0      0
+      danger     22      0      0
+
+# safety: events vs RGB vs fusion (same samples, model, window, schedule, seed)
+
+| metric | events | rgb | both |
+|---|---|---|---|
+| input channels | 30 | 45 | 75 |
+| window [s] | 0.50 | 0.50 | 0.50 |
+| best epoch | - | - | - |
+| accuracy [%] | 0.0 | 44.8 | 0.0 |
+| macro-F1 [%] | 0.0 | 32.1 | 0.0 |
+| balanced accuracy [%] | 0.0 | 25.0 | 0.0 |
+| recall safe [%] | - | - | - |
+| recall caution [%] | 0.0 | 50.0 | 0.0 |
+| recall danger [%] | 0.0 | 0.0 | 0.0 |
+| clearance MAE [m] | 0.354 | 0.355 | 0.353 |
+| ADE robot cams [m] | 2.539 | 2.539 | 2.524 |
+| FDE 1.5 s robot cams [m] | 2.601 | 2.596 | 2.520 |
+
+Majority-class baseline (safe): accuracy 0.0 %, macro-F1 0.0 %.
+Mean-clearance baseline: MAE 0.353 m.
+Trajectory references (robot cams): constant velocity from the TRUE positions ADE 0.249 / FDE 0.482 m; mean position ADE 2.534 / FDE 2.572 m.
+
+Test episodes: ep0000 (212 samples per modality); 106 train / 0 val samples.
+
+Per camera (accuracy / macro-F1 %):
+
+| camera | events | rgb | both |
+|---|---|---|---|
+| spot_front | 0.0 / 0.0 | 89.6 / 47.3 | 0.0 / 0.0 |
+| wall0 | 0.0 / 0.0 | 0.0 / 0.0 | 0.0 / 0.0 |
+

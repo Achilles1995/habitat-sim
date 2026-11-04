@@ -1,0 +1,230 @@
+{
+ "events": {
+  "app": "safety",
+  "modality": "events",
+  "input_channels": 30,
+  "window_ticks": 15,
+  "window_s": 0.5,
+  "epochs_run": 1,
+  "best_epoch": null,
+  "n_train": 106,
+  "n_val": 0,
+  "n_test": 212,
+  "test_episodes": [
+   "ep0000"
+  ],
+  "accuracy": 0.0,
+  "macro_f1": 0.0,
+  "balanced_accuracy": 0.0,
+  "recall_per_class": {
+   "safe": null,
+   "caution": 0.0,
+   "danger": 0.0
+  },
+  "majority_baseline": {
+   "cls": "safe",
+   "accuracy": 0.0,
+   "macro_f1": 0.0
+  },
+  "confusion": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    190,
+    0,
+    0
+   ],
+   [
+    22,
+    0,
+    0
+   ]
+  ],
+  "classes": [
+   "safe",
+   "caution",
+   "danger"
+  ],
+  "clearance_mae_m": 0.35381901264190674,
+  "clearance_mae_mean_baseline_m": 0.35331645607948303,
+  "trajectory_robot_cams": {
+   "ADE_m": 2.5386152267456055,
+   "FDE_1p5s_m": 2.601106643676758,
+   "const_velocity_from_true_state": {
+    "ADE_m": 0.2492656707763672,
+    "FDE_1p5s_m": 0.4818546175956726
+   },
+   "mean_position_baseline": {
+    "ADE_m": 2.5341989994049072,
+    "FDE_1p5s_m": 2.5723819732666016
+   }
+  },
+  "per_camera": {
+   "spot_front": {
+    "accuracy": 0.0,
+    "macro_f1": 0.0,
+    "clearance_mae_m": 0.3528438210487366
+   },
+   "wall0": {
+    "accuracy": 0.0,
+    "macro_f1": 0.0,
+    "clearance_mae_m": 0.3547941744327545
+   }
+  }
+ },
+ "rgb": {
+  "app": "safety",
+  "modality": "rgb",
+  "input_channels": 45,
+  "window_ticks": 15,
+  "window_s": 0.5,
+  "epochs_run": 1,
+  "best_epoch": null,
+  "n_train": 106,
+  "n_val": 0,
+  "n_test": 212,
+  "test_episodes": [
+   "ep0000"
+  ],
+  "accuracy": 0.4481132075471698,
+  "macro_f1": 0.32094594594594594,
+  "balanced_accuracy": 0.25,
+  "recall_per_class": {
+   "safe": null,
+   "caution": 0.5,
+   "danger": 0.0
+  },
+  "majority_baseline": {
+   "cls": "safe",
+   "accuracy": 0.0,
+   "macro_f1": 0.0
+  },
+  "confusion": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    95,
+    95,
+    0
+   ],
+   [
+    11,
+    11,
+    0
+   ]
+  ],
+  "classes": [
+   "safe",
+   "caution",
+   "danger"
+  ],
+  "clearance_mae_m": 0.3551396429538727,
+  "clearance_mae_mean_baseline_m": 0.35331645607948303,
+  "trajectory_robot_cams": {
+   "ADE_m": 2.53920841217041,
+   "FDE_1p5s_m": 2.596214771270752,
+   "const_velocity_from_true_state": {
+    "ADE_m": 0.2492656707763672,
+    "FDE_1p5s_m": 0.4818546175956726
+   },
+   "mean_position_baseline": {
+    "ADE_m": 2.5341989994049072,
+    "FDE_1p5s_m": 2.5723819732666016
+   }
+  },
+  "per_camera": {
+   "spot_front": {
+    "accuracy": 0.8962264150943396,
+    "macro_f1": 0.47263681592039797,
+    "clearance_mae_m": 0.355296790599823
+   },
+   "wall0": {
+    "accuracy": 0.0,
+    "macro_f1": 0.0,
+    "clearance_mae_m": 0.35498249530792236
+   }
+  }
+ },
+ "both": {
+  "app": "safety",
+  "modality": "both",
+  "input_channels": 75,
+  "window_ticks": 15,
+  "window_s": 0.5,
+  "epochs_run": 1,
+  "best_epoch": null,
+  "n_train": 106,
+  "n_val": 0,
+  "n_test": 212,
+  "test_episodes": [
+   "ep0000"
+  ],
+  "accuracy": 0.0,
+  "macro_f1": 0.0,
+  "balanced_accuracy": 0.0,
+  "recall_per_class": {
+   "safe": null,
+   "caution": 0.0,
+   "danger": 0.0
+  },
+  "majority_baseline": {
+   "cls": "safe",
+   "accuracy": 0.0,
+   "macro_f1": 0.0
+  },
+  "confusion": [
+   [
+    0,
+    0,
+    0
+   ],
+   [
+    190,
+    0,
+    0
+   ],
+   [
+    22,
+    0,
+    0
+   ]
+  ],
+  "classes": [
+   "safe",
+   "caution",
+   "danger"
+  ],
+  "clearance_mae_m": 0.35343414545059204,
+  "clearance_mae_mean_baseline_m": 0.35331645607948303,
+  "trajectory_robot_cams": {
+   "ADE_m": 2.524296283721924,
+   "FDE_1p5s_m": 2.5197393894195557,
+   "const_velocity_from_true_state": {
+    "ADE_m": 0.2492656707763672,
+    "FDE_1p5s_m": 0.4818546175956726
+   },
+   "mean_position_baseline": {
+    "ADE_m": 2.5341989994049072,
+    "FDE_1p5s_m": 2.5723819732666016
+   }
+  },
+  "per_camera": {
+   "spot_front": {
+    "accuracy": 0.0,
+    "macro_f1": 0.0,
+    "clearance_mae_m": 0.3530145585536957
+   },
+   "wall0": {
+    "accuracy": 0.0,
+    "macro_f1": 0.0,
+    "clearance_mae_m": 0.3538537323474884
+   }
+  }
+ }
+}

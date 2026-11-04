@@ -1,0 +1,6 @@
+PASS  1 HDR radiance  dtype float32, radiance quantiles 1/50/99% 0.0093 0.2822 0.9956, 2552 distinct levels at 1/64 of an 8-bit step; lux_per_unit 145.2
+PASS  2 static scene (wall)  0.268 events/px/s with nothing moving
+PASS  2 static scene (spot_front)  0.301 events/px/s with nothing moving
+PASS  3 human events (wall)  184414 events while walking, 139208 (75%) on the human; median range 3.00 m vs camera-human 3.38 m
+PASS  4 human flow direction (wall)  image displacement of the pelvis [-70.1 -37.4] px, median event flow [-36.4 -16.3] px/s, cos 1.00
+PASS  5 Spot turning left (spot_front)  1694138 events, median scene flow_x 275 px/s (rotation alone: 168); sub-steps 12..12

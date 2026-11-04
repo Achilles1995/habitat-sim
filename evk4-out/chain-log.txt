@@ -1,0 +1,8 @@
+Warp CUDA warning: Could not find or load the NVIDIA CUDA driver. GPU execution will not be available.
+[PASS] 1 radiometry: max |rate/expected - 1| = 2.98e-07, k_rate 9.48e+03 e-/s per cd/m^2
+[PASS] 2 light step x2: ON ev/px 2.623 (expect 2.612), OFF 0
+[PASS] 3 moving object labels: 11801 events, 5030 on the object; median flow_x 92.4 px/s (expect 92.4), |flow_y| 0.00; z from range in [1.5000, 1.5000] (expect 1.5); sub-steps per update 2..2 (motion 1.5 px per update)
+[PASS] 4 adaptive sub-steps: max 2, expect 2
+[PASS] 5 shot-noise background: 7.919 Hz/px at ~10 lux, 0.753 Hz/px at ~1000 lux
+[PASS] 6 resampling (distortion, spp 4): render 341x256 for 160x120, median |rate/expected - 1| = 0.0008
+ALL PASSED
