@@ -138,10 +138,13 @@ def run_v2e(times, rgb, params, v2e_root, device, slomo_model=None, workdir=None
     import cv2
     sys.path.insert(0, os.path.abspath(v2e_root))
     _stub_optional_modules()
-    import torch
     from v2ecore.emulator import EventEmulator
     if device == "auto":
-        device = "cuda" if torch.cuda.is_available() else "cpu"
+        try:
+            import torch
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+        except ImportError:
+            device = "cpu"
     H, W = rgb.shape[1:3]
     gray = [cv2.cvtColor(np.ascontiguousarray(f), cv2.COLOR_RGB2GRAY) for f in rgb]
     t_in = np.asarray(times, np.float64)
@@ -318,23 +321,29 @@ def figures(out, ours, v2e, frames_t_us, rgb, inst, ids, W, H, speed, labels):
     fig.savefig(os.path.join(out, "fig2_space_time.png"), dpi=150)
     plt.close(fig)
 
-    # --- 3 x-y-t cloud of the person, 200 ms
+    # --- 3 x-y-t cloud of the person, 200 ms (same axes for both)
+    if m is not None and m.any():
+        ya, yb = max(0, ys.min() - 20), min(H - 1, ys.max() + 20)
+    else:
+        ya, yb = 0, H - 1
     fig = plt.figure(figsize=(13, 5.5))
     for c, (name, ev) in enumerate((("our EVK4", ours), (labels["v2e"], v2e))):
         a = fig.add_subplot(1, 2, c + 1, projection="3d")
-        sel = (ev["t"] > t_c - 200_000) & (ev["t"] <= t_c)
-        if m is not None and m.any():
-            sel &= (ev["x"] >= x0) & (ev["x"] <= x1)
+        sel = (ev["t"] > t_c - 200_000) & (ev["t"] <= t_c) & (ev["x"] >= x0) & (ev["x"] <= x1) & \
+              (ev["y"] >= ya) & (ev["y"] <= yb)
         e = ev[sel]
         if len(e) > 25000:
             e = e[np.random.default_rng(0).choice(len(e), 25000, replace=False)]
-        a.scatter((e["t"] - t_c) / 1e3, e["x"], e["y"], s=0.6, c=np.where(e["p"] == 1, "tab:red", "tab:blue"),
-                  linewidths=0, alpha=0.6)
+        a.scatter((e["t"] - t_c) / 1e3, e["x"], e["y"], s=2.0, c=np.where(e["p"] == 1, "tab:red", "tab:blue"),
+                  linewidths=0, alpha=0.85, depthshade=False)
+        a.set_xlim(-200, 0)
+        a.set_ylim(x0, x1)
+        a.set_zlim(ya, yb)
         a.set_xlabel("t [ms]")
         a.set_ylabel("x")
         a.set_zlabel("y")
         a.invert_zaxis()
-        a.set_title(f"{name}: (x, y, t) events, last 200 ms")
+        a.set_title(f"{name}: (x, y, t) events on the person, last 200 ms ({len(e)})")
         a.view_init(elev=18, azim=-60)
     fig.tight_layout()
     fig.savefig(os.path.join(out, "fig3_xyt_cloud.png"), dpi=150)
