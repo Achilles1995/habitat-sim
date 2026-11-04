@@ -1,0 +1,1844 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261104134731
+Username: runnervmquqza\runneradmin
+RunAs User: runnervmquqza\runneradmin
+Configuration Name: 
+Machine: runnervmquqza (Microsoft Windows NT 10.0.20348.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools\windows\gpu_test.ps1 -Dir C:\ht -Branch windows-port -WithHabitatLab
+Process ID: 3516
+PSVersion: 5.1.20348.5773
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.20348.5773
+BuildVersion: 10.0.20348.5773
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+==== 1/5 Checking prerequisites ====
+Python: 3.10.11 64
+Git: git version 2.56.0.windows.4
+git-lfs/3.8.1 (GitHub; windows amd64; go 1.27.3; git a662a6db)
+WARNING: nvidia-smi not found - is the NVIDIA driver installed?
+
+==== 2/5 Creating virtual environment and installing habitat-sim ====
+Set 'High performance' GPU preference for: C:\hostedtoolcache\windows\Python\3.10.11\x64\python.exe
+Downloading habitat_sim-0.3.3-cp310-cp310-win_amd64.whl (106.6 MB)
+habitat-sim Windows wheel
+branch: windows-port
+commit: d5996ae725be536723b159da2cce000deced77da
+run: https://github.com/Achilles1995/habitat-sim/actions/runs/41839250126
+habitat_sim 0.3.3 bullet: True
+
+==== 3/5 Downloading test scenes and humanoids ====
+Cloning into 'C:\ht\data/versioned_data/habitat_test_scenes'...
+Filtering content: 100% (4/4)
+Filtering content: 100% (4/4), 105.54 MiB | 66.47 MiB/s, done.
+4 local objects, 0 retained, done.
+Deleting objects: 100% (4/4), done.
+Cloning into 'C:\ht\data/versioned_data/habitat_humanoids'...
+31 local objects, 0 retained, done.
+Deleting objects: 100% (31/31), done.
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/habitat_test_scenes.git C:\ht\data/versioned_data/habitat_test_scenes
+=======================================================
+Dataset (habitat_test_scenes) successfully downloaded.
+Source: 'C:\ht\data/versioned_data/habitat_test_scenes'
+Symlink: 'C:\ht\data\scene_datasets\habitat-test-scenes'
+=======================================================
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/habitat_humanoids.git C:\ht\data/versioned_data/habitat_humanoids
+=======================================================
+Dataset (habitat_humanoids) successfully downloaded.
+Source: 'C:\ht\data/versioned_data/habitat_humanoids'
+Symlink: 'C:\ht\data\humanoids\humanoid_data'
+=======================================================
+
+==== 4/5 Running habitat-sim tests on the GPU ====
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:14:40:729148]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:14:40:729947]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:14:40:730059]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `C:/ht/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:14:40:730133]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:14:47:166898]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:14:47:570921]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:14:47:571231]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:14:47:571386]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `C:/ht/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:14:47:571447]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:14:53:889822]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:14:54:069282]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:14:54:069619]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:14:54:069703]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `C:/ht/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:14:54:069741]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:15:00:440550]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+Render scene: C:\ht\data\scene_datasets\habitat-test-scenes\van-gogh-room.glb
+[PASS] import and build info (0.0s) version=0.3.3 python=3.10.11 Windows-10-10.0.20348-SP0 built_with_bullet=True cuda_enabled=False audio_enabled=False
+[SKIP] dataset config + glob patterns: repo test assets not present (only in a habitat-sim checkout)
+[PASS] offscreen render RGB/depth/semantic (6.9s) van-gogh-room.glb: 100% non-black pixels, depth max 0.34 m (agent via navmesh)
+[PASS] bullet physics: falling cube (6.5s) cube fell 4.52 m in 1 s
+[PASS] render throughput (7.6s) 110.1 FPS at 640x640 (RGB+depth+semantic) in van-gogh-room.glb
+
+4/4 checks passed
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:15:02:716918]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'default' : Lighting Layout Attributes 'no_lights' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:15:02:717287]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` does not exist.  Aborting load.
+[00:15:02:717379]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` nor constructed filename : `C:/ht/data/scene_datasets/habitat-test-scenes/info_semantic.json` exist on disk.
+[00:15:02:717417]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `C:/ht/data/scene_datasets/habitat-test-scenes/van-gogh-room.scn` exists but failed to load.
+[00:15:09:146211]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+[00:15:15:141461]:[Error]:[Physics] D:\a\habitat-sim\habitat-sim\src\esp\physics\objectWrappers\ManagedPhysicsObjectBase.h(409)::esp::physics::AbstractManagedPhysicsObject<class esp::physics::ArticulatedObject>::getObjectReference : This object no longer exists.  Please delete any variable references.
+[00:15:15:141528]:[Error]:[Physics] D:\a\habitat-sim\habitat-sim\src\esp\physics\objectWrappers\ManagedPhysicsObjectBase.h(409)::esp::physics::AbstractManagedPhysicsObject<class esp::physics::ArticulatedObject>::getObjectReference : This object no longer exists.  Please delete any variable references.
+viewpoint: floor=[4.13 0.18 0.63] yaw=90 deg, open depth ahead 4.11 m
+[PASS] avatar=female_0 links=-1 joint_dofs=216 load=0.23s | pixels changed by humanoid: 2.7%, semantic mask: 3.1%, pixels changed by posing: 0.8% | 24.5 FPS at 512px
+
+==== 5/5 Habitat-Lab + Habitat 3.0 humanoid task ====
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\dist.py:765: BuildBackendWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: MIT License
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\dist.py:765: BuildBackendWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: MIT License
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-d93bprg9\overlay\Lib\site-packages\setuptools\dist.py:765: BuildBackendWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: MIT License
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-d93bprg9\overlay\Lib\site-packages\setuptools\dist.py:765: BuildBackendWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: MIT License
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\dist.py:765: BuildBackendWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: MIT License
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.multi_agent' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.multi_agent' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.multi_agent' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.multi_agent' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.multi_agent' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.multi_agent.pddl' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.multi_agent.pddl' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.multi_agent.pddl' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.multi_agent.pddl' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.multi_agent.pddl' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.nav' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.nav' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.nav' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.nav' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.nav' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.nav.imagenav' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.nav.imagenav' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.nav.imagenav' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.nav.imagenav' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.nav.imagenav' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.nav.instance_imagenav' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.nav.instance_imagenav' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.nav.instance_imagenav' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.nav.instance_imagenav' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.nav.instance_imagenav' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.nav.objectnav' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.nav.objectnav' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.nav.objectnav' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.nav.objectnav' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.nav.objectnav' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.nav.pointnav' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.nav.pointnav' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.nav.pointnav' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.nav.pointnav' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.nav.pointnav' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.rearrange.demo' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.rearrange.demo' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.rearrange.demo' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.rearrange.demo' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.rearrange.demo' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.rearrange.hab3_bench' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.rearrange.hab3_bench' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.rearrange.hab3_bench' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.rearrange.hab3_bench' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.rearrange.hab3_bench' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.rearrange.multi_task' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.rearrange.multi_task' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.rearrange.multi_task' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.rearrange.multi_task' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.rearrange.multi_task' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.rearrange.play' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.rearrange.play' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.rearrange.play' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.rearrange.play' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.rearrange.play' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.benchmark.rearrange.skills' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.benchmark.rearrange.skills' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.benchmark.rearrange.skills' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.benchmark.rearrange.skills' to be distributed and are
+          already explicitly excluding 'habitat.config.benchmark.rearrange.skills' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.dataset.eqa' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.dataset.eqa' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.dataset.eqa' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.dataset.eqa' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.dataset.eqa' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.dataset.imagenav' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.dataset.imagenav' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.dataset.imagenav' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.dataset.imagenav' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.dataset.imagenav' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.dataset.instance_imagenav' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.dataset.instance_imagenav' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.dataset.instance_imagenav' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.dataset.instance_imagenav' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.dataset.instance_imagenav' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.dataset.objectnav' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.dataset.objectnav' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.dataset.objectnav' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.dataset.objectnav' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.dataset.objectnav' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.dataset.pointnav' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.dataset.pointnav' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.dataset.pointnav' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.dataset.pointnav' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.dataset.pointnav' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.dataset.rearrangement' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.dataset.rearrangement' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.dataset.rearrangement' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.dataset.rearrangement' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.dataset.rearrangement' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.dataset.vln' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.dataset.vln' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.dataset.vln' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.dataset.vln' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.dataset.vln' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.simulator' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.simulator' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.simulator' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.simulator' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.simulator' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.simulator.agents' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.simulator.agents' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.simulator.agents' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.simulator.agents' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.simulator.agents' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.simulator.sensor_setups' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.simulator.sensor_setups' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.simulator.sensor_setups' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.simulator.sensor_setups' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.simulator.sensor_setups' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.task' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.task' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.task' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.task' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.task' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.task.rearrange.actions' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.task.rearrange.actions' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.task.rearrange.actions' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.task.rearrange.actions' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.task.rearrange.actions' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.config.habitat.task.rearrange.pddl' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.config.habitat.task.rearrange.pddl' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.config.habitat.task.rearrange.pddl' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.config.habitat.task.rearrange.pddl' to be distributed and are
+          already explicitly excluding 'habitat.config.habitat.task.rearrange.pddl' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.datasets.rearrange.configs' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.datasets.rearrange.configs' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.datasets.rearrange.configs' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.datasets.rearrange.configs' to be distributed and are
+          already explicitly excluding 'habitat.datasets.rearrange.configs' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.datasets.rearrange.configs.hab' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.datasets.rearrange.configs.hab' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.datasets.rearrange.configs.hab' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.datasets.rearrange.configs.hab' to be distributed and are
+          already explicitly excluding 'habitat.datasets.rearrange.configs.hab' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.tasks.rearrange.multi_task.domain_configs' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.tasks.rearrange.multi_task.domain_configs' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.tasks.rearrange.multi_task.domain_configs' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.tasks.rearrange.multi_task.domain_configs' to be distributed and are
+          already explicitly excluding 'habitat.tasks.rearrange.multi_task.domain_configs' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\build_py.py:215: BuildBackendWarning: Package 'habitat.utils.visualizations.assets.maps_topdown_agent_sprite' is absent from the `packages` configuration.
+  !!
+
+          ********************************************************************************
+          ############################
+          # Package would be ignored #
+          ############################
+          Python recognizes 'habitat.utils.visualizations.assets.maps_topdown_agent_sprite' as an importable package[^1],
+          but it is absent from setuptools' `packages` configuration.
+
+          This leads to an ambiguous overall configuration. If you want to distribute this
+          package, please make sure that 'habitat.utils.visualizations.assets.maps_topdown_agent_sprite' is explicitly added
+          to the `packages` configuration field.
+
+          Alternatively, you can also rely on setuptools' discovery methods
+          (for example by using `find_namespace_packages(...)`/`find_namespace:`
+          instead of `find_packages(...)`/`find:`).
+
+          You can read more about "package discovery" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+
+          If you don't want 'habitat.utils.visualizations.assets.maps_topdown_agent_sprite' to be distributed and are
+          already explicitly excluding 'habitat.utils.visualizations.assets.maps_topdown_agent_sprite' via
+          `find_namespace_packages(...)/find_namespace` or `find_packages(...)/find`,
+          you can try to use `exclude_package_data`, or `include-package-data=False` in
+          combination with a more fine grained `package-data` configuration.
+
+          You can read more about "package data files" on setuptools documentation page:
+
+          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html
+
+
+          [^1]: For Python, any directory (with suitable naming) can be imported,
+                even if it does not contain any `.py` files.
+                On the other hand, currently there is no concept of package data
+                directory, all directories are treated like packages.
+          ********************************************************************************
+
+  !!
+    check.warn(importable)
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-g0zksuul\overlay\Lib\site-packages\setuptools\command\editable_wheel.py:354: BuildBackendWarning: Editable installation.
+  !!
+
+          ********************************************************************************
+          Please be careful with folders in your working directory with the same
+          name as your package as they may take precedence during imports.
+          ********************************************************************************
+
+  !!
+    with strategy, WheelFile(wheel_path, "w") as wheel_obj:
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-d93bprg9\overlay\Lib\site-packages\setuptools\dist.py:765: BuildBackendWarning: License classifiers are deprecated.
+  !!
+
+          ********************************************************************************
+          Please consider removing the following classifiers in favor of a SPDX license expression:
+
+          License :: OSI Approved :: MIT License
+
+          See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+          ********************************************************************************
+
+  !!
+    self._finalize_license_expression()
+  C:\Users\runneradmin\AppData\Local\Temp\pip-build-env-d93bprg9\overlay\Lib\site-packages\setuptools\command\editable_wheel.py:354: BuildBackendWarning: Editable installation.
+  !!
+
+          ********************************************************************************
+          Please be careful with folders in your working directory with the same
+          name as your package as they may take precedence during imports.
+          ********************************************************************************
+
+  !!
+    with strategy, WheelFile(wheel_path, "w") as wheel_obj:
+Cloning into 'C:\ht\habitat-lab\data/versioned_data/hab3_bench_assets'...
+Filtering content:  41% (305/736), 41.43 MiB | 74.84 MiB/s
+Filtering content:  42% (310/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  43% (317/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  44% (324/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  45% (332/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  46% (339/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  47% (346/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  48% (354/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  49% (361/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  50% (368/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  51% (376/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  52% (383/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  53% (391/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  54% (398/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  55% (405/736), 77.04 MiB | 69.92 MiB/s
+Filtering content:  56% (413/736), 100.24 MiB | 62.17 MiB/s
+Filtering content:  57% (420/736), 100.24 MiB | 62.17 MiB/s
+Filtering content:  57% (422/736), 100.24 MiB | 62.17 MiB/s
+Filtering content:  58% (427/736), 100.24 MiB | 62.17 MiB/s
+Filtering content:  59% (435/736), 100.24 MiB | 62.17 MiB/s
+Filtering content:  60% (442/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  61% (449/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  62% (457/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  63% (464/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  64% (472/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  65% (479/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  66% (486/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  67% (494/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  68% (501/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  69% (508/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  70% (516/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  71% (523/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  72% (530/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  73% (538/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  74% (545/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  75% (552/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  76% (560/736), 135.16 MiB | 64.04 MiB/s
+Filtering content:  77% (567/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  78% (575/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  79% (582/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  80% (589/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  81% (597/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  82% (604/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  83% (611/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  84% (619/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  85% (626/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  86% (633/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  87% (641/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  88% (648/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  89% (656/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  90% (663/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  91% (670/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  92% (678/736), 165.00 MiB | 63.09 MiB/s
+Filtering content:  93% (685/736), 166.70 MiB | 53.21 MiB/s
+Filtering content:  94% (692/736), 166.70 MiB | 53.21 MiB/s
+Filtering content:  95% (700/736), 166.70 MiB | 53.21 MiB/s
+Filtering content:  96% (707/736), 166.70 MiB | 53.21 MiB/s
+Filtering content:  97% (714/736), 166.70 MiB | 53.21 MiB/s
+Filtering content:  98% (722/736), 166.70 MiB | 53.21 MiB/s
+Filtering content:  99% (729/736), 166.70 MiB | 53.21 MiB/s
+Filtering content: 100% (736/736), 166.70 MiB | 53.21 MiB/s
+Filtering content: 100% (736/736), 173.25 MiB | 48.84 MiB/s, done.
+730 local objects, 0 retained, done.
+Deleting objects: 100% (730/730), done.
+Cloning into 'C:\ht\habitat-lab\data/versioned_data/ycb'...
+Filtering content:  32% (76/236), 89.36 MiB | 160.79 MiB/s
+Filtering content:  33% (78/236), 89.36 MiB | 160.79 MiB/s
+Filtering content:  34% (81/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  35% (83/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  36% (85/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  37% (88/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  38% (90/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  39% (93/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  40% (95/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  41% (97/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  42% (100/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  43% (102/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  44% (104/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  45% (107/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  46% (109/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  47% (111/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  48% (114/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  49% (116/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  50% (118/236), 99.90 MiB | 68.97 MiB/s
+Filtering content:  51% (121/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  52% (123/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  53% (126/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  54% (128/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  55% (130/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  56% (133/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  57% (135/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  58% (137/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  59% (140/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  60% (142/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  61% (144/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  62% (147/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  63% (149/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  64% (152/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  65% (154/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  66% (156/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  67% (159/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  68% (161/236), 227.65 MiB | 117.08 MiB/s
+Filtering content:  69% (163/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  70% (166/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  71% (168/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  72% (170/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  73% (173/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  74% (175/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  75% (177/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  76% (180/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  77% (182/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  78% (185/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  79% (187/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  80% (189/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  81% (192/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  82% (194/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  83% (196/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  84% (199/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  85% (201/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  86% (203/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  87% (206/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  88% (208/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  89% (211/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  90% (213/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  91% (215/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  92% (218/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  93% (220/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  94% (222/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  95% (225/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  96% (227/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  97% (229/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  98% (232/236), 350.76 MiB | 140.91 MiB/s
+Filtering content:  99% (234/236), 350.76 MiB | 140.91 MiB/s
+Filtering content: 100% (236/236), 350.76 MiB | 140.91 MiB/s
+Filtering content: 100% (236/236), 475.30 MiB | 164.54 MiB/s, done.
+236 local objects, 0 retained, done.
+Deleting objects: 100% (236/236), done.
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/hab3_bench_assets.git C:\ht\habitat-lab\data/versioned_data/hab3_bench_assets
+=======================================================
+Dataset (hab3_bench_assets) successfully downloaded.
+Source: 'C:\ht\habitat-lab\data/versioned_data/hab3_bench_assets'
+Symlink: 'C:\ht\habitat-lab\data\hab3_bench_assets'
+=======================================================
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/ycb.git C:\ht\habitat-lab\data/versioned_data/ycb
+=======================================================
+Dataset (ycb) successfully downloaded.
+Source: 'C:\ht\habitat-lab\data/versioned_data/ycb'
+Symlink: 'C:\ht\habitat-lab\data\objects\ycb'
+=======================================================
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-11-04 13:50:58,316 Initializing dataset RearrangeDataset-v0
+2026-11-04 13:50:58,316 initializing sim RearrangeSim-v0
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:17:00:070852]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:17:00:071213]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:17:00:071283]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:17:00:071322]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:17:05:501088]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+2026-11-04 13:51:04,338 Initializing task RearrangePddlTask-v0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+observation keys: ['ee_pos', 'has_finished_oracle_nav', 'humanoid_joint_sensor', 'is_holding', 'joint', 'localization_sensor', 'obj_goal_gps_compass', 'obj_goal_sensor', 'obj_start_gps_compass', 'obj_start_sensor', 'relative_resting_position', 'third_rgb']
+[PASS] Habitat 3.0 humanoid episode: type=KinematicHumanoid walked 4.88 m over 120 steps, 28.4 steps/s single process, last frame 65% non-black
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-11-04 13:51:21,219 Initializing dataset RearrangeDataset-v0
+2026-11-04 13:51:21,219 initializing sim RearrangeSim-v0
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:17:22:976300]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:17:22:976644]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:17:22:976721]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:17:22:976759]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:17:28:388160]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+2026-11-04 13:51:27,225 Initializing task RearrangePddlTask-v0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+[PASS] spawned worker process: spawned child built and stepped the env (exitcode=0)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-11-04 13:51:40,506 Initializing dataset RearrangeDataset-v0
+2026-11-04 13:51:40,506 Initializing dataset RearrangeDataset-v0
+2026-11-04 13:51:40,506 initializing sim RearrangeSim-v0
+2026-11-04 13:51:40,521 initializing sim RearrangeSim-v0
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:17:42:300013]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:17:42:300428]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:17:42:300532]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:17:42:300571]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:17:42:303176]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:17:42:303503]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:17:42:303574]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:17:42:303610]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:17:52:446260]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+[00:17:52:613499]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+2026-11-04 13:51:51,334 Initializing task RearrangePddlTask-v0
+C:\ht\venv\lib\site-packages\gym\spaces\box.py:84: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+2026-11-04 13:51:51,459 Initializing task RearrangePddlTask-v0
+C:\ht\venv\lib\site-packages\gym\spaces\box.py:84: UserWarning: [33mWARN: Box bound precision lowered by casting to float32[0m
+  logger.warn(f"Box bound precision lowered by casting to {self.dtype}")
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+[PASS] VectorEnv multiprocessing: 2 worker processes (spawn): 17.7 total steps/s
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-11-04 13:52:11,083 Initializing dataset RearrangeDataset-v0
+2026-11-04 13:52:11,083 initializing sim RearrangeSim-v0
+Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+OpenGL version: 4.6 (Compatibility Profile) Mesa 26.2.5 (git-f25a43cbec)
+Using optional features:
+    GL_ARB_vertex_array_object
+    GL_ARB_ES2_compatibility
+    GL_ARB_separate_shader_objects
+    GL_ARB_robustness
+    GL_ARB_texture_storage
+    GL_ARB_texture_view
+    GL_ARB_framebuffer_no_attachments
+    GL_ARB_invalidate_subdata
+    GL_ARB_texture_storage_multisample
+    GL_ARB_multi_bind
+    GL_ARB_direct_state_access
+    GL_ARB_get_texture_sub_image
+    GL_ARB_texture_filter_anisotropic
+    GL_KHR_debug
+    GL_KHR_parallel_shader_compile
+Using driver workarounds:
+    no-layout-qualifiers-on-old-glsl
+    mesa-implementation-color-read-format-dsa-explicit-binding
+    mesa-dsa-createquery-except-pipeline-stats
+    mesa-forward-compatible-line-width-range
+[00:18:12:842129]:[Warning]:[Metadata] D:\a\habitat-sim\habitat-sim\src\esp\metadata\attributes\SceneDatasetAttributes.cpp(107)::esp::metadata::attributes::SceneDatasetAttributes::addNewSceneInstanceToDataset : Dataset : 'hab3-hssd' : Lighting Layout Attributes 'data/hab3_bench_assets/hab3-hssd/scenes/103997919_171031233.scene_instance.json' specified in Scene Attributes but does not exist in dataset, so creating default.
+[00:18:12:842480]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.h(331)::esp::scene::SemanticScene::checkFileExists : ::loadSemanticSceneDescriptor: File `../hssd-hab_semantic_lexicon.json` does not exist.  Aborting load.
+[00:18:12:842557]:[Warning]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(124)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD File Naming Issue! Neither SemanticAttributes-provided name : `../hssd-hab_semantic_lexicon.json` nor constructed filename : `../info_semantic.json` exist on disk.
+[00:18:12:842598]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+[00:18:18:235401]:[Warning]:[Sim] D:\a\habitat-sim\habitat-sim\src\esp\sim\Simulator.cpp(603)::esp::sim::Simulator::instanceStageForSceneAttributes : The active scene does not contain semantic annotations : activeSemanticSceneID_ = 0
+2026-11-04 13:52:17,077 Initializing task RearrangePddlTask-v0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+assigning 0 gpu 0
+hab3: 1 processes, 300 steps with resets every -1 steps
+FPS: 20.672981474526363
+Average time per function call (in seconds):
+  - time: 0.048372316360473636s
+
+Wrote result to  data/profile/hab3/1_300_-1_human_oracle_win.txt
+================================================================
+Ran 1 trial(s) with average FPS of 20.672981474526363 from [20.672981474526363].
+================================================================
+
+==== Summary ====
+GPU (nvidia-smi)         nvidia-smi not found
+Smoke test               PASS
+Humanoid test            PASS
+OpenGL renderer          Renderer: llvmpipe (LLVM 23.1.4, 256 bits) by Mesa
+Habitat 3.0 episode      PASS
+Habitat 3.0 benchmark    Ran 1 trial(s) with average FPS of 20.672981474526363 from [20.672981474526363].
+
+PASS  import and build info  version=0.3.3 python=3.10.11 Windows-10-10.0.20348-SP0 built_with_bullet=True cuda_enabled=False audio_enabled=False
+SKIP  dataset config + glob patterns  repo test assets not present (only in a habitat-sim checkout)
+PASS  offscreen render RGB/depth/semantic  van-gogh-room.glb: 100% non-black pixels, depth max 0.34 m (agent via navmesh)
+PASS  bullet physics: falling cube  cube fell 4.52 m in 1 s
+PASS  render throughput  110.1 FPS at 640x640 (RGB+depth+semantic) in van-gogh-room.glb
+
+PASS  avatar=female_0 links=-1 joint_dofs=216 load=0.23s | pixels changed by humanoid: 2.7%, semantic mask: 3.1%, pixels changed by posing: 0.8% | 24.5 FPS at 512px
+
+PASS  Habitat 3.0 humanoid episode  type=KinematicHumanoid walked 4.88 m over 120 steps, 28.4 steps/s single process, last frame 65% non-black
+PASS  spawned worker process  spawned child built and stepped the env (exitcode=0)
+PASS  VectorEnv multiprocessing  2 worker processes (spawn): 17.7 total steps/s
+**********************
+Windows PowerShell transcript end
+End time: 20261104135240
+**********************
