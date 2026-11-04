@@ -563,11 +563,11 @@ jobs:
             python evk4/tools/hrc_inspect.py $ep --cam $cam --out $ep/sync_$cam.png 2>&1 | tail -2 | tee -a evk4-out/hrc-log.txt
           done; done
           python evk4/tools/hrc_train.py actions --root evk4-out/ds/actions --epochs 1 --out evk4-out/run_actions \
-              --size 80x45 --modality both 2>&1 | tail -40 | tee -a evk4-out/hrc-log.txt
+              --size 80x45 --modality all 2>&1 | tail -60 | tee -a evk4-out/hrc-log.txt
           python evk4/tools/hrc_generate.py safety --data data --episodes 1 --first 1 --seconds 4 --binning 8 \
               --out evk4-out/ds 2>&1 | grep -v "$F" | tail -5 | tee -a evk4-out/hrc-log.txt
           python evk4/tools/hrc_train.py safety --root evk4-out/ds/safety --epochs 1 --out evk4-out/run_safety \
-              --size 80x45 2>&1 | tail -40 | tee -a evk4-out/hrc-log.txt
+              --size 80x45 --modality all 2>&1 | tail -60 | tee -a evk4-out/hrc-log.txt
           find evk4-out/ds -name "*.h5" -size +40M -delete
 
       - name: Physics-based EVK4 vs v2e on the same episode
