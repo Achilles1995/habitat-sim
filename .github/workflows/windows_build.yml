@@ -138,7 +138,9 @@ jobs:
       - name: Install Mesa software OpenGL (runners have no GPU)
         shell: pwsh
         run: |
-          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          gh release download 26.2.5 -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa  # pinned: the last Mesa known to work (newer llvmpipe crashed every GL context)
+          if (-not (Test-Path mesa/*.7z)) { gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa }
+          Get-ChildItem mesa/*.7z | ForEach-Object Name
           7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
           $pydir = Split-Path (python -c "import sys; print(sys.executable)")
           Copy-Item mesa/x/x64/*.dll $pydir -Force
@@ -213,7 +215,9 @@ jobs:
       - name: Install Mesa software OpenGL (runners have no GPU)
         shell: pwsh
         run: |
-          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          gh release download 26.2.5 -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa  # pinned: the last Mesa known to work (newer llvmpipe crashed every GL context)
+          if (-not (Test-Path mesa/*.7z)) { gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa }
+          Get-ChildItem mesa/*.7z | ForEach-Object Name
           7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
           $pydir = Split-Path (python -c "import sys; print(sys.executable)")
           Copy-Item mesa/x/x64/*.dll $pydir -Force
@@ -281,7 +285,9 @@ jobs:
       - name: Install Mesa software OpenGL (runners have no GPU)
         shell: pwsh
         run: |
-          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          gh release download 26.2.5 -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa  # pinned: the last Mesa known to work (newer llvmpipe crashed every GL context)
+          if (-not (Test-Path mesa/*.7z)) { gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa }
+          Get-ChildItem mesa/*.7z | ForEach-Object Name
           7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
           $pydir = Split-Path (python -c "import sys; print(sys.executable)")
           Copy-Item mesa/x/x64/*.dll $pydir -Force
@@ -365,7 +371,9 @@ jobs:
       - name: Install Mesa software OpenGL next to python.exe
         shell: pwsh
         run: |
-          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          gh release download 26.2.5 -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa  # pinned: the last Mesa known to work (newer llvmpipe crashed every GL context)
+          if (-not (Test-Path mesa/*.7z)) { gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa }
+          Get-ChildItem mesa/*.7z | ForEach-Object Name
           7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
           $pydir = Split-Path (py -3.10 -c "import sys; print(sys.executable)")
           Copy-Item mesa/x/x64/*.dll $pydir -Force
@@ -423,7 +431,9 @@ jobs:
       - name: Install Mesa software OpenGL (runners have no GPU)
         shell: pwsh
         run: |
-          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          gh release download 26.2.5 -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa  # pinned: the last Mesa known to work (newer llvmpipe crashed every GL context)
+          if (-not (Test-Path mesa/*.7z)) { gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa }
+          Get-ChildItem mesa/*.7z | ForEach-Object Name
           7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
           $pydir = Split-Path (python -c "import sys; print(sys.executable)")
           Copy-Item mesa/x/x64/*.dll $pydir -Force
@@ -507,7 +517,9 @@ jobs:
       - name: Install Mesa software OpenGL (runners have no GPU)
         shell: pwsh
         run: |
-          gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa
+          gh release download 26.2.5 -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa  # pinned: the last Mesa known to work (newer llvmpipe crashed every GL context)
+          if (-not (Test-Path mesa/*.7z)) { gh release download -R pal1000/mesa-dist-win --pattern "*release-msvc.7z" -D mesa }
+          Get-ChildItem mesa/*.7z | ForEach-Object Name
           7z x (Get-ChildItem mesa/*.7z).FullName -omesa/x -y | Out-Null
           $pydir = Split-Path (python -c "import sys; print(sys.executable)")
           Copy-Item mesa/x/x64/*.dll $pydir -Force
