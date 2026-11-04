@@ -1,0 +1,184 @@
+Cloning into 'D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_test_scenes'...
+Filtering content: 100% (4/4)Filtering content: 100% (4/4), 105.54 MiB | 63.31 MiB/s, done.
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/habitat_test_scenes.git D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_test_scenes
+=======================================================
+Dataset (habitat_test_scenes) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_test_scenes'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\scene_datasets\habitat-test-scenes'
+=======================================================
+Downloading http://dl.fbaipublicfiles.com/habitat/habitat-test-pointnav-dataset_v1.0.zip -> D:\a\habitat-sim\habitat-sim\data/habitat-test-pointnav-dataset_v1.0.zip
+  0%|          | 0.00/874k [00:00<?, ?B/s]100%|██████████| 874k/874k [00:00<00:00, 2.86MB/s]100%|██████████| 874k/874k [00:00<00:00, 2.72MB/s]
+=======================================================
+Dataset (habitat_test_pointnav_dataset) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_test_pointnav_dataset_1.0'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\datasets\pointnav\habitat-test-scenes'
+=======================================================
+Downloading http://dl.fbaipublicfiles.com/habitat/objects_v0.2.zip -> D:\a\habitat-sim\habitat-sim\data/objects_v0.2.zip
+  0%|          | 0.00/36.3M [00:00<?, ?B/s]  3%|▎         | 1.00M/36.3M [00:00<00:12, 3.05MB/s]  8%|▊         | 3.00M/36.3M [00:00<00:04, 8.09MB/s] 14%|█▍        | 5.00M/36.3M [00:00<00:02, 11.5MB/s] 25%|██▍       | 9.00M/36.3M [00:00<00:01, 18.9MB/s] 33%|███▎      | 12.0M/36.3M [00:00<00:01, 20.9MB/s] 50%|████▉     | 18.0M/36.3M [00:00<00:00, 27.0MB/s] 61%|██████    | 22.0M/36.3M [00:01<00:00, 30.0MB/s] 69%|██████▉   | 25.0M/36.3M [00:01<00:00, 28.5MB/s] 80%|███████▉  | 29.0M/36.3M [00:01<00:00, 27.9MB/s] 88%|████████▊ | 32.0M/36.3M [00:01<00:00, 27.1MB/s] 96%|█████████▋| 35.0M/36.3M [00:01<00:00, 25.6MB/s]100%|██████████| 36.3M/36.3M [00:01<00:00, 23.0MB/s]
+=======================================================
+Dataset (habitat_example_objects) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/habitat_example_objects_0.2'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\objects\example_objects'
+=======================================================
+Downloading http://dl.fbaipublicfiles.com/habitat/locobot_merged_v0.2.zip -> D:\a\habitat-sim\habitat-sim\data/locobot_merged_v0.2.zip
+  0%|          | 0.00/4.66M [00:00<?, ?B/s] 21%|██▏       | 1.00M/4.66M [00:00<00:01, 3.73MB/s] 86%|████████▌ | 4.00M/4.66M [00:00<00:00, 12.1MB/s]100%|██████████| 4.66M/4.66M [00:00<00:00, 12.0MB/s]
+=======================================================
+Dataset (locobot_merged) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/locobot_merged_0.2'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\objects\locobot_merged'
+=======================================================
+Downloading http://dl.fbaipublicfiles.com/habitat/mp3d/mp3d_example_v1.1.zip -> D:\a\habitat-sim\habitat-sim\data/mp3d_example_v1.1.zip
+  0%|          | 0.00/64.6M [00:00<?, ?B/s] 62%|██████▏   | 40.0M/64.6M [00:00<00:00, 382MB/s]100%|██████████| 64.6M/64.6M [00:00<00:00, 480MB/s]
+=======================================================
+Dataset (mp3d_example_scene) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/mp3d_example_scene_1.1'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\scene_datasets\mp3d_example'
+=======================================================
+Downloading https://dl.fbaipublicfiles.com/habitat/coda_v1.0.zip -> D:\a\habitat-sim\habitat-sim\data/coda_v1.0.zip
+  0%|          | 0.00/12.4M [00:00<?, ?B/s]  8%|▊         | 1.00M/12.4M [00:00<00:03, 3.35MB/s] 32%|███▏      | 4.00M/12.4M [00:00<00:00, 11.3MB/s] 80%|████████  | 10.0M/12.4M [00:00<00:00, 24.6MB/s]100%|██████████| 12.4M/12.4M [00:00<00:00, 22.5MB/s]
+Cloning into 'D:\a\habitat-sim\habitat-sim\data/versioned_data/replica_cad_dataset'...
+Note: switching to '6be07e532c83c5799a6e96152f926d07838c2084'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+Filtering content:  27% (56/201), 21.27 MiB | 39.09 MiB/sFiltering content:  28% (57/201), 21.27 MiB | 39.09 MiB/sFiltering content:  29% (59/201), 21.27 MiB | 39.09 MiB/sFiltering content:  30% (61/201), 21.27 MiB | 39.09 MiB/sFiltering content:  31% (63/201), 21.27 MiB | 39.09 MiB/sFiltering content:  32% (65/201), 21.27 MiB | 39.09 MiB/sFiltering content:  33% (67/201), 21.27 MiB | 39.09 MiB/sFiltering content:  34% (69/201), 21.27 MiB | 39.09 MiB/sFiltering content:  35% (71/201), 21.27 MiB | 39.09 MiB/sFiltering content:  36% (73/201), 21.27 MiB | 39.09 MiB/sFiltering content:  37% (75/201), 21.27 MiB | 39.09 MiB/sFiltering content:  38% (77/201), 21.27 MiB | 39.09 MiB/sFiltering content:  39% (79/201), 21.27 MiB | 39.09 MiB/sFiltering content:  40% (81/201), 21.27 MiB | 39.09 MiB/sFiltering content:  41% (83/201), 21.27 MiB | 39.09 MiB/sFiltering content:  42% (85/201), 21.27 MiB | 39.09 MiB/sFiltering content:  43% (87/201), 21.27 MiB | 39.09 MiB/sFiltering content:  44% (89/201), 21.27 MiB | 39.09 MiB/sFiltering content:  45% (91/201), 21.27 MiB | 39.09 MiB/sFiltering content:  46% (93/201), 21.27 MiB | 39.09 MiB/sFiltering content:  47% (95/201), 21.27 MiB | 39.09 MiB/sFiltering content:  48% (97/201), 21.27 MiB | 39.09 MiB/sFiltering content:  49% (99/201), 21.27 MiB | 39.09 MiB/sFiltering content:  50% (101/201), 21.27 MiB | 39.09 MiB/sFiltering content:  51% (103/201), 25.67 MiB | 21.76 MiB/sFiltering content:  52% (105/201), 25.67 MiB | 21.76 MiB/sFiltering content:  53% (107/201), 25.67 MiB | 21.76 MiB/sFiltering content:  54% (109/201), 25.67 MiB | 21.76 MiB/sFiltering content:  55% (111/201), 25.67 MiB | 21.76 MiB/sFiltering content:  56% (113/201), 25.67 MiB | 21.76 MiB/sFiltering content:  57% (115/201), 25.67 MiB | 21.76 MiB/sFiltering content:  58% (117/201), 25.67 MiB | 21.76 MiB/sFiltering content:  59% (119/201), 25.67 MiB | 21.76 MiB/sFiltering content:  60% (121/201), 25.67 MiB | 21.76 MiB/sFiltering content:  61% (123/201), 88.92 MiB | 53.11 MiB/sFiltering content:  62% (125/201), 88.92 MiB | 53.11 MiB/sFiltering content:  63% (127/201), 88.92 MiB | 53.11 MiB/sFiltering content:  64% (129/201), 88.92 MiB | 53.11 MiB/sFiltering content:  65% (131/201), 88.92 MiB | 53.11 MiB/sFiltering content:  66% (133/201), 88.92 MiB | 53.11 MiB/sFiltering content:  67% (135/201), 88.92 MiB | 53.11 MiB/sFiltering content:  68% (137/201), 88.92 MiB | 53.11 MiB/sFiltering content:  69% (139/201), 88.92 MiB | 53.11 MiB/sFiltering content:  70% (141/201), 88.92 MiB | 53.11 MiB/sFiltering content:  71% (143/201), 88.92 MiB | 53.11 MiB/sFiltering content:  72% (145/201), 88.92 MiB | 53.11 MiB/sFiltering content:  73% (147/201), 88.92 MiB | 53.11 MiB/sFiltering content:  74% (149/201), 126.01 MiB | 57.92 MiB/sFiltering content:  75% (151/201), 126.01 MiB | 57.92 MiB/sFiltering content:  76% (153/201), 126.01 MiB | 57.92 MiB/sFiltering content:  77% (155/201), 126.01 MiB | 57.92 MiB/sFiltering content:  78% (157/201), 126.01 MiB | 57.92 MiB/sFiltering content:  79% (159/201), 126.01 MiB | 57.92 MiB/sFiltering content:  80% (161/201), 126.01 MiB | 57.92 MiB/sFiltering content:  81% (163/201), 126.01 MiB | 57.92 MiB/sFiltering content:  82% (165/201), 126.01 MiB | 57.92 MiB/sFiltering content:  83% (167/201), 126.01 MiB | 57.92 MiB/sFiltering content:  84% (169/201), 126.01 MiB | 57.92 MiB/sFiltering content:  85% (171/201), 126.01 MiB | 57.92 MiB/sFiltering content:  86% (173/201), 126.01 MiB | 57.92 MiB/sFiltering content:  87% (175/201), 126.01 MiB | 57.92 MiB/sFiltering content:  88% (177/201), 126.01 MiB | 57.92 MiB/sFiltering content:  89% (179/201), 126.01 MiB | 57.92 MiB/sFiltering content:  90% (181/201), 126.01 MiB | 57.92 MiB/sFiltering content:  91% (183/201), 126.01 MiB | 57.92 MiB/sFiltering content:  92% (185/201), 126.01 MiB | 57.92 MiB/sFiltering content:  93% (187/201), 126.01 MiB | 57.92 MiB/sFiltering content:  94% (189/201), 126.01 MiB | 57.92 MiB/sFiltering content:  95% (191/201), 126.01 MiB | 57.92 MiB/sFiltering content:  95% (192/201), 126.01 MiB | 57.92 MiB/sFiltering content:  96% (193/201), 126.01 MiB | 57.92 MiB/sFiltering content:  97% (195/201), 126.01 MiB | 57.92 MiB/sFiltering content:  98% (197/201), 126.01 MiB | 57.92 MiB/sFiltering content:  99% (199/201), 126.01 MiB | 57.92 MiB/sFiltering content: 100% (201/201), 144.26 MiB | 53.60 MiB/sFiltering content: 100% (201/201), 147.42 MiB | 45.73 MiB/s, done.
+Cloning into 'D:\a\habitat-sim\habitat-sim\data/versioned_data/hab_fetch'...
+Note: switching to 'd3f7c41602e6eea1a46f8f9dfc4d8fb2778c6773'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+Cloning into 'D:\a\habitat-sim\habitat-sim\data/versioned_data/hab_stretch'...
+Note: switching to 'a3c3f869a9347f5781a629f394e3c8cccba4e61e'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+Cloning into 'D:\a\habitat-sim\habitat-sim\data/versioned_data/hab_spot_arm'...
+Note: switching to '0267f9c3eaea0081a788716e87ee1088afa3cb50'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+=======================================================
+Dataset (coda_scene) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/coda_scene_1.0'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\scene_datasets\coda'
+=======================================================
+git clone --depth 1 --branch v1.6 https://huggingface.co/datasets/ai-habitat/ReplicaCAD_dataset.git D:\a\habitat-sim\habitat-sim\data/versioned_data/replica_cad_dataset
+=======================================================
+Dataset (replica_cad_dataset) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/replica_cad_dataset'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\replica_cad'
+=======================================================
+git clone --depth 1 --branch v2.0 https://huggingface.co/datasets/ai-habitat/hab_fetch.git D:\a\habitat-sim\habitat-sim\data/versioned_data/hab_fetch
+=======================================================
+Dataset (hab_fetch) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/hab_fetch'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\robots\hab_fetch'
+=======================================================
+git clone --depth 1 --branch v1.0 https://huggingface.co/datasets/ai-habitat/hab_stretch.git D:\a\habitat-sim\habitat-sim\data/versioned_data/hab_stretch
+=======================================================
+Dataset (hab_stretch) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/hab_stretch'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\robots\hab_stretch'
+=======================================================
+git clone --depth 1 --branch v2.0 https://huggingface.co/datasets/ai-habitat/hab_spot_arm.git D:\a\habitat-sim\habitat-sim\data/versioned_data/hab_spot_arm
+=======================================================
+Dataset (hab_spot_arm) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/hab_spot_arm'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\robots\hab_spot_arm'
+=======================================================
+Data download failed, no datasource named hm3d_example
+Downloading https://github.com/matterport/habitat-matterport-3dresearch/raw/main/example/hm3d-example-habitat-v0.2.tar -> D:\a\habitat-sim\habitat-sim\data/hm3d-example-habitat-v0.2.tar
+  0%|          | 0.00/154M [00:00<?, ?B/s]  3%|▎         | 4.00M/154M [00:00<00:05, 29.9MB/s]  5%|▍         | 7.00M/154M [00:00<00:09, 16.7MB/s]  6%|▌         | 9.00M/154M [00:00<00:14, 10.6MB/s]  7%|▋         | 11.0M/154M [00:01<00:19, 7.78MB/s]  8%|▊         | 12.0M/154M [00:01<00:18, 8.06MB/s]  8%|▊         | 13.0M/154M [00:01<00:20, 7.21MB/s]  9%|▉         | 14.0M/154M [00:01<00:19, 7.65MB/s] 10%|▉         | 15.0M/154M [00:01<00:18, 7.81MB/s] 11%|█         | 17.0M/154M [00:01<00:13, 10.4MB/s] 12%|█▏        | 19.0M/154M [00:01<00:12, 11.3MB/s] 14%|█▎        | 21.0M/154M [00:02<00:11, 12.0MB/s] 15%|█▍        | 23.0M/154M [00:02<00:13, 10.5MB/s] 16%|█▌        | 25.0M/154M [00:02<00:11, 12.3MB/s] 18%|█▊        | 28.0M/154M [00:02<00:08, 15.5MB/s] 19%|█▉        | 30.0M/154M [00:02<00:07, 16.4MB/s] 21%|██▏       | 33.0M/154M [00:02<00:07, 16.5MB/s] 24%|██▍       | 37.0M/154M [00:03<00:05, 20.9MB/s] 27%|██▋       | 42.0M/154M [00:03<00:04, 27.8MB/s] 29%|██▉       | 45.0M/154M [00:03<00:04, 25.8MB/s] 32%|███▏      | 50.0M/154M [00:03<00:03, 31.4MB/s] 35%|███▍      | 54.0M/154M [00:03<00:03, 28.0MB/s] 37%|███▋      | 57.0M/154M [00:03<00:04, 21.4MB/s] 40%|████      | 62.0M/154M [00:03<00:03, 27.0MB/s] 43%|████▎     | 66.0M/154M [00:04<00:03, 23.4MB/s] 45%|████▌     | 70.0M/154M [00:04<00:03, 26.5MB/s] 47%|████▋     | 73.0M/154M [00:04<00:03, 23.9MB/s] 51%|█████     | 78.0M/154M [00:04<00:02, 26.7MB/s] 52%|█████▏    | 81.0M/154M [00:04<00:02, 27.2MB/s] 55%|█████▌    | 85.0M/154M [00:04<00:02, 28.9MB/s] 60%|█████▉    | 92.0M/154M [00:04<00:01, 38.5MB/s] 65%|██████▍   | 100M/154M [00:05<00:01, 48.6MB/s]  68%|██████▊   | 105M/154M [00:05<00:01, 48.4MB/s] 71%|███████▏  | 110M/154M [00:05<00:01, 36.5MB/s] 75%|███████▍  | 115M/154M [00:05<00:01, 34.6MB/s] 77%|███████▋  | 119M/154M [00:05<00:01, 32.3MB/s] 80%|████████  | 124M/154M [00:05<00:00, 33.7MB/s] 83%|████████▎ | 128M/154M [00:06<00:01, 26.7MB/s] 86%|████████▌ | 132M/154M [00:06<00:00, 29.1MB/s] 88%|████████▊ | 136M/154M [00:06<00:00, 31.2MB/s] 93%|█████████▎| 143M/154M [00:06<00:00, 38.6MB/s] 95%|█████████▌| 147M/154M [00:06<00:00, 32.6MB/s] 98%|█████████▊| 151M/154M [00:06<00:00, 31.8MB/s]100%|██████████| 154M/154M [00:06<00:00, 23.5MB/s]
+=======================================================
+Dataset (hm3d_example_habitat) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data\hm3d-0.2/hm3d'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\scene_datasets\hm3d'
+=======================================================
+Downloading https://github.com/matterport/habitat-matterport-3dresearch/raw/main/example/hm3d-example-configs.tar -> D:\a\habitat-sim\habitat-sim\data/hm3d-example-configs.tar
+  0%|          | 0.00/10.0k [00:00<?, ?B/s]100%|██████████| 10.0k/10.0k [00:00<?, ?B/s]
+=======================================================
+Dataset (hm3d_example_configs) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data\hm3d-0.2/hm3d'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\scene_datasets\hm3d'
+=======================================================
+Downloading https://github.com/matterport/habitat-matterport-3dresearch/raw/main/example/hm3d-example-semantic-annots-v0.2.tar -> D:\a\habitat-sim\habitat-sim\data/hm3d-example-semantic-annots-v0.2.tar
+  0%|          | 0.00/60.0M [00:00<?, ?B/s]  7%|▋         | 4.00M/60.0M [00:00<00:01, 38.3MB/s] 28%|██▊       | 17.0M/60.0M [00:00<00:00, 89.1MB/s] 43%|████▎     | 26.0M/60.0M [00:00<00:00, 87.8MB/s] 58%|█████▊    | 35.0M/60.0M [00:00<00:00, 82.4MB/s] 72%|███████▏  | 43.0M/60.0M [00:00<00:00, 80.4MB/s] 85%|████████▍ | 51.0M/60.0M [00:00<00:00, 79.2MB/s] 98%|█████████▊| 59.0M/60.0M [00:00<00:00, 74.9MB/s]100%|██████████| 60.0M/60.0M [00:00<00:00, 77.4MB/s]
+=======================================================
+Dataset (hm3d_example_semantic_annots) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data\hm3d-0.2/hm3d'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\scene_datasets\hm3d'
+=======================================================
+Downloading https://github.com/matterport/habitat-matterport-3dresearch/raw/main/example/hm3d-example-semantic-configs-v0.2.tar -> D:\a\habitat-sim\habitat-sim\data/hm3d-example-semantic-configs-v0.2.tar
+  0%|          | 0.00/30.0k [00:00<?, ?B/s]100%|██████████| 30.0k/30.0k [00:00<00:00, 1.95MB/s]
+Cloning into 'D:\a\habitat-sim\habitat-sim\data/versioned_data/ycb'...
+Filtering content:  23% (55/236), 83.75 MiB | 148.90 MiB/sFiltering content:  24% (57/236), 83.75 MiB | 148.90 MiB/sFiltering content:  25% (59/236), 83.75 MiB | 148.90 MiB/sFiltering content:  26% (62/236), 83.75 MiB | 148.90 MiB/sFiltering content:  27% (64/236), 83.75 MiB | 148.90 MiB/sFiltering content:  28% (67/236), 83.75 MiB | 148.90 MiB/sFiltering content:  29% (69/236), 83.75 MiB | 148.90 MiB/sFiltering content:  30% (71/236), 83.75 MiB | 148.90 MiB/sFiltering content:  31% (74/236), 83.75 MiB | 148.90 MiB/sFiltering content:  32% (76/236), 83.75 MiB | 148.90 MiB/sFiltering content:  33% (78/236), 83.75 MiB | 148.90 MiB/sFiltering content:  34% (81/236), 83.75 MiB | 148.90 MiB/sFiltering content:  35% (83/236), 83.75 MiB | 148.90 MiB/sFiltering content:  36% (85/236), 83.75 MiB | 148.90 MiB/sFiltering content:  37% (88/236), 83.75 MiB | 148.90 MiB/sFiltering content:  38% (90/236), 83.75 MiB | 148.90 MiB/sFiltering content:  39% (93/236), 83.75 MiB | 148.90 MiB/sFiltering content:  40% (95/236), 83.75 MiB | 148.90 MiB/sFiltering content:  41% (97/236), 83.75 MiB | 148.90 MiB/sFiltering content:  42% (100/236), 100.00 MiB | 90.11 MiB/sFiltering content:  43% (102/236), 100.00 MiB | 90.11 MiB/sFiltering content:  44% (104/236), 100.00 MiB | 90.11 MiB/sFiltering content:  45% (107/236), 100.00 MiB | 90.11 MiB/sFiltering content:  46% (109/236), 100.00 MiB | 90.11 MiB/sFiltering content:  47% (111/236), 165.06 MiB | 100.97 MiB/sFiltering content:  47% (113/236), 165.06 MiB | 100.97 MiB/sFiltering content:  48% (114/236), 165.06 MiB | 100.97 MiB/sFiltering content:  49% (116/236), 165.06 MiB | 100.97 MiB/sFiltering content:  50% (118/236), 165.06 MiB | 100.97 MiB/sFiltering content:  51% (121/236), 165.06 MiB | 100.97 MiB/sFiltering content:  52% (123/236), 165.06 MiB | 100.97 MiB/sFiltering content:  53% (126/236), 165.06 MiB | 100.97 MiB/sFiltering content:  54% (128/236), 165.06 MiB | 100.97 MiB/sFiltering content:  55% (130/236), 165.06 MiB | 100.97 MiB/sFiltering content:  56% (133/236), 274.45 MiB | 127.46 MiB/sFiltering content:  57% (135/236), 274.45 MiB | 127.46 MiB/sFiltering content:  58% (137/236), 274.45 MiB | 127.46 MiB/sFiltering content:  59% (140/236), 274.45 MiB | 127.46 MiB/sFiltering content:  60% (142/236), 274.45 MiB | 127.46 MiB/sFiltering content:  61% (144/236), 274.45 MiB | 127.46 MiB/sFiltering content:  62% (147/236), 320.59 MiB | 118.91 MiB/sFiltering content:  63% (149/236), 320.59 MiB | 118.91 MiB/sFiltering content:  64% (152/236), 320.59 MiB | 118.91 MiB/sFiltering content:  65% (154/236), 320.59 MiB | 118.91 MiB/sFiltering content:  66% (156/236), 320.59 MiB | 118.91 MiB/sFiltering content:  67% (159/236), 320.59 MiB | 118.91 MiB/sFiltering content:  68% (161/236), 320.59 MiB | 118.91 MiB/sFiltering content:  69% (163/236), 320.59 MiB | 118.91 MiB/sFiltering content:  70% (166/236), 320.59 MiB | 118.91 MiB/sFiltering content:  71% (168/236), 320.59 MiB | 118.91 MiB/sFiltering content:  72% (170/236), 320.59 MiB | 118.91 MiB/sFiltering content:  73% (173/236), 348.28 MiB | 107.20 MiB/sFiltering content:  74% (175/236), 348.28 MiB | 107.20 MiB/sFiltering content:  75% (177/236), 348.28 MiB | 107.20 MiB/sFiltering content:  76% (180/236), 348.28 MiB | 107.20 MiB/sFiltering content:  77% (182/236), 348.28 MiB | 107.20 MiB/sFiltering content:  78% (185/236), 348.28 MiB | 107.20 MiB/sFiltering content:  79% (187/236), 348.28 MiB | 107.20 MiB/sFiltering content:  80% (189/236), 348.28 MiB | 107.20 MiB/sFiltering content:  81% (192/236), 348.28 MiB | 107.20 MiB/sFiltering content:  82% (194/236), 348.28 MiB | 107.20 MiB/sFiltering content:  83% (196/236), 348.28 MiB | 107.20 MiB/sFiltering content:  84% (199/236), 348.28 MiB | 107.20 MiB/sFiltering content:  84% (200/236), 348.28 MiB | 107.20 MiB/sFiltering content:  85% (201/236), 371.95 MiB | 69.28 MiB/s Filtering content:  86% (203/236), 371.95 MiB | 69.28 MiB/sFiltering content:  87% (206/236), 371.95 MiB | 69.28 MiB/sFiltering content:  88% (208/236), 371.95 MiB | 69.28 MiB/sFiltering content:  88% (210/236), 371.95 MiB | 69.28 MiB/sFiltering content:  89% (211/236), 371.95 MiB | 69.28 MiB/sFiltering content:  90% (213/236), 371.95 MiB | 69.28 MiB/sFiltering content:  91% (215/236), 371.95 MiB | 69.28 MiB/sFiltering content:  92% (218/236), 437.79 MiB | 74.66 MiB/sFiltering content:  93% (220/236), 437.79 MiB | 74.66 MiB/sFiltering content:  94% (222/236), 437.79 MiB | 74.66 MiB/sFiltering content:  95% (225/236), 437.79 MiB | 74.66 MiB/sFiltering content:  96% (227/236), 437.79 MiB | 74.66 MiB/sFiltering content:  97% (229/236), 437.79 MiB | 74.66 MiB/sFiltering content:  98% (232/236), 437.79 MiB | 74.66 MiB/sFiltering content:  99% (234/236), 437.79 MiB | 74.66 MiB/sFiltering content: 100% (236/236), 471.76 MiB | 71.44 MiB/sFiltering content: 100% (236/236), 475.30 MiB | 67.55 MiB/s, done.
+=======================================================
+Dataset (hm3d_example_semantic_configs) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data\hm3d-0.2/hm3d'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\scene_datasets\hm3d'
+=======================================================
+git clone --depth 1 --branch main https://huggingface.co/datasets/ai-habitat/ycb.git D:\a\habitat-sim\habitat-sim\data/versioned_data/ycb
+=======================================================
+Dataset (ycb) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/ycb'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\objects\ycb'
+=======================================================
+Downloading https://dl.fbaipublicfiles.com/habitat/data/datasets/replica_cad/v2.zip -> D:\a\habitat-sim\habitat-sim\data/v2.zip
+  0%|          | 0.00/205M [00:00<?, ?B/s]  0%|          | 1.00M/205M [00:00<01:00, 3.53MB/s]  1%|▏         | 3.00M/205M [00:00<00:23, 8.91MB/s]  5%|▍         | 10.0M/205M [00:00<00:07, 26.8MB/s]  8%|▊         | 16.0M/205M [00:00<00:05, 33.4MB/s] 12%|█▏        | 24.0M/205M [00:00<00:04, 38.1MB/s] 15%|█▌        | 31.0M/205M [00:01<00:04, 42.4MB/s] 18%|█▊        | 36.0M/205M [00:01<00:04, 40.9MB/s] 21%|██▏       | 44.0M/205M [00:01<00:03, 46.6MB/s] 24%|██▍       | 49.0M/205M [00:01<00:03, 41.0MB/s] 27%|██▋       | 56.0M/205M [00:01<00:03, 40.3MB/s] 31%|███       | 64.0M/205M [00:01<00:03, 40.7MB/s] 34%|███▍      | 70.0M/205M [00:01<00:03, 44.2MB/s] 37%|███▋      | 75.0M/205M [00:02<00:03, 45.1MB/s] 39%|███▉      | 80.0M/205M [00:02<00:03, 38.9MB/s] 43%|████▎     | 88.0M/205M [00:02<00:03, 40.8MB/s] 47%|████▋     | 96.0M/205M [00:02<00:02, 43.2MB/s] 50%|█████     | 103M/205M [00:02<00:02, 48.5MB/s]  53%|█████▎    | 108M/205M [00:02<00:02, 41.3MB/s] 55%|█████▌    | 113M/205M [00:03<00:03, 26.5MB/s] 59%|█████▊    | 120M/205M [00:03<00:02, 30.4MB/s] 62%|██████▏   | 128M/205M [00:03<00:02, 32.8MB/s] 66%|██████▌   | 135M/205M [00:03<00:01, 37.9MB/s] 68%|██████▊   | 140M/205M [00:03<00:01, 38.8MB/s] 71%|███████   | 145M/205M [00:04<00:01, 38.4MB/s] 74%|███████▍  | 152M/205M [00:04<00:01, 37.6MB/s] 78%|███████▊  | 159M/205M [00:04<00:01, 41.3MB/s] 80%|████████  | 164M/205M [00:04<00:01, 42.8MB/s] 82%|████████▏ | 169M/205M [00:04<00:00, 44.0MB/s] 86%|████████▌ | 176M/205M [00:04<00:00, 43.5MB/s] 90%|████████▉ | 184M/205M [00:05<00:00, 41.4MB/s] 94%|█████████▎| 192M/205M [00:05<00:00, 38.4MB/s] 98%|█████████▊| 200M/205M [00:05<00:00, 38.4MB/s]100%|██████████| 205M/205M [00:05<00:00, 38.4MB/s]
+=======================================================
+Dataset (rearrange_dataset_v2) successfully downloaded.
+Source: 'D:\a\habitat-sim\habitat-sim\data/versioned_data/rearrange_dataset_v2_1.0'
+Symlink: 'D:\a\habitat-sim\habitat-sim\data\datasets\replica_cad\rearrange'
+=======================================================
