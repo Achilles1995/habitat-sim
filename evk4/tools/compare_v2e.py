@@ -198,11 +198,13 @@ def ks_uniform(ph):
     return float(max(np.max(np.arange(1, n + 1) / n - s), np.max(s - np.arange(n) / n)))
 
 
-def shared_timestamp_fraction(t_us):
+def near_frame_fraction(t_us, frame_t_us, half_us=500):
+    """Fraction of events within +-0.5 ms of a video frame time (uniform in time: 1 ms / frame interval)."""
     if len(t_us) == 0:
         return float("nan")
-    _, c = np.unique(t_us, return_counts=True)
-    return float(c[c > 1].sum() / len(t_us))
+    k = np.clip(np.searchsorted(frame_t_us, t_us), 1, len(frame_t_us) - 1)
+    d = np.minimum(np.abs(t_us - frame_t_us[k - 1]), np.abs(frame_t_us[k] - t_us))
+    return float(np.mean(d <= half_us))
 
 
 def on_mask_fraction(ev, frame_t_us, inst, ids, half_ms=4.0, dilate=2):
@@ -415,7 +417,7 @@ def main():
         r = dict(n_events=int(len(ev)), events_per_s=float(len(ev) / (t1 - t0)),
                  events_per_px_per_s=float(len(ev) / (t1 - t0) / (W * H)),
                  timestamp_phase_ks_to_uniform=ks_uniform(ph),
-                 shared_timestamp_fraction=shared_timestamp_fraction(ev["t"]),
+                 near_frame_time_fraction=near_frame_fraction(ev["t"], ft_us),
                  unique_timestamps_per_s=float(len(np.unique(ev["t"])) / (t1 - t0)))
         if inst is not None and ids:
             r["on_person_mask_near_frame_times"] = on_mask_fraction(ev, ft_win, inst[in_win], ids)
@@ -467,7 +469,7 @@ def main():
              "| metric | our EVK4 | " + label + " |", "|---|---|---|"]
     for k, desc in (("events_per_px_per_s", "events / pixel / s"),
                     ("timestamp_phase_ks_to_uniform", "timestamp clustering at frame times (KS to uniform; 0 = even)"),
-                    ("shared_timestamp_fraction", "events sharing their exact timestamp"),
+                    ("near_frame_time_fraction", "events within 0.5 ms of a video frame time (uniform: 3 %)"),
                     ("unique_timestamps_per_s", "distinct timestamps / s"),
                     ("on_person_mask_near_frame_times", "events within 4 ms of a frame on the true person mask"),
                     ("person_rate_vs_speed_corr", "person event rate vs true image speed (corr.)")):

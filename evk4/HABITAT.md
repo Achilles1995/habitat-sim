@@ -136,6 +136,37 @@ Lower `--binning`, the number of cameras or `max_substeps` to trade fidelity for
   - ego-motion flow.
 - The original MuJoCo tests are in `evk4/tests/test_*.py` (unchanged).
 
+## Physics-based EVK4 vs a video-to-event converter (v2e)
+
+`tools/compare_v2e.py` converts an episode's synchronised RGB video with v2e and compares the
+result with our events on the same pixels and time window. v2e gets the same contrast
+thresholds, mismatch, photoreceptor cutoff, refractory period and leak as our sensor, so the
+comparison isolates what differs: fixed-rate, 8-bit tonemapped video in, versus motion-adaptive
+HDR rendering and a continuous-time pixel model.
+
+```
+git clone https://github.com/SensorsINI/v2e
+pip install matplotlib
+python evk4/tools/compare_v2e.py datasets/actions/ep0000 --cam wall0 --v2e-root v2e --out cmp_wall0
+#   --t0 / --t1 choose the window; --slomo-model SuperSloMo39.ckpt enables v2e's frame interpolation
+```
+
+It writes these figures:
+- **Event frames:** RGB next to the two event streams at the fastest moments.
+- **x–t slice through the person:** continuous streaks in our events, against steps at the frame
+  times in v2e's.
+- **(x, y, t) event clouds.**
+- **Timestamp phase inside the frame interval.**
+- **Event rate against the person's true image speed.**
+
+It also writes `metrics.json` / `summary.md`: rates, KS distance of the timestamp phase to
+uniform, fraction of events at the video frame times, on-person-mask precision near frame times, and correlation
+with true motion.
+
+For a low-light comparison, generate an episode with `--bias "{\"scene_lux\": 10}"`. The RGB
+frames carry photon shot noise and read noise (`rgb_noise`), so dim-light video is noisy, as a
+real camera's would be.
+
 ## Warp and the NVIDIA driver
 
 Warp 1.18+ on PyPI is built with CUDA 13 and needs NVIDIA driver 580 or newer. With an older
