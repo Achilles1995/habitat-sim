@@ -1,0 +1,19 @@
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-11-04 13:50:51,466 Initializing dataset RearrangeDataset-v0
+2026-11-04 13:50:51,466 initializing sim RearrangeSim-v0
+[00:08:22:770522]:[Error]:[Scene] D:\a\habitat-sim\habitat-sim\src\esp\scene\SemanticScene.cpp(140)::esp::scene::SemanticScene::loadSemanticSceneDescriptor : SSD Load Failure! File with SemanticAttributes-provided name `../hssd-hab_semantic_lexicon.json` exists but failed to load.
+2026-11-04 13:50:57,737 Initializing task RearrangePddlTask-v0
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(0)
+MeshTools::compile(): ignoring unknown/unsupported attribute Trade::MeshAttribute::Custom(1)
+assigning 0 gpu 0
+hab3: 1 processes, 300 steps with resets every -1 steps
+FPS: 20.09721392398419
+Average time per function call (in seconds):
+  - time: 0.04975814079416209s
+
+Wrote result to  data/profile/hab3/1_300_-1_human_oracle_win.txt
+================================================================
+Ran 1 trial(s) with average FPS of 20.09721392398419 from [20.09721392398419].
+================================================================
